@@ -1,4 +1,5 @@
 # OS generated files #
+# (Yes, I copied this from elsewhere)
 ######################
 .DS_Store
 .DS_Store?
@@ -9,4 +10,4 @@ ehthumbs.db
 Thumbs.db
 
 #Other, more private stuff
-#tokens.json
+tokens.json
