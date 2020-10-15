@@ -1,11 +1,37 @@
 const Discord = require('discord.js');
 const {bottoken,osutoken} = require('./tokens.json');
-const token = 'ju!';
+const prefix = 'ju!';
+const fs = require('fs');
 
 const client = new Discord.Client();
+
+//Read commands from the commands directory
+client.commands = new Discord.Collection();
+const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+
+for(const file of commandFiles){
+    const command = require(`./commands/${file}`);
+    client.commands.set(command.name, command);
+}
 
 client.on('ready', () => {
     console.log("Yah im alive aight");
 })
 
-client.login(bottoken);
+client.on('message', msg => {
+    if (!msg.content.startsWith(prefix) || msg.author.bot) return; //If the message doesn't start with the prefix or the one who sent the message is a bot, do nothing
+
+    const args = msg.content.slice(prefix.length).trim().split(/ +/); //splits the arguments into an array, every space is the split point thingy
+    const command = args.shift().toLowerCase(); //gets what the command is and makes it lowercase so it aint case sensitive
+    
+    if (!client.commands.has(command)) return msg.channel.send("I don't know that command! Check the available commands with ju!help");
+
+    try{
+        client.commands.get(command).execute(msg, args);
+    } catch (error) {
+        console.error(error);
+        msg.reply("There was an error while executing this command! (the error has been logged)");
+    }
+})
+
+client.login(bottoken); //Login lol
