@@ -1,0 +1,10 @@
+{
+	"name": "juustobot",
+	"version": "1.0.0",
+	"description": "An osu bot for Discord, made by your boi Pizzakeitto",
+	"main": "bot.js",
+	"author": "Pizzakeitto#2827",
+	"dependencies": {
+		"discord.js": "^12.2.0"
+	}
+}
