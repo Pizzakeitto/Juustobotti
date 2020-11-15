@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
-const {bottoken,osutoken} = require('./tokens.json');
-const prefix = 'ju!';
+const {bottoken} = require('./tokens.json');
+const {prefix} = require('./config.json');
 const fs = require('fs');
 
 const client = new Discord.Client();
@@ -16,18 +16,21 @@ for(const file of commandFiles){
 
 client.on('ready', () => {
     console.log("Yah im alive aight");
+    client.user.setActivity('you :) Type ju!help to find out more', {type: 'WATCHING'})
 })
 
 client.on('message', msg => {
     if (!msg.content.startsWith(prefix) || msg.author.bot) return; //If the message doesn't start with the prefix or the one who sent the message is a bot, do nothing
 
     const args = msg.content.slice(prefix.length).trim().split(/ +/); //splits the arguments into an array, every space is the split point thingy
-    const command = args.shift().toLowerCase(); //gets what the command is and makes it lowercase so it aint case sensitive
+    const commandName = args.shift().toLowerCase(); //gets what the commands name is and makes it lowercase so it aint case sensitive
     
-    if (!client.commands.has(command)) return msg.channel.send("I don't know that command! Check the available commands with ju!help");
+    if (!client.commands.has(commandName)) return msg.channel.send("I don't know that command! Check the available commands with ju!help");
+
+    const command = client.commands.get(commandName); //gets the actual command object
 
     try{
-        client.commands.get(command).execute(msg, args);
+        command.execute(msg, args);
     } catch (error) {
         console.error(error);
         msg.reply("There was an error while executing this command! (the error has been logged)");
