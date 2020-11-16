@@ -4,8 +4,7 @@ module.exports = {
     execute(message, args){
         const Discord = require('discord.js');
         const osu = require('node-osu');
-        const {osutoken} = require('../tokens.json');
-        const osuApi = new osu.Api(osutoken, {
+        const osuApi = new osu.Api(process.env.OSUTOKEN, {
             notFoundAsError: true,
             completeScores: false,
             parseNumeric: false

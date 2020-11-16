@@ -135,3 +135,6 @@ dist
 
 #Other, more private stuff
 tokens.json
+
+#Random
+.replit
