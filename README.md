@@ -4,7 +4,15 @@ It is a bot for discord that gets data from the osu api and shoves them somewher
 Dependencies:
 discord.js
 node-osu
+dotenv
+mongodb
 
-If you want to try this out yourself for some reason, rename "tokensTemplate.json" to "tokens.json" and input your tokens there. Then you should do "node bot.js" and everything SHOULD work
+If you want to try this out yourself for some reason, create your own .env file with this "template":
+BOTTOKEN=
+OSUTOKEN=
+DBURL=""
+PREFIX="ju!"
+
+and then do node bot.js
 
 Btw this readme is very much wip so pls ignore most of this stuff
