@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const {bottoken} = process.env.BOTTOKEN;
+require('dotenv').config();
 const {prefix} = require('./config.json');
 const fs = require('fs');
 
