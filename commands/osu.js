@@ -10,10 +10,10 @@ module.exports = {
             parseNumeric: false
         });
 
-        const MongoClient = require('mongodb').MongoClient;
+        //const MongoClient = require('mongodb').MongoClient;
         const assert = require('assert');
-        const dbname = 'juustobotData';
-        const dburl = process.env.DBURL + dbname;
+        //const dbname = 'juustobotData';
+        //const dburl = process.env.DBURL + dbname;
 
         if(!args){
             return message.channel.send("No arguments given!")
@@ -43,7 +43,7 @@ module.exports = {
             var s50 = numberWithCommas(user.counts[50]);
             var playtimeHours = Math.floor(user.secondsPlayed/3600)
 
-            let userData = new Map();
+            /*let userData = new Map();
             userData.set("name", user.name);
             userData.set("rank", rank);
             userData.set("pp", pp);
@@ -56,7 +56,7 @@ module.exports = {
             userData.set("s100", s100);
             userData.set("s50", s50);
             userData.set("playtimeHours", playtimeHours);
-            //console.log(userData);
+            //console.log(userData);*/
 
             userEmbed = new Discord.MessageEmbed()
                 .setColor('#FF00FF')
@@ -85,22 +85,18 @@ module.exports = {
             
             //createDatabase();
 
-            MongoClient.connect(dburl, function(err, client) {
+            /*MongoClient.connect(dburl, function(err, client) {
                 assert.strictEqual(null, err);
                 console.log("Connected to mongo server");
                 
                 const db = client.db(dbname);
-                /*db.collection("userdata").insertOne(userData, function(err, res){
-                    assert.strictEqual(null, err);
-                    console.log("Userdata saved ???");
-                    client.close();
-                })*/
                 db.collection("userdata").updateOne({"name" : userData[0]}, { $set: {userData} }, function(err, res) {
                     assert.strictEqual(null, err);
                     console.log("Userdata saved: " + res);
                     client.close();
                 })
             })
+            */
 
         }).catch(error => {
             if(error.message == 'Not found'){
