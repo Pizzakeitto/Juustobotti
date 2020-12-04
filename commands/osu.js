@@ -45,6 +45,7 @@ module.exports = {
 
             let userData = new Map();
             userData.set("name", user.name);
+            userData.set("_id", user.id);
             userData.set("rank", rank);
             userData.set("pp", pp);
             userData.set("level", level);
@@ -56,7 +57,6 @@ module.exports = {
             userData.set("s100", s100);
             userData.set("s50", s50);
             userData.set("playtimeHours", playtimeHours);
-            //console.log(userData);
 
             userEmbed = new Discord.MessageEmbed()
                 .setColor('#FF00FF')
@@ -82,25 +82,23 @@ module.exports = {
                 .setFooter(`Joined in ${user.joinDate}\nPlaytime: ${playtimeHours}h || ID: ${user.id}`);
             
             message.channel.send(userEmbed);
-            
-            //createDatabase();
 
-            MongoClient.connect(dburl, function(err, client) {
+
+            /*MongoClient.connect(dburl, function(err, client) {
                 assert.strictEqual(null, err);
                 console.log("Connected to mongo server");
                 
                 const db = client.db(dbname);
-                /*db.collection("userdata").insertOne(userData, function(err, res){
-                    assert.strictEqual(null, err);
-                    console.log("Userdata saved ???");
-                    client.close();
-                })*/
-                db.collection("userdata").updateOne({"name" : userData[0]}, { $set: {userData} }, function(err, res) {
-                    assert.strictEqual(null, err);
+                db.collection("userdata").insertOne(userData, function(err, res){
+                    if(err) {
+                        console.log('Yeah it already exists dumfuk')
+                        db.collection("userdata").updateOne({'_id': user.id}, userData);
+                    }
                     console.log("Userdata saved: " + res);
                     client.close();
                 })
-            })
+                
+            })*/
 
         }).catch(error => {
             if(error.message == 'Not found'){
