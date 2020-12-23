@@ -2,6 +2,7 @@ const Discord = require('discord.js');
 require('dotenv').config();
 const {prefix} = require('./config.json');
 const fs = require('fs');
+const { time } = require('console');
 
 const client = new Discord.Client();
 
@@ -16,7 +17,11 @@ for(const file of commandFiles){
 
 client.on('ready', () => {
     console.log("Yah im alive aight");
-    client.user.setActivity('you :) Type ju!help to find out more', {type: 'WATCHING'})
+    updateCustomStatus
+    let updateEveryMinutes = 5, theInterval = updateEveryMinutes * 60 * 1000;
+    setInterval(function() {
+        updateCustomStatus();
+    }, theInterval);
 })
 
 client.on('message', msg => {
@@ -36,5 +41,9 @@ client.on('message', msg => {
         msg.reply("There was an error while executing this command! (the error has been logged)");
     }
 })
+
+function updateCustomStatus() {
+    client.user.setActivity('you :) Type ju!help to find out more', {type: 'WATCHING'})
+}
 
 client.login(process.env.BOTTOKEN); //Login lol
