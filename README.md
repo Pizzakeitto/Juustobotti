@@ -7,10 +7,15 @@ node-osu
 dotenv
 mongodb
 
+
 If you want to try this out yourself for some reason, create your own .env file with this "template":
+
 BOTTOKEN=
+
 OSUTOKEN=
-DBURL=""
+
+DBURL="mongodb://localhost:27017"
+
 PREFIX="ju!"
 
 and then do node bot.js
