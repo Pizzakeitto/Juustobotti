@@ -2,7 +2,6 @@ const Discord = require('discord.js');
 require('dotenv').config();
 const {prefix} = require('./config.json');
 const fs = require('fs');
-const { time } = require('console');
 
 const client = new Discord.Client();
 
