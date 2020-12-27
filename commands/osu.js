@@ -84,8 +84,12 @@ module.exports = {
             message.channel.send(userEmbed);
 
 
-            /*MongoClient.connect(dburl, function(err, client) {
-                assert.strictEqual(null, err);
+            MongoClient.connect(dburl, function(err, client) {
+                if(err) {
+                    console.error(err);
+                    client.close();
+                    return;
+                }
                 console.log("Connected to mongo server");
                 
                 const db = client.db(dbname);
@@ -98,7 +102,7 @@ module.exports = {
                     client.close();
                 })
                 
-            })*/
+            })
 
         }).catch(error => {
             if(error.message == 'Not found'){
