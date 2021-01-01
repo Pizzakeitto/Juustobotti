@@ -2,7 +2,7 @@ module.exports = {
     name: 'link',
     description: 'Links your discord name with your osu! name',
     execute(message, args){
-        if(!args){
+        if(args[0] == null || undefined){
             return message.channel.send("No arguments given!")
         }
         const prefix = process.env.PREFIX;
