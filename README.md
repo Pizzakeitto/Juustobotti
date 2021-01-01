@@ -18,6 +18,6 @@ DBURL="mongodb://localhost:27017"
 
 PREFIX="ju!"
 
-and then do node bot.js
+and then do `npm i` and `node bot.js`
 
 Btw this readme is very much wip so pls ignore most of this stuff
