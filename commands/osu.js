@@ -11,14 +11,11 @@ module.exports = {
         });
 
         const MongoClient = require('mongodb').MongoClient;
-        const assert = require('assert');
         const dbname = 'juustobotData';
         const dburl = process.env.DBURL + dbname;
 
-        if(!args){
-            return message.channel.send("No arguments given!")
-        }
-
+        //var username;
+        
         function numberWithCommas(x) {
             try {return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');}
             catch(error) {
@@ -26,10 +23,52 @@ module.exports = {
             }
         }
 
-        
+        function getUsernameFromDB(){
+            MongoClient.connect(dburl,  {useUnifiedTopology: true}, function(err, client) {
+                try {
+                    console.log("Connected to mongo lol");
+                    if(err) {
+                        console.error(err);
+                        client.close();
+                        return;
+                    }
+                    const db = client.db(dbname)
+                    let userid = message.author.id;
+                    db.collection("userLinks").findOne({'_id': userid}, function(err, res) {
+                        if(err) {
+                            console.error(err);
+                            client.close;
+                            return;
+                        };
+                        if(res == null) {
+                            return null;
+                        }
+                        console.log("Found database entry: " + res);
+                        client.close;
+                        return res.osuname;
+                    });
+                } catch (error) {
+                    console.log(error);
+                }
+            })
+        }
+
+        if(args[0] == undefined || null){
+            //message.channel.send("No args lol");
+            let username = getUsernameFromDB();
+            if (username != null) {
+                message.channel.send(`Your osuname is ${username} right?`);
+            } else {
+                message.channel.send(`You ain't linked bruh`);
+            }
+            console.log(username + " in line 56");
+        } else { username = args[0]; }
+
+        console.log(`Username at line 59 is ${username}`);
+
         //calls the osu api for the user object
         osuApi.getUser({
-            u: args[0]
+            u: username
         }).then(user => {
             var rank = user.pp.rank;
             var pp = user.pp.raw;            
@@ -63,21 +102,18 @@ module.exports = {
                 .setAuthor(`Profile for ${user.name}`, `https://www.countryflags.io/${user.country}/shiny/32.png`, `https://osu.ppy.sh/users/${user.id}`)
                 .setThumbnail(`http://s.ppy.sh/a/${user.id}`)
                 .addField("- Performance -", 
-                `
-                **Rank**: ${rank}
-                **PP**: ${pp}
-                **Level**: ${level}
-                **Accuracy**: ${acc}
-                **Playcount**: ${plays}
-                `, true)
+                `**Rank**: ${rank}` +
+                `\n**PP**: ${pp}` +
+                `\n**Level**: ${level}` +
+                `\n**Accuracy**: ${acc}` +
+                `\n**Playcount**: ${plays}`, true)
 
-                .addField("- Score -", `
-                **Ranked score**: ${rankedScore}
-                **Total score**: ${totalScore}
-                **300s**: ${s300}
-                **100s**: ${s100}
-                **50s**: ${s50}
-                `, true)
+                .addField("- Score -", 
+                `**Ranked score**: ${rankedScore}` +
+                `\n**Total score**: ${totalScore}` +
+                `\n**300s**: ${s300}` +
+                `\n**100s**: ${s100}` +
+                `\n**50s**: ${s50}`, true)
 
                 .setFooter(`Joined in ${user.joinDate}\nPlaytime: ${playtimeHours}h || ID: ${user.id}`);
             
@@ -96,7 +132,9 @@ module.exports = {
                 db.collection("userdata").insertOne(userData, function(err, res){
                     if(err) {
                         console.log('Yeah it already exists dumfuk')
-                        db.collection("userdata").updateOne({'_id': user.id}, userData);
+                        //db.collection("userdata").updateOne({'_id': user.id}, userData);
+                        db.collection("userdata").deleteOne({'_id': user.id});
+                        db.collection("userdata").insertOne(userData);
                     }
                     console.log("Userdata saved: " + res);
                     client.close();
@@ -107,10 +145,11 @@ module.exports = {
         }).catch(error => {
             if(error.message == 'Not found'){
                 message.channel.send("User was not found (or the bot is poopoo)");
+                console.error(error);
             }
             else {
                 message.channel.send("Something unexpected happened! (Is the user banned or some shit idfk????)")
-                console.log(error);
+                console.error(error);
             };
         });
     }
