@@ -19,7 +19,7 @@ module.exports = {
             console.log("Connected to mongo server");
 
             let userData = new Map();
-            userData.set("_id", message.author.id);
+            userData.set("_id", message.author.id); //Discord user's id is being used
             userData.set("osuname", args[0]);
 
             let alreadyLinked = false;
@@ -32,7 +32,6 @@ module.exports = {
                     client.close();
                     return;
                 }
-                //console.log("Userdata saved: " + res);
                 message.channel.send('You was linked aight');
                 client.close();
             })
