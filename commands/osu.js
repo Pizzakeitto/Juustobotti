@@ -41,7 +41,7 @@ module.exports = {
                 console.log(error);
             } finally {
                 dbClient.close();
-                console.log(`HEI USERNAME ON ${username}`);
+                console.log(`Their username is ${username}`);
                 return username;
             }
         }
@@ -49,9 +49,8 @@ module.exports = {
         getUsername().then(username => {
             if(args[0] == undefined || null){
                 //No arguments given
-                message.channel.send("[debug] username is " + username)
                 if (username != null || undefined) {
-                    message.channel.send(`Your osuname is ${username} right?`);
+                    message.channel.send(`Your osuname is ${username} right? (If not blame Pizzakeitto)`);
                 } else {
                     message.channel.send(`You ain't linked bruh`);
                 }
