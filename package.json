@@ -1,6 +1,6 @@
 {
 	"name": "juustobot",
-	"version": "1.0.0",
+	"version": "1.0.5",
 	"description": "An osu bot for Discord, made by your boi Pizzakeitto",
 	"main": "bot.js",
 	"author": "Pizzakeitto#2827",
