@@ -45,6 +45,8 @@ module.exports = {
                 var s50 = recent[0].counts['50'];
                 var smiss = recent[0].counts['miss'];
                 var perfect = recent[0].perfect;
+                var counts = Number(s300) + Number(s100) + Number(s50) + Number(smiss);
+                console.log(counts + " is the many hits")
                 
                 // The thing to calculate
                 let theThing = `(${s50} * 50 + ${s100} * 100 + ${s300} * 300) / (300 * (${smiss} + ${s50} + ${s100} + ${s300})) * 100`
@@ -74,11 +76,13 @@ module.exports = {
                     bmap = beatmap;
                 }).finally( () => {
                     try {
+                        var completionMath = `(${counts} / ${bmap.maxCombo}) * 100`
+                        var completion = eval(completionMath).toFixed(2);
                         var embed = new Discord.MessageEmbed()
                         .setColor('#FF00FF')
                         .setAuthor(`${bmap.artist} - ${bmap.title} [${bmap.version}] + ${mods}`, `https://a.ppy.sh/${user.id}`, `https://osu.ppy.sh/b/${bmapid}`)
                         .setDescription(`▸ ${rank} ▸ vitusti pp ▸ ${acc}%\n▸ ${score} ▸ ${combo}/${bmap.maxCombo} ▸ [${s300}/${s100}/${s50}/${smiss}]`)
-                        .setFooter(`${ss} | at ${_date}`);
+                        .setFooter(`${ss} | at ${_date} | ${completion}% completion`);
                     } catch (e) {
                         console.log(e);
                     } finally {

@@ -13,6 +13,7 @@ module.exports = {
         const MongoClient = require('mongodb').MongoClient;
         const dbname = 'juustobotData';
         const dburl = process.env.DBURL + dbname;
+	console.log(dburl);
         const dbClient = new MongoClient(dburl);
         
         function numberWithCommas(x) {
