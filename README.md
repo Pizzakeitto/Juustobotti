@@ -21,3 +21,4 @@ PREFIX="ju!"
 and then do `npm i` and `node bot.js`
 
 Btw this readme is very much wip so pls ignore most of this stuff
+test
