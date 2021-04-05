@@ -5,8 +5,9 @@ Dependencies:
 discord.js
 node-osu
 dotenv
-mongodb
+mysql
 
+You'll need your own MySQL database. For that you can use WAMP on windows or something idk
 
 If you want to try this out yourself for some reason, create your own .env file with this "template":
 
@@ -14,12 +15,11 @@ BOTTOKEN=
 
 OSUTOKEN=
 
-DBURL="mongodb://localhost:27017"
-
-PREFIX="ju!"
-
 and then do `npm i` and `node bot.js`
 
 Btw this readme is very much wip so pls ignore most of this stuff
 
-TODO: Get the bot working with another database mongo bad
+TODO: 
+
+- [x] Get the bot working with another database mongo bad
+- [ ] I guess make the linking of a profile work correctly
