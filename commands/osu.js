@@ -57,32 +57,29 @@ module.exports = {
         }
                 
         var getOsuUsername = (id) => {
-            return new Promise (function(resolve, reject) {
-              let username = undefined;
-          
-              query("SELECT osuname FROM players WHERE discordid = " + id, function (err, res, fields) {
-                try {
-                  if (err) throw err;
-                  username = res[0].osuname;
-                } catch (e) {
-                  console.error(e)
-                } finally {
-                  resolve(username); // returns undefined if not found
-                }
-              })
-            });
-          }
-          
-          let usernamePromise = getOsuUsername(message.author.id);
-          let username;
-          
-          usernamePromise.then(value => { console.log(`username here is ${value}`); username = value });
-          
-          return username;          
-        return (getUsername.then(username => console.log(`usernam here is ${username}`)))
+            return new Promise(function (resolve, reject) {
+                let username = undefined;
 
-        getUsername().then(username => {
-            console.log(`yeah username here i)s ${username}`)
+                query("SELECT osuname FROM players WHERE discordid = " + id, function (err, res, fields) {
+                    try {
+                        if (err) throw err;
+                        username = res[0].osuname;
+                    } catch (e) {
+                        console.error(e)
+                    } finally {
+                        resolve(username); // returns undefined if not found
+                    }
+                })
+            });
+        }
+
+        let usernamePromise = getOsuUsername(message.author.id);
+        let username;
+
+        // usernamePromise.then(value => { console.log(`username here is ${value}`); });
+
+        usernamePromise.then(username => {
+            console.log(`yeah username here is ${username}`)
             if(args[0] == undefined || null){
                 //No arguments given
                 if (username != null || undefined) {
@@ -109,6 +106,7 @@ module.exports = {
                 var s50 = numberWithCommas(user.counts[50]);
                 var playtimeHours = Math.floor(user.secondsPlayed/3600)
     
+                // this map is deprecated since i dont think sql can take maps directly.
                 let userData = new Map();
                 userData.set("name", user.name);
                 userData.set("_id", user.id);
@@ -142,31 +140,30 @@ module.exports = {
                     `\n**100s**: ${s100}` +
                     `\n**50s**: ${s50}`, true)
     
-                    .setFooter(`Joined in ${user.joinDate}\nPlaytime: ${playtimeHours}h || ID: ${user.id}`);
+                    .setFooter(/*`Joined in ${user.joinDate}\nPlaytime: ${playtimeHours}h || */`ID: ${user.id}`);
                 
                 message.channel.send(userEmbed);
-    
-    
-                MongoClient.connect(dburl, function(err, client) {
-                    if(err) {
-                        console.error(err);
-                        client.close();
-                        return;
-                    }
-                    console.log("Connected to mongo server");
-                    
-                    const db = client.db(dbname);
-                    db.collection("userdata").insertOne(userData, function(err, res){
-                        if(err) {
-                            console.log('Yeah it already exists dumfuk')
-                            //db.collection("userdata").updateOne({'_id': user.id}, userData);
-                            db.collection("userdata").deleteOne({'_id': user.id});
-                            db.collection("userdata").insertOne(userData);
-                        }
-                        console.log("Userdata saved: " + res);
-                        client.close();
-                    })
-                    
+
+                var updateDBQuery = 
+`INSERT INTO playerdata
+VALUES ("${user.name}", "${user.id}", "${rank}", "${pp}", "${level}", "${acc}", "${plays}", "${user.scores.ranked}", "${user.scores.total}", "${user.counts[300]}", "${user.counts[100]}", "${user.counts[50]}", "${playtimeHours}")
+ON DUPLICATE KEY UPDATE 
+username="${user.name}", 
+rank="${rank}", 
+pp="${pp}", 
+level="${level}", 
+acc="${acc}", 
+playcount="${plays}", 
+rankedscore="${user.scores.ranked}", 
+totalscore="${user.scores.total}", 
+s300="${user.counts[300]}", 
+s100="${user.counts[100]}", 
+s50="${user.counts[50]}", 
+playtimehours="${playtimeHours}";`
+
+                query(updateDBQuery, (err, res, fields) => {
+                    if (err) return console.error(err);
+                    console.log(res);
                 })
     
             }).catch(error => {
