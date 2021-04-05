@@ -3,6 +3,7 @@ module.exports = {
     description: 'Gets user info',
     execute(message, args){
         const Discord = require('discord.js');
+        const mysql = require('mysql')
         const osu = require('node-osu');
         const osuApi = new osu.Api(process.env.OSUTOKEN, {
             notFoundAsError: true,
@@ -10,20 +11,18 @@ module.exports = {
             parseNumeric: false
         });
 
-        const MongoClient = require('mongodb').MongoClient;
-        const dbname = 'juustobotData';
-        const dburl = process.env.DBURL + dbname;
-	console.log(dburl);
-        const dbClient = new MongoClient(dburl);
+        const dbname = 'juustobotdata';
+        const {sqlconnection} = require('..\\config.json')
         
         function numberWithCommas(x) {
             try {return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');}
             catch(error) {
-                console.log("User doesnt exist lol");
+                console.error("Failed formatting the number, maybe user doesnt exist?");
             }
         }
 
-        var getUsername = async function(){
+        // deprecated because mongo extreme bad :)
+        var getUsernamemongo = async function(){
             let username
             try {
                 await dbClient.connect();
@@ -47,13 +46,49 @@ module.exports = {
             }
         }
 
+        // query function wrap
+        function query(sql, callback) {
+            let con = mysql.createConnection(sqlconnection);
+            
+            con.connect(function (err) {
+            if (err) throw err;
+            con.query(sql, callback);
+            });
+        }
+                
+        var getOsuUsername = (id) => {
+            return new Promise (function(resolve, reject) {
+              let username = undefined;
+          
+              query("SELECT osuname FROM players WHERE discordid = " + id, function (err, res, fields) {
+                try {
+                  if (err) throw err;
+                  username = res[0].osuname;
+                } catch (e) {
+                  console.error(e)
+                } finally {
+                  resolve(username); // returns undefined if not found
+                }
+              })
+            });
+          }
+          
+          let usernamePromise = getOsuUsername(message.author.id);
+          let username;
+          
+          usernamePromise.then(value => { console.log(`username here is ${value}`); username = value });
+          
+          return username;          
+        return (getUsername.then(username => console.log(`usernam here is ${username}`)))
+
         getUsername().then(username => {
+            console.log(`yeah username here i)s ${username}`)
             if(args[0] == undefined || null){
                 //No arguments given
                 if (username != null || undefined) {
                     message.channel.send(`Your osuname is ${username} right? (If not blame Pizzakeitto)`);
                 } else {
-                    message.channel.send(`You ain't linked bruh`);
+                    return message.channel.send(`You ain't linked bruh`);
                 }
             } else { username = args[0]; }
     
@@ -140,7 +175,7 @@ module.exports = {
                     console.error(error);
                 }
                 else {
-                    message.channel.send("Something unexpected happened! (Is the user banned or some shit idfk????)")
+                    message.channel.send("Something unexpected happened!!!11!1!")
                     console.error(error);
                 };
             });
