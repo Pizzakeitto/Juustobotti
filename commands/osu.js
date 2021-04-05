@@ -21,38 +21,13 @@ module.exports = {
             }
         }
 
-        // deprecated because mongo extreme bad :)
-        var getUsernamemongo = async function(){
-            let username
-            try {
-                await dbClient.connect();
-                const db = dbClient.db(dbname);
-                let userid = message.author.id;
-                let res;
-                res = await db.collection("userLinks").findOne({'_id': userid});
-
-                if(res) {
-                    console.log('Found doodel in db');
-                    console.log(res);
-                    osuname = res.osuname;
-                    username = osuname;
-                }
-            } catch (error) {
-                console.log(error);
-            } finally {
-                dbClient.close();
-                console.log(`Their username is ${username}`);
-                return username;
-            }
-        }
-
         // query function wrap
         function query(sql, callback) {
             let con = mysql.createConnection(sqlconnection);
             
             con.connect(function (err) {
-            if (err) throw err;
-            con.query(sql, callback);
+                if (err) throw err;
+                con.query(sql, callback);
             });
         }
                 
@@ -140,7 +115,8 @@ module.exports = {
                     `\n**100s**: ${s100}` +
                     `\n**50s**: ${s50}`, true)
     
-                    .setFooter(/*`Joined in ${user.joinDate}\nPlaytime: ${playtimeHours}h || */`ID: ${user.id}`);
+                    .setFooter(/*`Joined in ${user.joinDate}\nPlaytime: ${playtimeHours}h || */`ID: ${user.id}`)
+                    .setTimestamp(user.joinDate);
                 
                 message.channel.send(userEmbed);
 
@@ -163,7 +139,6 @@ playtimehours="${playtimeHours}";`
 
                 query(updateDBQuery, (err, res, fields) => {
                     if (err) return console.error(err);
-                    console.log(res);
                 })
     
             }).catch(error => {
