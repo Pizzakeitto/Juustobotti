@@ -1,5 +1,3 @@
-const Api = require('node-osu/lib/Api');
-
 module.exports = {
     name: 'rs',
     description: 'Gets recent scores',
@@ -76,7 +74,8 @@ module.exports = {
                     bmap = beatmap;
                 }).finally( () => {
                     try {
-                        var completionMath = `(${counts} / ${bmap.maxCombo}) * 100`
+                        var objects = Number(bmap.objects.normal) + Number(bmap.objects.slider) + Number(bmap.objects.spinner);
+                        var completionMath = `(${counts} / ${objects}) * 100`
                         var completion = eval(completionMath).toFixed(2);
                         var embed = new Discord.MessageEmbed()
                         .setColor('#FF00FF')
