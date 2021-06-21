@@ -10,7 +10,7 @@ module.exports = {
         });
         const Discord = require('discord.js');
 
-        var getRecent = async function (bmapid) {
+        var getRecentBeatmap = async function (bmapid) {
             let beatmap;
             try {
                 let beatmaps = await osuApi.getBeatmaps({b:bmapid});
@@ -44,7 +44,6 @@ module.exports = {
                 var smiss = recent[0].counts['miss'];
                 var perfect = recent[0].perfect;
                 var counts = Number(s300) + Number(s100) + Number(s50) + Number(smiss);
-                console.log(counts + " is the many hits")
                 
                 // The thing to calculate
                 let theThing = `(${s50} * 50 + ${s100} * 100 + ${s300} * 300) / (300 * (${smiss} + ${s50} + ${s100} + ${s300})) * 100`
@@ -67,10 +66,10 @@ module.exports = {
                 let [hour, minute, second] = date.toLocaleString().split(/:| /)
                 let _date = `${day}/${month}/${year}`
 
-                console.log(`${month} ${day} ${year} ${hour} ${minute} ${second}`)
+                // console.log(`${month} ${day} ${year} ${hour} ${minute} ${second}`)
 
                 let bmap;
-                getRecent(bmapid).then((beatmap) => {
+                getRecentBeatmap(bmapid).then((beatmap) => {
                     bmap = beatmap;
                 }).finally( () => {
                     try {
@@ -79,9 +78,11 @@ module.exports = {
                         var completion = eval(completionMath).toFixed(2);
                         var embed = new Discord.MessageEmbed()
                         .setColor('#FF00FF')
-                        .setAuthor(`${bmap.artist} - ${bmap.title} [${bmap.version}] + ${mods}`, `https://a.ppy.sh/${user.id}`, `https://osu.ppy.sh/b/${bmapid}`)
+                        .setAuthor(`${bmap.artist} - ${bmap.title} [${bmap.version}]`, `https://a.ppy.sh/${user.id}`, `https://osu.ppy.sh/b/${bmapid}`)
+                        .setThumbnail(`https://b.ppy.sh/thumb/${bmap.beatmapSetId}l.jpg`)
                         .setDescription(`▸ ${rank} ▸ vitusti pp ▸ ${acc}%\n▸ ${score} ▸ ${combo}/${bmap.maxCombo} ▸ [${s300}/${s100}/${s50}/${smiss}]`)
-                        .setFooter(`${ss} | at ${_date} | ${completion}% completion`);
+                        .setFooter(`${ss} • ${completion}% completion`)
+                        .setTimestamp(_date);
                     } catch (e) {
                         console.log(e);
                     } finally {
