@@ -6,8 +6,10 @@
 	"author": "Pizzakeitto#2827",
 	"dependencies": {
 		"discord.js": "^12.5.3",
-		"dotenv": "^8.2.0",
+		"dotenv": "^8.6.0",
 		"mysql": "^2.18.1",
-		"node-osu": "^2.2.1"
+		"node-fetch": "^2.6.1",
+		"node-osu": "^2.2.1",
+		"xml2json": "^0.12.0"
 	}
 }
