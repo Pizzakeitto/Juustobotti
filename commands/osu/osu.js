@@ -12,7 +12,7 @@ module.exports = {
         });
 
         const dbname = 'juustobotdata';
-        const {sqlconnection} = require('..\\config.json')
+        const {sqlconnection} = require('../../config.json')
         
         function numberWithCommas(x) {
             try {return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');}

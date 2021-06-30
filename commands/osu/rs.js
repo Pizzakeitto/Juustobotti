@@ -1,7 +1,7 @@
 module.exports = {
     name: 'rs',
     description: 'Gets recent scores',
-    execute(message, args, client){
+    execute(message, args){
         const osu = require('node-osu')
         const osuApi = new osu.Api(process.env.OSUTOKEN, {
             notFoundAsError: true,

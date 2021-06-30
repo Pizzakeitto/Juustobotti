@@ -7,7 +7,7 @@ module.exports = {
         }
 
         const mysql = require('mysql')
-        const {sqlconnection} = require('..\\config.json')
+        const {sqlconnection} = require('../../config.json')
 
         let con = mysql.createConnection(sqlconnection);
         con.connect((err) => {

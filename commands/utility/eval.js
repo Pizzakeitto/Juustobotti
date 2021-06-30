@@ -5,7 +5,7 @@ module.exports = {
         if(!args){
             return message.channel.send("Nothing to eval!")
         }
-        const {prefix} = require('../config.json');
+        const {prefix} = require('../../config.json');
         var newargs = message.content.slice(prefix.length + 4).trim();
 
         console.log(newargs);

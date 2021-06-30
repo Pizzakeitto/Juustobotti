@@ -1,3 +1,6 @@
+// Everything has been written by Pizzakeitto,
+// using https://discordjs.guide/ as example :)
+
 const Discord = require('discord.js');
 require('dotenv').config();
 const {prefix} = require('./config.json');

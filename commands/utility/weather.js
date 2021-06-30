@@ -6,7 +6,7 @@ module.exports = {
         // Toteutetaas tää käyttäen openweathermap.org
         // https://openweathermap.org/current
         const fetch = require('node-fetch')
-        const isoCountries = require('../isoCountries.json') // Thanks maephisto! https://gist.github.com/maephisto/9228207
+        const isoCountries = require('../../isoCountries.json') // Thanks maephisto! https://gist.github.com/maephisto/9228207
 
         if(args.length == 0) return message.channel.send('Anna joku paikka lol, vähintää kaupungin nimi.') // voi myös lisätä 
 
@@ -14,10 +14,29 @@ module.exports = {
         let endpoint = 'https://api.openweathermap.org/data/2.5/weather?q='
         let iconendpoint = 'https://openweathermap.org/img/wn/' // https://openweathermap.org/weather-conditions
         
-        let fetchUrl = `${endpoint}${args[0]}&units=metric&appid=${apiKey}`
-        console.log(fetchUrl)
+        // Esimerkki input ['lahti', 'fi']
+        // Pyörii jokasella argumentilla listas
+        for(i = 0; i < args.length; i++) {
+            // Jos isoCountries listassa löytyy argumentti isoina kirjaimina (esim 'fi' isona löytyy listast)
+            if( isoCountries.hasOwnProperty(args[i].toUpperCase()) ) {
+                // Vaihtaa sen argumentin olemaa isoina kirjaimina (fi -> FI)
+                args[args.indexOf(args[i])] = args[i].toUpperCase()
+            } else if( isoCountries.hasOwnProperty(capitalize(args[i])) ) {
+                // Jos ei, nii jos löytyy oikein isoina kirjaimina maa listasta (esim 'finland' löytyy listast 'Finland')
+                // ni joo
+                args[args.indexOf(args[i])] = capitalize(args[i])
+                args[args.indexOf(args[i])] = getCountryCode(args[i])
+            }
+        }
+
+        // Jos joku inputtaa esim ju!weather fi lahti, tää kääntää ympäri.
+        // Parempi ois kattoo onks listas, ja sitte reverse,, jos ettii jotai kakskirjaimisii kaupunkei etc
+        if(args[0].length == 2) args.reverse()
+
+        let fetchUrl = `${endpoint}${args.join()}&units=metric&appid=${apiKey}`
+        // console.log(fetchUrl)
         fetch(fetchUrl).then(res => res.json()).then(data => {
-            console.log(data)
+            // console.log(data)
             let weatherMap = new Map()
             weatherMap.set("location", getCountryName(data.sys.country))
             weatherMap.set("city", data.name)
@@ -60,6 +79,20 @@ module.exports = {
             } else {
                 return countryCode;
             }
+        }
+
+        // Basically turha, sama asia ku getCountryName()
+        function getCountryCode(countryName) {
+            if (isoCountries.hasOwnProperty(countryName)) {
+                return isoCountries[countryName];
+            } else {
+                return countryName;
+            }
+        }
+
+        // Kopioitu suoraa netist, https://www.digitalocean.com/community/tutorials/js-capitalizing-strings
+        function capitalize(string = "") {
+            return string.trim().toLowerCase().replace(/\w\S*/g, (w) => (w.replace(/^\w/, (c) => c.toUpperCase())));
         }
     }
 }
