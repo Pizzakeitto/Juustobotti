@@ -1,6 +1,7 @@
 module.exports = {
     name: 'osu',
     description: 'Gets user info',
+    usage: '[user]',
     execute(message, args){
         const Discord = require('discord.js');
         const mysql = require('mysql')
@@ -28,6 +29,7 @@ module.exports = {
             con.connect(function (err) {
                 if (err) throw err;
                 con.query(sql, callback);
+                con.end()
             });
         }
                 
@@ -54,11 +56,11 @@ module.exports = {
         // usernamePromise.then(value => { console.log(`username here is ${value}`); });
 
         usernamePromise.then(username => {
-            console.log(`yeah username here is ${username}`)
+            // console.log(`yeah username here is ${username}`)
             if(args[0] == undefined || null){
                 //No arguments given
                 if (username != null || undefined) {
-                    message.channel.send(`Your osuname is ${username} right? (If not blame Pizzakeitto)`);
+                    // message.channel.send(`Your osuname is ${username} right? (If not blame Pizzakeitto)`);
                 } else {
                     return message.channel.send(`You ain't linked bruh`);
                 }
@@ -118,11 +120,11 @@ module.exports = {
                     .setFooter(/*`Joined in ${user.joinDate}\nPlaytime: ${playtimeHours}h || */`ID: ${user.id}`)
                     .setTimestamp(user.joinDate);
                 
-                message.channel.send(userEmbed);
+                message.channel.send('Nice profile bro!', {embed: userEmbed});
 
                 var updateDBQuery = 
 `INSERT INTO playerdata
-VALUES ("${user.name}", "${user.id}", "${rank}", "${pp}", "${level}", "${acc}", "${plays}", "${user.scores.ranked}", "${user.scores.total}", "${user.counts[300]}", "${user.counts[100]}", "${user.counts[50]}", "${playtimeHours}")
+VALUES ("${user.name}", "${rank}", "${pp}", "${level}", "${acc}", "${plays}", "${user.scores.ranked}", "${user.scores.total}", "${user.counts[300]}", "${user.counts[100]}", "${user.counts[50]}", "${playtimeHours}")
 ON DUPLICATE KEY UPDATE 
 username="${user.name}", 
 rank="${rank}", 
