@@ -1,9 +1,0 @@
-{
-    "prefix": "ju!",
-    "sqlconnection": {
-        "host": "localhost",
-        "user": "root",
-        "password": "",
-        "database": "juustobotdata"
-    }
-}
