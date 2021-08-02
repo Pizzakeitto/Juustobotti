@@ -10,16 +10,19 @@ const client = new Discord.Client();
 
 //Read commands from the commands directory
 client.commands = new Discord.Collection();
-const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+const commandFolders = fs.readdirSync('./commands');
 
-for(const file of commandFiles){
-    const command = require(`./commands/${file}`);
-    client.commands.set(command.name, command);
+for(const folder of commandFolders) {
+    const commandFiles = fs.readdirSync(`./commands/${folder}`).filter(file => file.endsWith('.js'));
+    for(const file of commandFiles){
+        const command = require(`./commands/${folder}/${file}`);
+        client.commands.set(command.name, command);
+    }
 }
 
 client.on('ready', () => {
     console.log("Yah im alive aight");
-    updateCustomStatus
+    updateCustomStatus()
     let updateEveryMinutes = 5, theInterval = updateEveryMinutes * 60 * 1000;
     setInterval(function() {
         updateCustomStatus();
@@ -29,6 +32,7 @@ client.on('ready', () => {
 client.on('message', msg => {
     if (!msg.content.startsWith(prefix) || msg.author.bot) return; //If the message doesn't start with the prefix or the one who sent the message is a bot, do nothing
 
+    if (!msg.guild) return msg.channel.send("Cant do in dms lol")
     const args = msg.content.slice(prefix.length).trim().split(/ +/); //splits the arguments into an array, every space is the split point thingy
     const commandName = args.shift().toLowerCase(); //gets what the commands name is and makes it lowercase so it aint case sensitive
 
