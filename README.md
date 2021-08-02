@@ -10,11 +10,11 @@ mysql
 You'll need your own MySQL database. For that you can use WAMP on windows or something idk
 
 If you want to try this out yourself for some reason, create your own .env file with this "template":
-
+```
 BOTTOKEN=
-
 OSUTOKEN=
-
+OPENWEATHERKEY=
+```
 and then do `npm i` and `node bot.js`
 
 Btw this readme is very much wip so pls ignore most of this stuff
@@ -22,4 +22,7 @@ Btw this readme is very much wip so pls ignore most of this stuff
 TODO: 
 
 - [x] Get the bot working with another database mongo bad
-- [ ] I guess make the linking of a profile work correctly
+- [x] I guess make the linking of a profile work correctly
+- [ ] Translate the bot to full english/finnish havent decided yet
+- [ ] More fancy help command
+- [ ] 
