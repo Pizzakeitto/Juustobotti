@@ -19,7 +19,7 @@ OPENWEATHERKEY=
 And put your tokens in it. BOTTOKEN is your discord bot's token, OSUTOKEN is the token you can get from https://osu.ppy.sh/p/api and OPENWEATHERKEY is your openweathermap api key (if you want to use the weather feature of the bot).
 After that do `npm i` and `node bot.js` and the bot *should in theory* become online
 
-Btw this readme is very much wip so pls ignore most of this stuff
+Btw this readme is very much wip so yeah ask me for more info if youre really interested
 
 TODO: 
 
