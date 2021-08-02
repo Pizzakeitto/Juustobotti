@@ -1,5 +1,3 @@
-const { description, execute } = require("./osu");
-
 module.exports = {
     name: "find",
     description: "Finds discord user by id",
