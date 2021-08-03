@@ -48,6 +48,28 @@ client.on('message', msg => {
     }
 })
 
+client.on("guildCreate", async guild => {
+    let msg = new Discord.Message
+    msg = `I joined a guild named ${guild.name} with id being ${guild.id}.\nThere are ${guild.memberCount} members right now. Should I leave?`
+
+    let pizzakeitto = await client.users.fetch('246721024102498304')
+    msg = await pizzakeitto.send(msg)
+    await msg.react('✅')
+    await msg.react('❎')
+
+    msg.awaitReactions(r => ['✅', '❎'].includes(r.emoji.name), {max: 1}).then(collected => { 
+        let r = collected.first();
+
+        if(r.emoji.name == '✅') {
+            guild.leave();
+            pizzakeitto.send('Ok im gone 👋')
+        } else {
+            msg.channel.send('Ok im staying')
+        }
+    })
+    
+})
+
 function updateCustomStatus() {
     client.user.setActivity('you :) Type ju!help to find out more', {type: 'WATCHING'})
 }
