@@ -5,6 +5,7 @@
   "main": "bot.js",
   "author": "Pizzakeitto#2827",
   "dependencies": {
+    "axios": "^0.21.1",
     "discord.js": "^12.5.3",
     "dotenv": "^8.6.0",
     "mysql": "^2.18.1",
