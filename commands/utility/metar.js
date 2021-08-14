@@ -18,7 +18,8 @@ module.exports = {
             // console.log(kenttäinfo)
         }
 
-        getData(args[0]).then(data => {
+        getData(args[0].toUpperCase()).then(data => {
+            if(data.ExceptionReport) return message.channel.send('Ei oo kenttä kai?')
             if(data.wfs_FeatureCollection.numberReturned == 0) return message.channel.send('Joko ei löytyny tai sit pask api lol')
             
             let apireturn = data.wfs_FeatureCollection.wfs_member[0]
