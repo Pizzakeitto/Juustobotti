@@ -20,17 +20,18 @@ for(const folder of commandFolders) {
     }
 }
 
-client.on('ready', () => {
+client.once('ready', () => {
     console.log("Yah im alive aight");
     updateCustomStatus()
-    let updateEveryMinutes = 5, theInterval = updateEveryMinutes * 60 * 1000;
+    /* let updateEveryMinutes = 5, theInterval = updateEveryMinutes * 60 * 1000;
     setInterval(function() {
         updateCustomStatus();
-    }, theInterval);
+    }, theInterval);*/
+    // I dont think this needs to be run on an interval
 })
 
 client.on('message', msg => {
-    if (!msg.content.startsWith(prefix) || msg.author.bot) return; //If the message doesn't start with the prefix or the one who sent the message is a bot, do nothing
+    if (!msg.content.toLowerCase().startsWith(prefix) || msg.author.bot) return; //If the message doesn't start with the prefix or the one who sent the message is a bot, do nothing
 
     if (!msg.guild) return msg.channel.send("Cant do in dms lol")
     const args = msg.content.slice(prefix.length).trim().split(/ +/); //splits the arguments into an array, every space is the split point thingy
@@ -70,8 +71,16 @@ client.on("guildCreate", async guild => {
     
 })
 
+process.on('exit', function() {
+    client.destroy();
+})
+
+process.on('SIGINT', function() {
+    client.destroy();
+})
+
 function updateCustomStatus() {
-    client.user.setActivity('you :) Type ju!help to find out more', {type: 'WATCHING'})
+    client.user.setActivity('the chat :) Type ju!help for more', {type: 'WATCHING'})
 }
 
 client.login(process.env.BOTTOKEN); //Login lol
