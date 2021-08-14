@@ -32,7 +32,22 @@ module.exports = {
                 con.end()
             });
         }
-                
+        
+        function wysi(toparse = ''){
+            return toparse.toString().replace(/(727)|(72,7)|(7,27)/g, str => {
+                switch(str){
+                    case '727':
+                        return '**__727__**'
+                    case '72,7':
+                        return '**__72,7__**'
+                    case '7,27':
+                        return '**__7,27__**'
+                }
+            })
+        }
+
+        // console.log(wysi('727 7,27 127,277'))
+
         var getOsuUsername = (id) => {
             return new Promise(function (resolve, reject) {
                 let username = undefined;
@@ -73,7 +88,7 @@ module.exports = {
             }).then(user => {
                 var rank = user.pp.rank;
                 var pp = user.pp.raw;            
-                var level = parseFloat(user.level).toFixed(4);
+                var level = parseFloat(user.level)
                 var acc = parseFloat(user.accuracy).toFixed(2);
                 var plays = user.counts.plays;
                 var rankedScore = numberWithCommas(user.scores.ranked);
@@ -81,6 +96,9 @@ module.exports = {
                 var s300 = numberWithCommas(user.counts[300]);
                 var s100 = numberWithCommas(user.counts[100]);
                 var s50 = numberWithCommas(user.counts[50]);
+                var SS = numberWithCommas(parseInt(user.counts.SS) + parseInt(user.counts.SSH));
+                var S = numberWithCommas(parseInt(user.counts.S) + parseInt(user.counts.SH));
+                var A = numberWithCommas(user.counts.A);
                 var playtimeHours = Math.floor(user.secondsPlayed/3600)
     
                 // this map is deprecated since i dont think sql can take maps directly.
@@ -104,20 +122,23 @@ module.exports = {
                     .setAuthor(`Profile for ${user.name}`, `https://www.countryflags.io/${user.country}/shiny/32.png`, `https://osu.ppy.sh/users/${user.id}`)
                     .setThumbnail(`http://s.ppy.sh/a/${user.id}`)
                     .addField("- Performance -", 
-                    `**Rank**: ${rank}` +
-                    `\n**PP**: ${pp}` +
-                    `\n**Level**: ${level}` +
-                    `\n**Accuracy**: ${acc}` +
-                    `\n**Playcount**: ${plays}`, true)
+                    `**Rank**: ${wysi(rank)}` +
+                    `\n**PP**: ${wysi(pp)}` +
+                    `\n**Level**: ${wysi(level)}` +
+                    `\n**Accuracy**: ${wysi(acc)}` +
+                    `\n**Playcount**: ${wysi(plays)}`, true)
     
                     .addField("- Score -", 
-                    `**Ranked score**: ${rankedScore}` +
-                    `\n**Total score**: ${totalScore}` +
-                    `\n**300s**: ${s300}` +
-                    `\n**100s**: ${s100}` +
-                    `\n**50s**: ${s50}`, true)
+                    `**Ranked score**: ${wysi(rankedScore)}` +
+                    `\n**Total score**: ${wysi(totalScore)}` +
+                    /* `\n**300s**: ${wysi(s300)}` +
+                    `\n**100s**: ${wysi(s100)}` +
+                    `\n**50s**: ${wysi(s50)}` + */
+                    `\n**SS**: ${wysi(SS)}` +
+                    `\n**S**: ${wysi(S)}` +
+                    `\n**A**: ${wysi(A)}`, true)
     
-                    .setFooter(/*`Joined in ${user.joinDate}\nPlaytime: ${playtimeHours}h || */`ID: ${user.id}`)
+                    .setFooter(/*`Joined in ${user.joinDate}\nPlaytime: ${playtimeHours}h || */`ID: ${wysi(user.id)}`)
                     .setTimestamp(user.joinDate);
                 
                 message.channel.send('Nice profile bro!', {embed: userEmbed});
