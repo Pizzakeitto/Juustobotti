@@ -2,13 +2,15 @@ const Discord = require('discord.js');
 module.exports = {
     name: 'bj',
     description: 'Play a game of blackjack!',
-    // Täs execute hommas kokeilin castaa nää sampit et saa intellisense fiksusti, toimii iha ok
+    // For intellisense purposes i need the new Discord.Message n stuff :)
     execute(message = new Discord.Message, args = [""]) {
         var playerCards = []
         var dealerCards = []
         
-        playerCards.push(pickCard())
-        playerCards.push(pickCard())
+        // playerCards.push(pickCard())
+        // playerCards.push(pickCard())
+        playerCards.push(1)
+        playerCards.push(10)
         dealerCards.push(pickCard())
 
         var playerSum = playerCards.reduce((a, b) => a + b, 0)
@@ -17,10 +19,10 @@ module.exports = {
             playerSum += 10;
         }
         if (playerCards.includes(1) && playerCards.includes(10)) {
-            message.channel.send(`Sun kortit on ${playerCards.join(", ")}. Tuli blackjack lol eli voitit nice job`)
+            message.channel.send(`You have ${playerCards.join(", ")}. You got a blackjack = instant win spaghetti noodle !!!!`)
             return;
         }
-        message.channel.send(`Sun kortit on ${playerCards.join(", ")}, joka tekee ${playerSum} yhteensä.\nDealerilla on ${dealerCards}, x.\nMikä on sun pro gamer move? Kirjota\nh lyödäkses, ja\ns seisoakses`).then(botmsg => {
+        message.channel.send(`You have ${playerCards.join(", ")}, which is ${playerSum} in total.\nThe dealer has ${dealerCards}, x.\nWhat's your pro gamer move? Type\nh to hit, and\ns to stand`).then(botmsg => {
             playerPlay(message, botmsg)
         })
         
@@ -38,14 +40,14 @@ module.exports = {
                     if (playerCards.includes(1) && playerSum + 10 < 21) {
                         playerSum += 10;
                     }
-                    botmsg.edit(`Sun kortit on ${playerCards.join(", ")}, joka tekee ${playerSum} yhteensä.\nDealerilla on ${dealerCards}, x.\n${playerSum > 21 ? 'BUSTASIT!' : 'Mikä on sun pro gamer move? Kirjota\nh lyödäkses, ja\ns seisoakses'}`)
+                    botmsg.edit(`You have ${playerCards.join(", ")}, which is ${playerSum} in total.\nThe dealer has ${dealerCards}, x.\n${playerSum > 21 ? 'BUST!' : 'nWhat\'s your pro gamer move? Type\nh to hit, and\ns to stand'}`)
                     if (playerSum > 21) return;
                     playerPlay(message, botmsg)
                 } else if (message.content.toLowerCase() == "s") {
-                    // bot pelaa
-                    
+                    // bot plays
+                    dealerPlay(message, botmsg)
                 } else {
-                    message.channel.send("Väärä vastaus? lähetä joko h tai s")
+                    message.channel.send("That isn't an option. h to hit and s to stand.")
                     playerPlay(message, botmsg)
                 }
             })
@@ -54,11 +56,21 @@ module.exports = {
         function dealerPlay(message = new Discord.Message, botmsg = new Discord.Message) {
             dealerCards.push(pickCard())
             dealerSum = dealerCards.reduce((a, b) => a + b, 0)
-            botmsg.edit(`Sun kortit on ${playerCards.join(", ")}, joka tekee ${playerSum} yhteensä.\nDealerilla on ${dealerCards.join(", ")}, joka tekee ${dealerSum} yhteensä.'}`)
-
+            botmsg.edit(`You have ${playerCards.join(", ")}, which is ${playerSum} in total.\nThe dealer has ${dealerCards.join(", ")}, which is ${dealerSum} in total.`)
+            if(dealerSum < 17) {
+                setTimeout(function () {
+                    dealerPlay(message, botmsg)
+                }, 1000);
+            }
+            else {
+                setTimeout(function () {
+                    if(playerSum >= dealerSum || dealerSum >= 22) {
+                        message.channel.send('You won!')
+                    } else message.channel.send('Oof you lost :(')
+                }, 500)
+            }
         }
         function pickCard() {
-            // Monta 10 koska J Q K
             const availCards = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10]
             return availCards[Math.floor(Math.random() * availCards.length)]
         }
