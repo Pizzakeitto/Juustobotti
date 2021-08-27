@@ -7,10 +7,8 @@ module.exports = {
         var playerCards = []
         var dealerCards = []
         
-        // playerCards.push(pickCard())
-        // playerCards.push(pickCard())
-        playerCards.push(1)
-        playerCards.push(10)
+        playerCards.push(pickCard())
+        playerCards.push(pickCard())
         dealerCards.push(pickCard())
 
         var playerSum = playerCards.reduce((a, b) => a + b, 0)
