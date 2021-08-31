@@ -69,6 +69,71 @@ module.exports = {
             }
         }
 
+        function parseMods(mods = []) {
+            var parsedMods = ''
+            mods.forEach(mod => {
+                switch (mod) {
+                    case 'None':
+                        parsedMods += 'Nomod'
+                        break;
+                    case 'NoFail':
+                        parsedMods += 'NF'
+                        break;
+                    case 'Easy':
+                        parsedMods += 'EZ'
+                        break;
+                    case 'TouchDevice':
+                        parsedMods += 'TD'
+                        break;
+                    case 'Hidden':
+                        parsedMods += 'HD'
+                        break;
+                    case 'HardRock':
+                        parsedMods += 'HR'
+                        break;
+                    case 'SuddenDeath':
+                        parsedMods += 'SD'
+                        break;
+                    case 'DoubleTime':
+                        parsedMods += 'DT'
+                        break;
+                    case 'Relax':
+                        parsedMods += 'RX'
+                        break;
+                    case 'HalfTime':
+                        parsedMods += 'HT'
+                        break;
+                    case 'Nightcore':
+                        parsedMods += 'NC'
+                        break;
+                    case 'Flashlight':
+                        parsedMods += 'FL'
+                        break;
+                    case 'Autoplay':
+                        parsedMods += 'Autoplay?'
+                        break;
+                    case 'SpunOut':
+                        parsedMods += 'SO'
+                        break;
+                    case 'Relax2':
+                        parsedMods += 'AP'
+                        break;
+                    case 'Perfect':
+                        parsedMods += 'PF'
+                        break;
+                    case 'ScoreV2':
+                        parsedMods += 'SV2'
+                        break;
+                    default:
+                        break;
+                }
+
+            })
+
+            if(parsedMods != '') return parsedMods
+            else return 'Nomod'
+        }
+
         getOsuUsername(message.author.id).then(username => {
             console.log(`yeah username here is ${username}`)
             if(args[0] == undefined || null){
@@ -90,9 +155,10 @@ module.exports = {
                     m: 0
                 }).then(recent => {
                     let a = args[1] ? args[1] : 0;
+                    if(!recent[a]) throw('Not found')
                     var bmapid =   recent[a].beatmapId;
-                    console.log()
-                    var mods =     recent[a].raw_mods;
+                    var mods =     recent[a].mods;
+                    mods =         parseMods(mods)
                     var score =    recent[a].score;
                     var rank =     recent[a].rank;
                     var combo =    recent[a].maxCombo;
@@ -117,6 +183,37 @@ module.exports = {
                     } else {
                         ss = 'Ei ees SS';
                     }
+
+                    // Also have to convert X and SX to SS and stuff
+                    switch (rank) {
+                        case 'A':
+                            rank = '<:A_:881163307350892605>'
+                            break;
+                        case 'B':
+                            rank = '<:B_:881163307564798023>'
+                            break;
+                        case 'C':
+                            rank = '<:C_:881163307648688129>'
+                            break;
+                        case 'D':
+                            rank = '<:D_:881163307250249739>'
+                            break;
+                        case 'S':
+                            rank = '<:S_:881163307229282385>'
+                            break;
+                        case 'SH':
+                            rank = '<:SH:881163307233456159>'
+                            break;
+                        case 'X':
+                            rank = '<:X_:881163307623518268>'
+                            break;
+                        case 'XH':
+                            rank = '<:XH:881163307636117524>'
+                            break;
+                        case 'F':
+                            rank = '<:F_:881163307585765416>'
+                            break;
+                    }
     
                     // Date formatter thingy
                     let date = recent[a].date;
@@ -138,7 +235,7 @@ module.exports = {
                             .setColor('#FF00FF')
                             .setAuthor(`${bmap.artist} - ${bmap.title} [${bmap.version}]`, `https://a.ppy.sh/${user.id}`, `https://osu.ppy.sh/b/${bmapid}`)
                             .setThumbnail(`https://b.ppy.sh/thumb/${bmap.beatmapSetId}l.jpg`)
-                            .setDescription(`▸ ${rank} ▸ vitusti pp ▸ ${acc}%\n▸ ${score} ▸ ${combo}/${bmap.maxCombo} ▸ [${s300}/${s100}/${s50}/${smiss}]`)
+                            .setDescription(`▸ ${rank} ▸ ${mods} ▸ ${acc}%\n▸ ${score} ▸ ${combo}/${bmap.maxCombo} ▸ [${s300}/${s100}/${s50}/${smiss}]`)
                             .setFooter(`${ss} • ${completion}% completion`)
                         } catch (e) {
                             console.log(e);
@@ -148,10 +245,26 @@ module.exports = {
                     })
                     
                 }).catch(err => {
-                    message.channel.send(err);
+                    // recent score was not found
+                    console.log(err);
+                    if(err == "Not found") {
+                        message.channel.send("Score was not found")
+                    } else {
+                        message.channel.send("Something unexpected happened! @Pizzakeitto")
+                    }
                 })
             }).catch(err => {
-                message.channel.send(err);
+                // user was not found
+                console.log(err);
+                if (err.message){
+                    if(err.message == "Not found") {
+                        message.channel.send("User was not found")
+                    } else {
+                        message.channel.send("Something unexpected happened! @Pizzakeitto")
+                    }
+                } else {
+                    message.channel.send("Something unexpected happened! (Most likely the user youre trying to find was not found but yeah idk how to code) @Pizzakeitto")
+                }
             })
             
         })
