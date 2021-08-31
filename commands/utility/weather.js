@@ -17,6 +17,7 @@ module.exports = {
         // Esimerkki input ['lahti', 'fi']
         // Pyörii jokasella argumentilla listas
         for(i = 0; i < args.length; i++) {
+            if(args[0] && !args[1]) break
             // Jos isoCountries listassa löytyy argumentti isoina kirjaimina (esim 'fi' isona löytyy listast)
             if( isoCountries.hasOwnProperty(args[i].toUpperCase()) ) {
                 // Vaihtaa sen argumentin olemaa isoina kirjaimina (fi -> FI)
