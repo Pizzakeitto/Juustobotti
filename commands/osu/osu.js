@@ -26,11 +26,16 @@ module.exports = {
         function query(sql, callback) {
             let con = mysql.createConnection(sqlconnection);
             
-            con.connect(function (err) {
-                if (err) throw err;
-                con.query(sql, callback);
-                con.end()
-            });
+            try {
+                con.connect(function (err) {
+                    if (err) console.log(err);
+                    con.query(sql, callback);
+                    con.end()
+                });
+            } catch (error) {
+                console.log(error)
+                con.end
+            }
         }
         
         function wysi(toparse = ''){
@@ -145,9 +150,10 @@ module.exports = {
 
                 var updateDBQuery = 
 `INSERT INTO playerdata
-VALUES ("${user.name}", "${rank}", "${pp}", "${level}", "${acc}", "${plays}", "${user.scores.ranked}", "${user.scores.total}", "${user.counts[300]}", "${user.counts[100]}", "${user.counts[50]}", "${playtimeHours}")
+VALUES ("${user.name}", "${user.id}", "${rank}", "${pp}", "${level}", "${acc}", "${plays}", "${user.scores.ranked}", "${user.scores.total}", "${user.counts[300]}", "${user.counts[100]}", "${user.counts[50]}", "${playtimeHours}")
 ON DUPLICATE KEY UPDATE 
 username="${user.name}", 
+userid="${user.id}",
 rank="${rank}", 
 pp="${pp}", 
 level="${level}", 
