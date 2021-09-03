@@ -82,6 +82,7 @@ process.on('exit', function() {
 
 process.on('SIGINT', function() {
     client.destroy();
+    process.abort();
 })
 
 function updateCustomStatus() {
