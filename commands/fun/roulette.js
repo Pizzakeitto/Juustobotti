@@ -6,6 +6,7 @@ module.exports = {
         // if no args gtfo
         if(args[0] == null) return message.channel.send('What you rouletting on? (its either a number or a color)')
 
+        var bet = args[0]
         function send(msg) {
             message.channel.send(msg)
         }
@@ -19,21 +20,46 @@ module.exports = {
         blackNumbers.forEach(number => validChoises.push(number))
         validChoises.push('red')
         validChoises.push('black')
-        console.log(validChoises)
+        validChoises.push('green') // same as 0
+        // console.log(validChoises)
 
         var startTimeMS = 0
+        var timerID;
+        console.log(`timerid alkuun on ${timerID}`)
+        var timerStep = 1000
 
-        if(validChoises.includes(args[0].toLowerCase())) {
-            startTimer(timer)
-            send(`OK You put your life on ${args[0]}! Good luck! (Game starts in ${timer})`)
+        if(validChoises.includes(bet.toLowerCase())) {
+            if(timerID == undefined) startTimer()
+            else return message.channel.send('There is already a game going! (you joined tho i think)')
+            console.log(`timerid startin jälkeen on ${timerID}`)
+            send(`OK You put your life on ${bet}! Good luck! (Game doesnt starts in ${timerStep/1000})`)
         }
 
         function randomNumber(){
-            return Math.floor(Math.random() * 36)
+            return Math.floor(Math.random() * 36).toString()
         }
 
-        function startTimer(timer){
+        
+        function startTimer(){
             startTimeMS = new Date().getTime // https://stackoverflow.com/questions/3700200/how-to-find-the-remaining-time-of-a-settimeout
+            timerID = setTimeout(roll, timerStep)
         }
+
+        function roll(){
+            clearTimeout(timerID)
+            var endNumber = randomNumber()
+            var result;
+            if(endNumber == bet || (bet.toLowerCase() == 'green' && endNumber == 0)){
+                result = 'You won a lot of money and spaghetti!!'
+            } else if(bet.toLowerCase() == 'red' && redNumbers.includes(endNumber)){
+                result = 'You won because red !!!'
+            } else if(bet.toLowerCase() == 'black' && blackNumbers.includes(endNumber)){
+                result = 'You won because black !!!'
+            } else {
+                result = 'I think you lost?'
+            }
+            message.channel.send(`The ball landed on ${endNumber}! ` + result)
+        }
+
     }
 }
