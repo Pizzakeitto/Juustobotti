@@ -1,4 +1,5 @@
 # Juustobotti
+## NOTE!! This readme is very much WIP and I'm too lazy to write it properly atm, message me if you wna know more!
 It is a bot for discord that gets data from the osu api and shoves them somewhere. Basically am trying to learn :)
 
 Dependencies:
