@@ -5,15 +5,14 @@ module.exports = {
     description: 'homer',
     execute(message = new Discord.Message, args = [""]) {
         const voicechannel = message.member.voice.channel
-        if (voicechannel) {
-            voicechannel.join().then(connection => {
-                const dispatcher = connection.play(`${__dirname}/../../homer.wav`)
-                dispatcher.on("close", close => {
-                    voicechannel.leave()
-                })
+        if (!voicechannel) return message.reply('You need to join a voice channel first!');
+        
+        voicechannel.join().then(connection => {
+            const dispatcher = connection.play(`${__dirname}/../../homer.mp3`)
+            message.react('✅')
+            dispatcher.on("close", close => {
+                voicechannel.leave()
             })
-          } else {
-            message.reply('You need to join a voice channel first!');
-          }
+        })
     }
 }
