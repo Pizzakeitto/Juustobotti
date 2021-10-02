@@ -71,7 +71,7 @@ module.exports = {
                 dealerSum += 10;
             }
             if (dealerCards.includes(1) && dealerCards.includes(10)) {
-                message.channel.send(`You have ${playerCards.join(", ")}. The dealer got a blackjack = instant lose spaghetti noodle !!!! (and you lost ${isNaN(ogbet) ? ogbet + ' * 3' : ogbet*3})`)
+                message.channel.send(`You have ${playerCards.join(", ")}. The dealer got a blackjack = instant lose spaghetti noodle !!!! (and you lost your ${ogbet})`)
                 return;
             }
             botmsg.edit(`You have ${playerCards.join(", ")}, which is ${playerSum} in total.\nThe dealer has ${dealerCards.join(", ")}, which is ${dealerSum} in total.`)
