@@ -20,6 +20,10 @@ module.exports = {
                 if(res.affectedRows == "1") {
                     message.channel.send("Yup, you're linked aight. Now do `ju!osu`, I dare you")
                     console.log(message.author.tag + " got saved to the database")
+                    con.end()
+                } else {
+                    message.channel.send("Something unexpected happened, I think...")
+                    con.end()
                 }
             })
         })
