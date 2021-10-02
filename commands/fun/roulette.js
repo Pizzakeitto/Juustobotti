@@ -24,29 +24,31 @@ module.exports = {
         // console.log(validChoises)
 
         var startTimeMS = 0
-        var timerID;
-        console.log(`timerid alkuun on ${timerID}`)
-        var timerStep = 1000
+        // process.env.rouletteTimer <- replaces var timerID
+        console.log(`timerid alkuun on ${process.env.rouletteTimer}`)
+        var timerStep = 10000
 
         if(validChoises.includes(bet.toLowerCase())) {
-            if(timerID == undefined) startTimer()
+            if(process.env.rouletteTimer == undefined) startTimer()
             else return message.channel.send('There is already a game going! (you joined tho i think)')
-            console.log(`timerid startin jälkeen on ${timerID}`)
+            console.log(`timerid startin jälkeen on ${process.env.rouletteTimer}`)
             send(`OK You put your life on ${bet}! Good luck! (Game doesnt starts in ${timerStep/1000})`)
         }
 
         function randomNumber(){
-            return Math.floor(Math.random() * 36).toString()
+            return 5
+            // return Math.floor(Math.random() * 36).toString()
         }
 
         
         function startTimer(){
             startTimeMS = new Date().getTime // https://stackoverflow.com/questions/3700200/how-to-find-the-remaining-time-of-a-settimeout
-            timerID = setTimeout(roll, timerStep)
+            process.env.rouletteTimer = setTimeout(roll, timerStep)
         }
 
         function roll(){
-            clearTimeout(timerID)
+            clearTimeout(process.env.rouletteTimer)
+            delete(process.env.rouletteTimer)
             var endNumber = randomNumber()
             var result;
             if(endNumber == bet || (bet.toLowerCase() == 'green' && endNumber == 0)){
