@@ -9,11 +9,12 @@ module.exports = {
 
         const voicechannel = message.member.voice.channel
         if (voicechannel) {
-            // Download yt video to a temp file
+            // Download youtube video to a buffer/stream idk
             let ytvid = ytdl(args[0], {filter: "audioonly"})
 
             // Join the vc
             voicechannel.join().then(connection => {
+                 message.react('✅')
                 // Start playing the stream
                 const dispatcher = connection.play(ytvid)
                 dispatcher.on("close", close => {
