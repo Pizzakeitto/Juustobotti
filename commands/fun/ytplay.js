@@ -14,7 +14,7 @@ module.exports = {
 
             // Join the vc
             voicechannel.join().then(connection => {
-                 message.react('✅')
+                message.react('✅')
                 // Start playing the stream
                 const dispatcher = connection.play(ytvid)
                 dispatcher.on("close", close => {
