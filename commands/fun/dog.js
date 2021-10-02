@@ -13,9 +13,12 @@ module.exports = {
         https.get({
             headers: { 'X-API-KEY': apikey},
             hostname: apiurl,
-            path: `${apipath}?has_breeds=true&mime_types=jpg,png&sub_id=${message.author.username}&limit=1`
+            path: `${apipath}?has_breeds=true&mime_types=jpg,png&limit=1`
         }, (res) => {
-            if(res.statusCode != 200) return message.channel.send('Something went wrong!')
+            if(res.statusCode != 200) return function () {
+                message.channel.send('Something went wrong!')
+                message.channel.stopTyping()
+            }
             let data = ""
             res.on('data', (d) => {
                 data += d
