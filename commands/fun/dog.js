@@ -9,27 +9,32 @@ module.exports = {
         const apikey = process.env.DOGAPIKEY
 
         message.channel.startTyping()
-
-        https.get({
-            headers: { 'X-API-KEY': apikey},
-            hostname: apiurl,
-            path: `${apipath}?has_breeds=true&mime_types=jpg,png&limit=1`
-        }, (res) => {
-            if(res.statusCode != 200) return function () {
-                message.channel.send('Something went wrong!')
-                message.channel.stopTyping()
-            }
-            let data = ""
-            res.on('data', (d) => {
-                data += d
+        try {
+            https.get({
+                headers: { 'X-API-KEY': apikey},
+                hostname: apiurl,
+                path: `${apipath}?has_breeds=true&mime_types=jpg,png&limit=1`
+            }, (res) => {
+                if(res.statusCode != 200) return function () {
+                    message.channel.send('Something went wrong!')
+                    message.channel.stopTyping()
+                }
+                let data = ""
+                res.on('data', (d) => {
+                    data += d
+                })
+    
+                res.on('end', () => {
+                    data = JSON.parse(data)
+                    let dogurl = data[0].url
+                    message.channel.send({files: [dogurl]})
+                    message.channel.stopTyping()
+                })
             })
-
-            res.on('end', () => {
-                data = JSON.parse(data)
-                let dogurl = data[0].url
-                message.channel.send({files: [dogurl]})
-                message.channel.stopTyping()
-            })
-        })
+        } catch (error) {
+            message.channel.send("Something went wrong! (Pls ping Pizzakeitto if you see this)")
+            console.error(error)
+        }
+        
     }
 }
