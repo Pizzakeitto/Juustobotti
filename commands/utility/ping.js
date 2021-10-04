@@ -11,7 +11,7 @@ module.exports = {
 		// Credits for this one goes to https://stackoverflow.com/a/64750764
 		// I steal too much code ¯\_(ツ)_/¯
 		message.channel.send('Loading data').then (async (msg) =>{
-			msg.edit(`🏓Latency is ${msg.createdTimestamp - message.createdTimestamp}ms. API Latency is ${Math.round(message.client.ws.ping)}ms`);
+			msg.edit(`🏓 Latency is ${msg.createdTimestamp - message.createdTimestamp}ms. API Latency is ${Math.round(message.client.ws.ping)}ms`);
 		})
 	},
 };
