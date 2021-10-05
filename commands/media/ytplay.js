@@ -1,7 +1,6 @@
 const Discord = require('discord.js');
 const ytdl = require('ytdl-core')
 const axios = require('axios').default
-const fs = require('fs')
 
 module.exports = {
     name: 'play',
