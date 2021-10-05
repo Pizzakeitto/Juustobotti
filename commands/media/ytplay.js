@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const ytdl = require('ytdl-core')
 const axios = require('axios').default
-const eventEmitter = require('events')
+const fs = require('fs')
 
 module.exports = {
     name: 'play',
@@ -25,7 +25,7 @@ module.exports = {
         async function main() {
             // Put everything here
             if (urlRegex.test(args[0])) {
-                ytvid = ytdl(args[0], {filter: "audioonly"})
+                vidUrl = args[0]
                 isUrl = false
             } else {
                 isUrl = true
@@ -43,7 +43,6 @@ module.exports = {
                 if (res.data.items.length == 0) return message.channel.send('YT said not found?')
                 vidUrl = "https://www.youtube.com/watch?v=" + res.data.items[0].id.videoId
                 console.log(vidUrl)
-                ytvid = ytdl(vidUrl, {filter: "audioonly"})
             }
     
             // Join the vc
@@ -55,17 +54,22 @@ module.exports = {
             }
             await message.react('✅')
             // Start playing the stream
-            const dispatcher = connection.play(ytvid)
-            dispatcher.on("close", close => {
-                // voicechannel.leave()
-            })
+            play(connection)
 
-            dispatcher.on("finish", finish => {
-                process.env.WaitInChannel = setTimeout( function () {
-                    voicechannel.leave()
-                    message.channel.send('Left due to inactivity 💀')
-                }, 30 * 1000 * 60 /* 30 minutes */)
-            })
+            function play (connection) {
+                ytvid = ytdl(vidUrl, {format: "opus"})
+                const dispatcher = connection.play(ytvid)
+                dispatcher.on("finish", () => {
+                    if (message.guild.voice.connection.loop) {
+                        play(connection)
+                    } else {
+                        process.env.WaitInChannel = setTimeout( function () {
+                            voicechannel.leave()
+                            message.channel.send('Left voice due to inactivity 💀')
+                        }, 30 * 1000 * 60 /* 30 minutes */)
+                    }
+                })
+            }
         }
         return
         // Keeping this here just in case
