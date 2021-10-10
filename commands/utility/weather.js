@@ -5,7 +5,8 @@ module.exports = {
     execute(message = new Discord.Message, args = []){
         // Toteutetaas tää käyttäen openweathermap.org
         // https://openweathermap.org/current
-        const fetch = require('node-fetch')
+        const fetch = require('node-fetch').default
+        
         const isoCountries = require('../../isoCountries.json') // Thanks maephisto! https://gist.github.com/maephisto/9228207
 
         if(args.length == 0) return message.channel.send('Anna joku paikka lol, vähintää kaupungin nimi.') // voi myös lisätä 
