@@ -41,6 +41,7 @@ module.exports = {
             // console.log(data)
             let weatherMap = new Map()
             weatherMap.set("location", getCountryName(data.sys.country))
+            weatherMap.set("id", data.id)
             weatherMap.set("city", data.name)
             weatherMap.set("weather", data.weather[0].main)
             weatherMap.set("desc", data.weather[0].description)
@@ -64,7 +65,7 @@ module.exports = {
 
             // ° asteen merkki
             let weatherEmbed = new Discord.MessageEmbed()
-                .setAuthor(`Weather in ${weatherMap.get('city')}, ${weatherMap.get('location')}`, `https://www.countryflags.io/${data.sys.country}/shiny/32.png`)
+                .setAuthor(`Weather in ${weatherMap.get('city')}, ${weatherMap.get('location')}`, `https://www.countryflags.io/${data.sys.country}/shiny/32.png`, `https://openweathermap.org/city/${data.id}`)
                 .setDescription(`It is ${weatherMap.get('weather')} yes yes (${weatherMap.get('desc')})`)
                 .setColor('#00f9f9')
                 .setThumbnail(`${iconendpoint}${data.weather[0].icon}@2x.png`)
