@@ -39,7 +39,7 @@ module.exports = {
         }
         
         function wysi(toparse = ''){
-            return toparse.toString().replace(/(727)|(72,7)|(7,27)/g, str => {
+            return toparse.toString().replace(/(727)|(72,7)|(7,27)|(7\.27)|(72\.7)/g, str => {
                 switch(str){
                     case '727':
                         return '**__727__**'
@@ -47,6 +47,10 @@ module.exports = {
                         return '**__72,7__**'
                     case '7,27':
                         return '**__7,27__**'
+                    case '7.27':
+                        return '**__7.27__**'
+                    case '72.7':
+                        return '**__72.7__**'
                 }
             })
         }
@@ -82,7 +86,7 @@ module.exports = {
                 if (username != null || undefined) {
                     // message.channel.send(`Your osuname is ${username} right? (If not blame Pizzakeitto)`);
                 } else {
-                    return message.channel.send(`You ain't linked bruh`);
+                    return message.channel.send(`You ain't linked bruh, do ju!link username`);
                 }
             } else { username = args[0]; }
     
@@ -127,21 +131,21 @@ module.exports = {
                     .setAuthor(`Profile for ${user.name}`, `https://www.countryflags.io/${user.country}/shiny/32.png`, `https://osu.ppy.sh/users/${user.id}`)
                     .setThumbnail(`http://s.ppy.sh/a/${user.id}`)
                     .addField("- Performance -", 
-                    `**Rank**: ${wysi(rank)}` +
-                    `\n**PP**: ${wysi(pp)}` +
-                    `\n**Level**: ${wysi(level)}` +
-                    `\n**Accuracy**: ${wysi(acc)}` +
-                    `\n**Playcount**: ${wysi(plays)}`, true)
+                    `**Rank**: ${wysi(rank.toString())}` +
+                    `\n**PP**: ${wysi(pp.toString())}` +
+                    `\n**Level**: ${wysi(level.toString())}` +
+                    `\n**Accuracy**: ${wysi(acc.toString())}` +
+                    `\n**Playcount**: ${wysi(plays.toString())}`, true)
     
                     .addField("- Score -", 
-                    `**Ranked score**: ${wysi(rankedScore)}` +
-                    `\n**Total score**: ${wysi(totalScore)}` +
+                    `**Ranked score**: ${wysi(rankedScore.toString())}` +
+                    `\n**Total score**: ${wysi(totalScore.toString())}` +
                     /* `\n**300s**: ${wysi(s300)}` +
                     `\n**100s**: ${wysi(s100)}` +
                     `\n**50s**: ${wysi(s50)}` + */
-                    `\n**SS**: ${wysi(SS)}` +
-                    `\n**S**: ${wysi(S)}` +
-                    `\n**A**: ${wysi(A)}`, true)
+                    `\n**SS**: ${wysi(SS.toString())}` +
+                    `\n**S**: ${wysi(S.toString())}` +
+                    `\n**A**: ${wysi(A.toString())}`, true)
     
                     .setFooter(/*`Joined in ${user.joinDate}\nPlaytime: ${playtimeHours}h || */`ID: ${wysi(user.id)}`)
                     .setTimestamp(user.joinDate);
