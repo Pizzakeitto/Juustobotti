@@ -141,7 +141,7 @@ module.exports = {
                 if (username != null || undefined) {
                     // message.channel.send(`Your osuname is ${username} right? (If not blame Pizzakeitto)`);
                 } else {
-                    return message.channel.send(`You ain't linked bruh (do ju!link <username>)`);
+                    return message.channel.send(`You ain't linked bruh (do ju!link username)`);
                 }
             } else { username = args[0]; }
 
