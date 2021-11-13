@@ -78,24 +78,24 @@ module.exports = {
 
         function getCountryName(countryCode) {
             if (isoCountries.hasOwnProperty(countryCode)) {
-                return isoCountries[countryCode];
+                return isoCountries[countryCode]
             } else {
-                return countryCode;
+                return countryCode
             }
         }
 
         // Basically turha, sama asia ku getCountryName()
         function getCountryCode(countryName) {
             if (isoCountries.hasOwnProperty(countryName)) {
-                return isoCountries[countryName];
+                return isoCountries[countryName]
             } else {
-                return countryName;
+                return countryName
             }
         }
 
         // Kopioitu suoraa netist, https://www.digitalocean.com/community/tutorials/js-capitalizing-strings
         function capitalize(string = "") {
-            return string.trim().toLowerCase().replace(/\w\S*/g, (w) => (w.replace(/^\w/, (c) => c.toUpperCase())));
+            return string.trim().toLowerCase().replace(/\w\S*/g, (w) => (w.replace(/^\w/, (c) => c.toUpperCase())))
         }
     }
 }

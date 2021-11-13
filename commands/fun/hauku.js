@@ -4,11 +4,11 @@ module.exports = {
     description: 'Haukkuu jotain tyyppiä brutaalisti',
     execute(message = new Discord.Message, args = []){
         if( !(message.mentions.members.first()) ){
-            message.reply('Lol kerro ketä haukun');
-            return;
+            message.reply('Lol kerro ketä haukun')
+            return
         }
-        let mentionedUser = message.mentions.members.first();
-        let haukut = ['Oot kakka', 'Hau hau', 'Mau mau'];
+        let mentionedUser = message.mentions.members.first()
+        let haukut = ['Oot kakka', 'Hau hau', 'Mau mau']
         let haukku = haukut[Math.floor(Math.random() * haukut.length)]
 
 

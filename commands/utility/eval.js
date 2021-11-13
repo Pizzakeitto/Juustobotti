@@ -1,4 +1,4 @@
-const Discord = require('discord.js');
+const Discord = require('discord.js')
 
 module.exports = {
     name: 'eval',
@@ -11,8 +11,8 @@ module.exports = {
         if (message.author.id != "246721024102498304") {
             return message.channel.send("Youre not Pizzakeitto (Sorry i prefer leaving this command for me only) ?!?!")
         }
-        const {prefix} = require('../../config.json');
-        var newargs = message.content.slice(prefix.length + 4).trim();
+        const {prefix} = require('../../config.json')
+        let newargs = message.content.slice(prefix.length + 4).trim()
 
         try {
             let evaled = eval(`${newargs}`)
@@ -24,7 +24,7 @@ module.exports = {
                 }
             })
         } catch (error){
-            message.channel.send(`Didnt work: ${error}`);
+            message.channel.send(`Didnt work: ${error}`)
         }
 
     }

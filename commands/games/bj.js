@@ -1,4 +1,4 @@
-const Discord = require('discord.js');
+const Discord = require('discord.js')
 module.exports = {
     name: 'bj',
     description: 'Play a game of blackjack!',
@@ -6,15 +6,17 @@ module.exports = {
     execute(message = new Discord.Message, args = [""]) {
         if(!args[0]) {
             return message.channel.send("You didnt tell your bet!")
-        } else var ogbet = args.join(' ')
+        }
+        let ogbet = args.join(' ')
+        let bet
 
-        if(!isNaN(ogbet)) var bet = ogbet + ' :dollar:'
-        else var bet = ogbet
+        if(!isNaN(ogbet)) bet = ogbet + ' :dollar:'
+        else bet = ogbet
 
         message.channel.send(`You put ${bet} in the game!`)
 
-        var playerCards = []
-        var dealerCards = []
+        let playerCards = []
+        let dealerCards = []
         
         // Card drawing
         playerCards.push(pickCard())
@@ -24,14 +26,14 @@ module.exports = {
         // playerCards.push(10)
         dealerCards.push(pickCard())
 
-        var playerSum = playerCards.reduce((a, b) => a + b, 0)
-        var dealerSum = dealerCards.reduce((a, b) => a + b, 0)
+        let playerSum = playerCards.reduce((a, b) => a + b, 0)
+        let dealerSum = dealerCards.reduce((a, b) => a + b, 0)
         if (playerCards.includes(1) && playerSum + 10 < 21) {
-            playerSum += 10;
+            playerSum += 10
         }
         if (playerCards.includes(1) && playerCards.includes(10)) {
             message.channel.send(`You have ${playerCards.join(", ")}. You got a blackjack = instant win spaghetti noodle !!!! (and you got ${isNaN(ogbet) ? ogbet + ' * 3' : ogbet*3})`)
-            return;
+            return
         }
         message.channel.send(`You have ${playerCards.join(", ")}, which is ${playerSum} in total.\nThe dealer has ${dealerCards}, x.\nWhat's your pro gamer move? Type\nh to hit, and\ns to stand`).then(botmsg => {
             playerPlay(message, botmsg)
@@ -49,10 +51,10 @@ module.exports = {
                     playerCards.push(pickCard())
                     playerSum = playerCards.reduce((a, b) => a + b, 0)
                     if (playerCards.includes(1) && playerSum + 10 < 21) {
-                        playerSum += 10;
+                        playerSum += 10
                     }
                     botmsg.edit(`You have ${playerCards.join(", ")}, which is ${playerSum} in total.\nThe dealer has ${dealerCards}, x.\n${playerSum > 21 ? 'BUST!' : 'nWhat\'s your pro gamer move? Type\nh to hit, and\ns to stand'}`)
-                    if (playerSum > 21) return;
+                    if (playerSum > 21) return
                     playerPlay(message, botmsg)
                 } else if (message.content.toLowerCase() == "s") {
                     // bot plays
@@ -68,17 +70,17 @@ module.exports = {
             dealerCards.push(pickCard())
             dealerSum = dealerCards.reduce((a, b) => a + b, 0)
             if (dealerCards.includes(1) && dealerSum + 10 < 21) {
-                dealerSum += 10;
+                dealerSum += 10
             }
             if (dealerCards.includes(1) && dealerCards.includes(10)) {
                 message.channel.send(`You have ${playerCards.join(", ")}. The dealer got a blackjack = instant lose spaghetti noodle !!!! (and you lost your ${ogbet})`)
-                return;
+                return
             }
             botmsg.edit(`You have ${playerCards.join(", ")}, which is ${playerSum} in total.\nThe dealer has ${dealerCards.join(", ")}, which is ${dealerSum} in total.`)
             if(dealerSum < 17) {
                 setTimeout(function () {
                     dealerPlay(message, botmsg)
-                }, 1000);
+                }, 1000)
             }
             else {
                 setTimeout(function () {

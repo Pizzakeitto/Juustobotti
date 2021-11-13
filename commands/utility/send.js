@@ -16,5 +16,5 @@ module.exports = {
 
         args.shift()
         channel.send(args.join(' '))
-	},
-};
+	}
+}

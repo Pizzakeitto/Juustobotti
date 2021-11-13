@@ -1,4 +1,4 @@
-const Discord = require('discord.js');
+const Discord = require('discord.js')
 
 module.exports = {
     name: 'cooltext',
@@ -18,7 +18,7 @@ module.exports = {
         // Temporarily ignore SSL stuff (not secure this way but idc its just text)
         const agent = new https.Agent({  
             rejectUnauthorized: false
-        });
+        })
         axios.post('https://cooltext.com/PostChange', `LogoID=4&Text=${text}&FontSize=70&Color1_color=%23FF0000&Integer1=15&Boolean1=on&Integer9=0&Integer13=on&Integer12=on&BackgroundColor_color=%23FFFFFF`, {httpsAgent: agent}).then(res => {
             // console.log(res.data)
             let httplocation = res.data.renderLocation.replace('https', 'http')

@@ -32,15 +32,15 @@ module.exports = {
             let metarEmbed = new Discord.MessageEmbed()
                 .setAuthor(`METAR arvo kentälle ${nimi}`)
                 .setColor(`${getColor()}`)
-                .setDescription(metarCode);
+                .setDescription(metarCode)
             
             message.channel.send(metarEmbed)
         })
 
         function getColor() {
-            let r = Math.floor(Math.random() * 255);
-            let g = Math.floor(Math.random() * 255);
-            let b = Math.floor(Math.random() * 255);
+            let r = Math.floor(Math.random() * 255)
+            let g = Math.floor(Math.random() * 255)
+            let b = Math.floor(Math.random() * 255)
 
             return `#${r.toString(16)}${g.toString(16)}${b.toString(16)}`
         }

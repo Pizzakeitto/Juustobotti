@@ -1,4 +1,4 @@
-const Discord = require('discord.js');
+const Discord = require('discord.js')
 
 module.exports = {
     name: 'announce',
@@ -10,8 +10,8 @@ module.exports = {
             return message.channel.send("bruh what do i announce???")
         }
 
-        const {prefix} = require('../../config.json');
-        var msg = message.content.slice(prefix.length + 8).trim();
+        const {prefix} = require('../../config.json')
+        let msg = message.content.slice(prefix.length + 8).trim()
 
         if(message.member.hasPermission('MANAGE_CHANNELS')) {
             message.client.channels.cache.get('733451782587416648').send(msg)

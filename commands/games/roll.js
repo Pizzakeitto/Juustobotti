@@ -3,9 +3,9 @@ module.exports = {
     description: 'get random number yes',
     execute(message, args){
         function getRandomBetween(max) {
-            return Math.random() * (max - 0) + 0;
+            return Math.random() * (max - 0) + 0
         }
-        var number = getRandomBetween(100);
-        message.channel.send(`You got ${Math.floor(number)}`);
+        let number = getRandomBetween(100)
+        message.channel.send(`You got ${Math.floor(number)}`)
     }
 }

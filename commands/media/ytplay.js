@@ -1,4 +1,4 @@
-const Discord = require('discord.js');
+const Discord = require('discord.js')
 // const ytdl = require('ytdl-core')
 const ytdl = require('ytdl-core-discord')
 const axios = require('axios').default

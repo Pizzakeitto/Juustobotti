@@ -1,4 +1,4 @@
-const Discord = require('discord.js');
+const Discord = require('discord.js')
 module.exports = {
     name: 'roulette',
     description: 'Play a game of roulette!',
@@ -6,15 +6,15 @@ module.exports = {
         // if no args gtfo
         if(args[0] == null) return message.channel.send('What you rouletting on? (its either a number or a color)')
 
-        var bet = args[0]
+        let bet = args[0]
         function send(msg) {
             message.channel.send(msg)
         }
 
-        var redNumbers   = ['1', '3', '5', '7', '9', '12', '14', '16', '18', '19', '21', '23', '25', '27', '30', '32', '34', '36']
-        var blackNumbers = ['2', '4', '6', '8', '10', '11', '13', '15', '17', '20', '22', '24', '26', '28', '29', '31', '33', '35']
+        let redNumbers   = ['1', '3', '5', '7', '9', '12', '14', '16', '18', '19', '21', '23', '25', '27', '30', '32', '34', '36']
+        let blackNumbers = ['2', '4', '6', '8', '10', '11', '13', '15', '17', '20', '22', '24', '26', '28', '29', '31', '33', '35']
 
-        var validChoises = []
+        let validChoises = []
         validChoises.push('0')
         redNumbers.forEach(number => validChoises.push(number))
         blackNumbers.forEach(number => validChoises.push(number))
@@ -23,10 +23,10 @@ module.exports = {
         validChoises.push('green') // same as 0
         // console.log(validChoises)
 
-        var startTimeMS = 0
-        // process.env.rouletteTimer <- replaces var timerID
+        let startTimeMS = 0
+        // process.env.rouletteTimer <- replaces let timerID
         console.log(`timerid alkuun on ${process.env.rouletteTimer}`)
-        var timerStep = 10000
+        let timerStep = 10000
 
         if(validChoises.includes(bet.toLowerCase())) {
             if(process.env.rouletteTimer == undefined) startTimer()
@@ -48,8 +48,8 @@ module.exports = {
         function roll(){
             clearTimeout(process.env.rouletteTimer)
             delete(process.env.rouletteTimer)
-            var endNumber = randomNumber()
-            var result;
+            let endNumber = randomNumber()
+            let result
             if(endNumber == bet || (bet.toLowerCase() == 'green' && endNumber == 0)){
                 result = 'You won a lot of money and spaghetti!!'
             } else if(bet.toLowerCase() == 'red' && redNumbers.includes(endNumber)){
