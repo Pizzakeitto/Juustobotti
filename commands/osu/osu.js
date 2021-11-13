@@ -128,7 +128,7 @@ module.exports = {
     
                 userEmbed = new Discord.MessageEmbed()
                     .setColor('#FF00FF')
-                    .setAuthor(`Profile for ${user.name}`, `https://www.countryflags.io/${user.country}/shiny/32.png`, `https://osu.ppy.sh/users/${user.id}`)
+                    .setAuthor(`Profile for ${user.name}`, `https://cdn.jsdelivr.net/gh/hampusborgos/country-flags@main/png100px/${user.country.toLowerCase()}.png` /* had to use https://github.com/hampusborgos/country-flags because `https://www.countryflags.io/${user.country}/shiny/32.png` NOOOOOOO COUNTRYFLAGS.IO IS DOWN!!!! */, `https://osu.ppy.sh/users/${user.id}`)
                     .setThumbnail(`http://s.ppy.sh/a/${user.id}`)
                     .addField("- Performance -", 
                     `**Rank**: ${wysi(rank.toString())}` +
