@@ -86,7 +86,7 @@ process.on('SIGINT', function() {
 })
 
 function updateCustomStatus() {
-    client.user.setActivity('the chat :) Type ju!help for more', {type: 'WATCHING'})
+    client.user.setActivity('the chat :) Type ju!help for more', {type: 'COMPETING'})
 }
 
 client.login(process.env.BOTTOKEN); //Login lol
