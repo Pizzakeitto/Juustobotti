@@ -36,8 +36,7 @@ module.exports = {
         }
 
         function randomNumber(){
-            return 5
-            // return Math.floor(Math.random() * 36).toString()
+            return Math.floor(Math.random() * 36).toString()
         }
 
         
