@@ -16,9 +16,13 @@ module.exports = {
 
         try {
             let evaled = eval(`${newargs}`)
-            if(evaled) {
-                message.channel.send(evaled).catch(err => {})
-            }
+            message.channel.send(evaled).catch(err => {
+                if(err.message == "Cannot send an empty message") message.channel.send("*no output*")
+                else {
+                    console.log(err)
+                    message.channel.send("Something unexpected happened!")
+                }
+            })
         } catch (error){
             message.channel.send(`Didnt work: ${error}`);
         }
