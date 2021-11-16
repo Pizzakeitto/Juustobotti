@@ -19,6 +19,7 @@ module.exports = {
             try {return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
             catch(error) {
                 console.error("Failed formatting the number, maybe user doesnt exist?")
+                return x
             }
         }
 
@@ -39,20 +40,25 @@ module.exports = {
         }
         
         function wysi(toparse = ''){
-            return toparse.toString().replace(/(727)|(72,7)|(7,27)|(7\.27)|(72\.7)/g, str => {
-                switch(str){
-                    case '727':
-                        return '**__727__**'
-                    case '72,7':
-                        return '**__72,7__**'
-                    case '7,27':
-                        return '**__7,27__**'
-                    case '7.27':
-                        return '**__7.27__**'
-                    case '72.7':
-                        return '**__72.7__**'
-                }
-            })
+            try {
+                return toparse.toString().replace(/(727)|(72,7)|(7,27)|(7\.27)|(72\.7)/g, str => {
+                    switch(str){
+                        case '727':
+                            return '**__727__**'
+                        case '72,7':
+                            return '**__72,7__**'
+                        case '7,27':
+                            return '**__7,27__**'
+                        case '7.27':
+                            return '**__7.27__**'
+                        case '72.7':
+                            return '**__72.7__**'
+                    }
+                })
+            } catch (err) {
+                console.log('couldnt check for 727 :(')
+                return toparse
+            }
         }
 
         // console.log(wysi('727 7,27 127,277'))
@@ -95,6 +101,7 @@ module.exports = {
             osuApi.getUser({
                 u: username
             }).then(user => {
+                console.log(user)
                 let rank = user.pp.rank
                 let pp = user.pp.raw            
                 let level = parseFloat(user.level)
@@ -111,41 +118,41 @@ module.exports = {
                 let playtimeHours = Math.floor(user.secondsPlayed/3600)
     
                 // this map is deprecated since i dont think sql can take maps directly.
-                let userData = new Map()
-                userData.set("name", user.name)
-                userData.set("_id", user.id)
-                userData.set("rank", rank)
-                userData.set("pp", pp)
-                userData.set("level", level)
-                userData.set("acc", acc)
-                userData.set("plays", plays)
-                userData.set("rankedScore", rankedScore)
-                userData.set("totalScore", totalScore)
-                userData.set("s300", s300)
-                userData.set("s100", s100)
-                userData.set("s50", s50)
-                userData.set("playtimeHours", playtimeHours)
+                // let userData = new Map()
+                // userData.set("name", user.name)
+                // userData.set("_id", user.id)
+                // userData.set("rank", rank)
+                // userData.set("pp", pp)
+                // userData.set("level", level)
+                // userData.set("acc", acc)
+                // userData.set("plays", plays)
+                // userData.set("rankedScore", rankedScore)
+                // userData.set("totalScore", totalScore)
+                // userData.set("s300", s300)
+                // userData.set("s100", s100)
+                // userData.set("s50", s50)
+                // userData.set("playtimeHours", playtimeHours)
     
                 userEmbed = new Discord.MessageEmbed()
                     .setColor('#FF00FF')
                     .setAuthor(`Profile for ${user.name}`, `https://pizzakeitto.xyz/flags/flags-iso/shiny/32/${user.country}.png` /* thank https://github.com/ebenh/flags, because `https://www.countryflags.io/${user.country}/shiny/32.png` NOOOOOOO COUNTRYFLAGS.IO IS DOWN!!!! */, `https://osu.ppy.sh/users/${user.id}`)
                     .setThumbnail(`http://s.ppy.sh/a/${user.id}`)
                     .addField("- Performance -", 
-                    `**Rank**: ${wysi(rank.toString())}` +
-                    `\n**PP**: ${wysi(pp.toString())}` +
-                    `\n**Level**: ${wysi(level.toString())}` +
-                    `\n**Accuracy**: ${wysi(acc.toString())}` +
-                    `\n**Playcount**: ${wysi(plays.toString())}`, true)
+                    `**Rank**: ${wysi(rank)}` +
+                    `\n**PP**: ${wysi(pp)}` +
+                    `\n**Level**: ${wysi(level)}` +
+                    `\n**Accuracy**: ${wysi(acc)}` +
+                    `\n**Playcount**: ${wysi(plays)}`, true)
     
                     .addField("- Score -", 
-                    `**Ranked score**: ${wysi(rankedScore.toString())}` +
-                    `\n**Total score**: ${wysi(totalScore.toString())}` +
+                    `**Ranked score**: ${wysi(rankedScore)}` +
+                    `\n**Total score**: ${wysi(totalScore)}` +
                     /* `\n**300s**: ${wysi(s300)}` +
                     `\n**100s**: ${wysi(s100)}` +
                     `\n**50s**: ${wysi(s50)}` + */
-                    `\n**SS**: ${wysi(SS.toString())}` +
-                    `\n**S**: ${wysi(S.toString())}` +
-                    `\n**A**: ${wysi(A.toString())}`, true)
+                    `\n**SS**: ${wysi(SS)}` +
+                    `\n**S**: ${wysi(S)}` +
+                    `\n**A**: ${wysi(A)}`, true)
     
                     .setFooter(/*`Joined in ${user.joinDate}\nPlaytime: ${playtimeHours}h || */`ID: ${wysi(user.id)}`)
                     .setTimestamp(user.joinDate)
@@ -176,7 +183,7 @@ playtimehours="${playtimeHours}"`
     
             }).catch(error => {
                 if(error.message == 'Not found'){
-                    message.channel.send("User was not found (or the bot is poopoo)")
+                    message.channel.send(`osu said that user ${username} doesn't exist.`)
                     console.error(error)
                 }
                 else {
