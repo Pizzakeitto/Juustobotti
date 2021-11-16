@@ -154,6 +154,7 @@ module.exports = {
                     u: user.name,
                     m: 0
                 }).then(recent => {
+                    console.log(recent)
                     let a = args[1] ? args[1] : 0
                     if(!recent[a]) throw('Not found')
                     let bmapid =   recent[a].beatmapId
@@ -231,7 +232,7 @@ module.exports = {
                             let objects = Number(bmap.objects.normal) + Number(bmap.objects.slider) + Number(bmap.objects.spinner)
                             let completionMath = `(${counts} / ${objects}) * 100`
                             let completion = eval(completionMath).toFixed(2)
-                            let embed = new Discord.MessageEmbed()
+                            var embed = new Discord.MessageEmbed()
                             .setColor('#FF00FF')
                             .setAuthor(`${bmap.artist} - ${bmap.title} [${bmap.version}]`, `https://a.ppy.sh/${user.id}`, `https://osu.ppy.sh/b/${bmapid}`)
                             .setThumbnail(`https://b.ppy.sh/thumb/${bmap.beatmapSetId}l.jpg`)
