@@ -7,13 +7,9 @@ module.exports = {
         if(!args[0]) {
             return message.channel.send("You didnt tell your bet!")
         }
-        let ogbet = args.join(' ')
-        let bet
+        let bet = args[0]
+        if(isNaN(bet)) return message.channel.send("Your bet has to be a number!")
 
-        if(!isNaN(ogbet)) bet = ogbet + ' :dollar:'
-        else bet = ogbet
-
-        message.channel.send(`You put ${bet} in the game!`)
 
         let playerCards = []
         let dealerCards = []
@@ -28,17 +24,52 @@ module.exports = {
 
         let playerSum = playerCards.reduce((a, b) => a + b, 0)
         let dealerSum = dealerCards.reduce((a, b) => a + b, 0)
-        if (playerCards.includes(1) && playerSum + 10 < 21) {
+        if (playerCards.includes(1) && playerSum + 10 <= 21) {
             playerSum += 10
         }
+
+        const colors = {
+            lose: 0xFF2727,     // red
+            win: 0x27FF27,      // green
+            playing: 0xFF27FF,  // pink
+            standby: 0x6060ff,  // blue
+        }
+
+        let embed = {
+            color: colors.playing,
+            title: 'BLACKJACK',
+            description: `You have bet ${bet} :dollar:`,
+            fields: [
+                {
+                    name: `${message.author.username}`,
+                    value: `**Cards:** ${playerCards.join(", ")}` +
+                    `\n**Total:** ${playerSum}`
+                },
+                {
+                    name: 'The dealer™',
+                    value: `**Cards:** ${dealerCards.join(", ")}, x` +
+                    `\n**Total:** ${dealerSum}`
+
+                },
+            ],
+            footer: {
+                text: 'Type \'h\' to hit and \'s\' to stand!'
+            }
+        }
+        
+        // Check if player got blackjack already
         if (playerCards.includes(1) && playerCards.includes(10)) {
-            message.channel.send(`You have ${playerCards.join(", ")}. You got a blackjack = instant win spaghetti noodle !!!! (and you got ${isNaN(ogbet) ? ogbet + ' * 3' : ogbet*3})`)
+            embed.color = colors.win
+            embed.footer.text = `You got blackjack!`
+            message.channel.send({embed: embed})
+            message.channel.send(`You got blackjack, instant win! ${bet * 3} :dollar: for you, you lucky person`)
             return
         }
-        message.channel.send(`You have ${playerCards.join(", ")}, which is ${playerSum} in total.\nThe dealer has ${dealerCards}, x.\nWhat's your pro gamer move? Type\nh to hit, and\ns to stand`).then(botmsg => {
+        message.channel.send({embed: embed}).then(botmsg => {
             playerPlay(message, botmsg)
         })
         
+        // This is a recursive function, so player keeps playing until bust or stand
         function playerPlay(message = new Discord.Message, botmsg = new Discord.Message) {
             let filter = m => m.author.id === message.author.id
             message.channel.awaitMessages(filter, {
@@ -53,9 +84,18 @@ module.exports = {
                     if (playerCards.includes(1) && playerSum + 10 < 21) {
                         playerSum += 10
                     }
-                    botmsg.edit(`You have ${playerCards.join(", ")}, which is ${playerSum} in total.\nThe dealer has ${dealerCards}, x.\n${playerSum > 21 ? 'BUST!' : 'nWhat\'s your pro gamer move? Type\nh to hit, and\ns to stand'}`)
-                    if (playerSum > 21) return
-                    playerPlay(message, botmsg)
+
+                    embed.fields[0].value = `**Cards:** ${playerCards.join(", ")}` +
+                    `\n**Total:** ${playerSum}`
+
+                    if (playerSum > 21) {
+                        embed.color = colors.lose
+                        embed.footer.text = 'You busted!'
+                        botmsg.edit({embed: embed})
+                    } else {
+                        botmsg.edit({embed: embed})
+                        playerPlay(message, botmsg)
+                    }
                 } else if (message.content.toLowerCase() == "s") {
                     // bot plays
                     dealerPlay(message, botmsg)
@@ -72,11 +112,21 @@ module.exports = {
             if (dealerCards.includes(1) && dealerSum + 10 < 21) {
                 dealerSum += 10
             }
+
             if (dealerCards.includes(1) && dealerCards.includes(10)) {
-                message.channel.send(`You have ${playerCards.join(", ")}. The dealer got a blackjack = instant lose spaghetti noodle !!!! (and you lost your ${ogbet})`)
+                embed.footer.text = 'GAME OVER'
+                embed.color = colors.lose
+                botmsg.edit({embed: embed})
+                message.channel.send(`The dealer got a blackjack and you lost ${bet} :dollar: !`)
                 return
             }
-            botmsg.edit(`You have ${playerCards.join(", ")}, which is ${playerSum} in total.\nThe dealer has ${dealerCards.join(", ")}, which is ${dealerSum} in total.`)
+
+            embed.fields[1].value = `**Cards:** ${dealerCards.join(", ")}` +
+            `\n**Total:** ${dealerSum}`
+            embed.footer.text = 'The dealer is picking cards...'
+            embed.color = colors.standby
+
+            botmsg.edit({embed: embed})
             if(dealerSum < 17) {
                 setTimeout(function () {
                     dealerPlay(message, botmsg)
@@ -85,11 +135,21 @@ module.exports = {
             else {
                 setTimeout(function () {
                     if(playerSum == dealerSum) {
-                        message.channel.send(`It's a draw! (You got your ${bet} back)`)
+                        embed.footer.text = 'Draw!'
+                        botmsg.edit({embed: embed})
+                        message.channel.send(`It's a draw! (You got your ${bet} :dollar: back)`)
                     }
                     else if(playerSum >= dealerSum || dealerSum >= 22) {
-                        message.channel.send(`You won ${isNaN(ogbet) ? ogbet + ' * 2' : ogbet*2} !`)
-                    } else message.channel.send(`Oof you lost ${bet} :(`)
+                        embed.footer.text = 'You win!'
+                        embed.color = colors.win
+                        botmsg.edit({embed: embed})
+                        message.channel.send(`You won ${bet * 2} :dollar: !`)
+                    } else {
+                        embed.footer.text = 'Dealer wins!'
+                        embed.color = colors.lose
+                        botmsg.edit({embed: embed})
+                        message.channel.send(`Oof you lost ${bet} :dollar: :(`)
+                    }
                 }, 500)
             }
         }
