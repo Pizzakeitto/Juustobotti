@@ -38,7 +38,11 @@ module.exports = {
         let fetchUrl = `${endpoint}${args.join()}&units=metric&appid=${apiKey}`
         // console.log(fetchUrl)
         fetch(fetchUrl).then(res => res.json()).then(data => {
-            // console.log(data)
+            console.log(data)
+            if(data.cod == '404') {
+                message.channel.send('Not found! Check for typos or somthing')
+                return
+            }
             let weatherMap = new Map()
             weatherMap.set("location", getCountryName(data.sys.country))
             weatherMap.set("id", data.id)
@@ -65,7 +69,7 @@ module.exports = {
 
             // ° asteen merkki
             let weatherEmbed = new Discord.MessageEmbed()
-                .setAuthor(`Weather in ${weatherMap.get('city')}, ${weatherMap.get('location')}`, `https://www.countryflags.io/${data.sys.country}/shiny/32.png`, `https://openweathermap.org/city/${data.id}`)
+                .setAuthor(`Weather in ${weatherMap.get('city')}, ${weatherMap.get('location')}`, `https://pizzakeitto.xyz/flags/flags-iso/shiny/32/${data.sys.country}.png`, `https://openweathermap.org/city/${data.id}`)
                 .setDescription(`It is ${weatherMap.get('weather')} yes yes (${weatherMap.get('desc')})`)
                 .setColor('#00f9f9')
                 .setThumbnail(`${iconendpoint}${data.weather[0].icon}@2x.png`)
