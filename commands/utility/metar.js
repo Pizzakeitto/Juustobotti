@@ -3,16 +3,16 @@ module.exports = {
     name: 'metar',
     description: 'Metar tiedot',
     execute(message = new Discord.Message, args = []){
-        const fetch = require('node-fetch')
         const xmlparser = require('xml2json')
+        const axios = require('axios').default
 
         if(args.length == 0) {
             return message.channel.send("No arguments!!!!")
         }
 
         async function getData(kenttä) {
-            let kenttäinfo = await fetch(`https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=GetFeature&storedquery_id=fmi::avi::observations::iwxxm&icaocode=${kenttä}`).then(r => r.text()).then(data => data)
-            kenttäinfo = kenttäinfo.replace(/:/g, '_')
+            let kenttäinfo = await axios(`https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=GetFeature&storedquery_id=fmi::avi::observations::iwxxm&icaocode=${kenttä}`)
+            kenttäinfo = kenttäinfo.data.replace(/:/g, '_')
             kenttäinfo = JSON.parse(xmlparser.toJson(kenttäinfo))
             return kenttäinfo
             // console.log(kenttäinfo)

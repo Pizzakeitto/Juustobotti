@@ -5,7 +5,7 @@ module.exports = {
     execute(message = new Discord.Message, args = []){
         // Toteutetaas tää käyttäen openweathermap.org
         // https://openweathermap.org/current
-        const fetch = require('node-fetch').default
+        const axios = require('axios').default
         
         const isoCountries = require('../../isoCountries.json') // Thanks maephisto! https://gist.github.com/maephisto/9228207
 
@@ -36,13 +36,12 @@ module.exports = {
         if(args[0].length == 2) args.reverse()
 
         let fetchUrl = `${endpoint}${args.join()}&units=metric&appid=${apiKey}`
-        // console.log(fetchUrl)
-        fetch(fetchUrl).then(res => res.json()).then(data => {
-            console.log(data)
-            if(data.cod == '404') {
+        axios(fetchUrl).then(res => {
+            if(res.status == '404') {
                 message.channel.send('Not found! Check for typos or somthing')
                 return
             }
+            const data = res.data
             let weatherMap = new Map()
             weatherMap.set("location", getCountryName(data.sys.country))
             weatherMap.set("id", data.id)
