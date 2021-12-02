@@ -13,7 +13,6 @@ module.exports = {
             parseNumeric: false
         })
         const ojsama = require('ojsama')
-        const fetch = require('node-fetch').default
 
         const dbname = 'juustobotdata'
         const {sqlconnection} = require('../../config.json')
@@ -26,14 +25,6 @@ module.exports = {
                 con.query(sql, callback)
                 con.end()
             })
-        }
-
-        async function calculatePP(bmapid) {
-            let parser = new ojsama.parser()
-            console.log("dog doin it")
-            let osufile = ''
-            fetch(`https://osu.ppy.sh/osu/${bmapid}`).then(res => res.text).then(res => osufile = res)
-            console.log(osufile)
         }
 
         // calculatePP(164020)
