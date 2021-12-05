@@ -5,7 +5,7 @@ module.exports = {
     description: 'play a gmae of rock paper scissors',
     execute(message = new Discord.Message, args = []){
         const brain = require('brain.js')
-        
+
         // Initial stats
         let playerPoints = 0
         let botPoints = 0
@@ -15,8 +15,9 @@ module.exports = {
         let botChoise = -1
 
         // the ai
-        const rpsAI = new brain.recurrent.LSTMTimeStep()
-
+        const rpsAI = new brain.recurrent.LSTMTimeStep({
+            hiddenLayers: [25]
+        })
 
         // Randomly generate the initial values for the AI to munch on (random numbers from 1 to 3)
         // 1 = rock
@@ -29,6 +30,7 @@ module.exports = {
 
         // Train the AI using these initial values
         rpsAI.train([randomInputs], {log:false, errorThresh: 0.02, iterations: 500})
+        // console.log(`The options for this ai: ${JSON.stringify(rpsAI.options, null, 2)}`)
         // botChoise = Math.round(rpsAI.run(inputs))
         // botChoise < 0 ? botChoise++ : botChoise
         // botChoise > 3 ? botChoise-- : botChoise
@@ -54,14 +56,14 @@ module.exports = {
         gameEmbed.setColor(0x00f000) // green ish
         gameEmbed.setTitle("Rock Paper Scissors!!!!!")
         gameEmbed.setDescription(`Round ${round} of rock paper scissors with ${message.author.username}! \nThe game will timeout after 2 minutes of inactivity.`)
-        gameEmbed.addField("Your wins:", playerPoints, true)
-        gameEmbed.addField("Bot's wins:", botPoints, true)
-        gameEmbed.addField("** **","** **", false) // blank to set another line
+        gameEmbed.addField("Your wins:", playerPoints.toString(), true)
+        gameEmbed.addField("Bot's wins:", botPoints.toString(), true)
+        gameEmbed.addField("**place**","**holder**", false) // blank to set another line
         gameEmbed.addField("You chose...", numToThing(playerChoise), true)
         gameEmbed.addField("Bot chose...", numToThing(botChoise), true)
         gameEmbed.setFooter("Game about to start... Pick your poison!")
 
-        message.channel.send(gameEmbed).then(async (gameMsg) => {
+        message.channel.send({embeds: [gameEmbed]}).then(async (gameMsg) => {
             let rockEmoji      =    message.client.emojis.cache.get('915328258126528582')
             let paperEmoji     =    message.client.emojis.cache.get('915328929294864494')
             let scissorsEmoji  =    message.client.emojis.cache.get('915329041958043648')
@@ -84,13 +86,13 @@ module.exports = {
             round++
             
             const filter = (reaction, user) => user.id == message.author.id && ['915328258126528582', '915328929294864494', '915329041958043648'].includes(reaction.emoji.id)
-            const reactions = await gameMsg.awaitReactions(filter, {time: 120000, max: 1})
+            const reactions = await gameMsg.awaitReactions({filter, time: 120000, max: 1})
             if(reactions.equals(new Discord.Collection)) {
                 // If no reactions were found from the user, stop the game
                 // This happens only when the waiting has ran out
                 gameEmbed.setColor(0xa00000)
                 gameEmbed.setFooter("The game ended, GG!")
-                gameMsg.edit(gameEmbed)
+                gameMsg.edit({embeds: [gameEmbed]})
                 return
             }
             const reaction = reactions.first()
@@ -99,9 +101,7 @@ module.exports = {
             if (isNaN(input)) return message.channel.send("Some bizzare error occurred!") // If not a number something broke!
 
             botChoise = Math.round(rpsAI.run(inputs)) // predict what the user will pick
-            // these operators are required since sometimes it returns -1 or 4.
-            botChoise < 0 ? botChoise++ : botChoise
-            botChoise > 3 ? botChoise-- : botChoise
+            // console.log(`Predicted ${rpsAI.run(inputs)} with these inputs: ${inputs.join(', ')}`)
 
             botChoise = chooseWinningNumber(botChoise) // choose how to win
 
@@ -120,18 +120,18 @@ module.exports = {
             // edit the embed to display results
             gameEmbed.setDescription(`Round ${round} of rock paper scissors with ${message.author.username}! \nThe game will timeout after 2 minutes of inactivity.`)
             gameEmbed.fields = [] // lazy
-            gameEmbed.addField("Your wins:", playerPoints, true)
-            gameEmbed.addField("Bot's wins:", botPoints, true)
-            gameEmbed.addField("** **","** **", false) // blank to set another line
+            gameEmbed.addField("Your wins:", playerPoints.toString(), true)
+            gameEmbed.addField("Bot's wins:", botPoints.toString(), true)
+            gameEmbed.addField("**place**","**holder**", false) // blank to set another line
             gameEmbed.addField("You chose...", numToThing(playerChoise), true)
             gameEmbed.addField("Bot chose...", numToThing(botChoise), true)
             gameEmbed.setFooter(tie ? "It's a tie! Keep playing?" : botwin ? "Bot won! Keep playing?" : "You won! Keep playing?")
-            gameMsg.edit(gameEmbed)
+            gameMsg.edit({embeds: [gameEmbed]})
 
             // now we can add the input to the list of inputs, and train the AI to make the next guess
             inputs.push(input)
             inputs.shift()
-            rpsAI.train([inputs], {log:false, errorThresh: 0.02, iterations: 500})
+            rpsAI.train([inputs], {log:false, logPeriod: 500, errorThresh: 0.01, iterations: 2000})
             await sleep(500)
 
             // save inputs for later

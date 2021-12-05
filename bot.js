@@ -6,7 +6,20 @@ require('dotenv').config()
 const {prefix} = require('./config.json')
 const fs = require('fs')
 
-const client = new Discord.Client()
+const client = new Discord.Client({
+    intents: ['GUILDS',
+    'GUILD_EMOJIS_AND_STICKERS',
+    'GUILD_INTEGRATIONS',
+    'GUILD_WEBHOOKS',
+    'GUILD_INVITES',
+    'GUILD_VOICE_STATES',
+    'GUILD_MESSAGES',
+    'GUILD_MESSAGE_REACTIONS',
+    'GUILD_MESSAGE_TYPING',
+    'DIRECT_MESSAGES',
+    'DIRECT_MESSAGE_REACTIONS',
+    'DIRECT_MESSAGE_TYPING']
+})
 
 //Read commands from the commands directory
 client.commands = new Discord.Collection()
@@ -31,7 +44,7 @@ client.once('ready', () => {
     // I dont think this needs to be run on an interval
 })
 
-client.on('message', msg => {
+client.on('messageCreate', msg => {
     if (msg.author.bot) return // If the message is sent by a bot, do nothing
     if (msg.mentions.users.has(client.user.id)) {
         msg.channel.send(`Why did you ping me??? Do ${prefix}help to see my commands bruh`)

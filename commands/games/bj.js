@@ -61,18 +61,18 @@ module.exports = {
         if (playerCards.includes(1) && playerCards.includes(10)) {
             embed.color = colors.win
             embed.footer.text = `You got blackjack!`
-            message.channel.send({embed: embed})
+            message.channel.send({embeds: [embed]})
             message.channel.send(`You got blackjack, instant win! ${bet * 3} :dollar: for you, you lucky person`)
             return
         }
-        message.channel.send({embed: embed}).then(botmsg => {
+        message.channel.send({embeds: [embed]}).then(botmsg => {
             playerPlay(message, botmsg)
         })
         
         // This is a recursive function, so player keeps playing until bust or stand
         function playerPlay(message = new Discord.Message, botmsg = new Discord.Message) {
             let filter = m => m.author.id === message.author.id
-            message.channel.awaitMessages(filter, {
+            message.channel.awaitMessages({filter, 
                 max: 1,
                 time: 60000,
                 errors: ['time']
@@ -91,9 +91,9 @@ module.exports = {
                     if (playerSum > 21) {
                         embed.color = colors.lose
                         embed.footer.text = 'You busted!'
-                        botmsg.edit({embed: embed})
+                        botmsg.edit({embeds: [embed]})
                     } else {
-                        botmsg.edit({embed: embed})
+                        botmsg.edit({embeds: [embed]})
                         playerPlay(message, botmsg)
                     }
                 } else if (message.content.toLowerCase() == "s") {
@@ -116,7 +116,7 @@ module.exports = {
             if (dealerCards.includes(1) && dealerCards.includes(10)) {
                 embed.footer.text = 'GAME OVER'
                 embed.color = colors.lose
-                botmsg.edit({embed: embed})
+                botmsg.edit({embeds: [embed]})
                 message.channel.send(`The dealer got a blackjack and you lost ${bet} :dollar: !`)
                 return
             }
@@ -126,7 +126,7 @@ module.exports = {
             embed.footer.text = 'The dealer is picking cards...'
             embed.color = colors.standby
 
-            botmsg.edit({embed: embed})
+            botmsg.edit({embeds: [embed]})
             if(dealerSum < 17) {
                 setTimeout(function () {
                     dealerPlay(message, botmsg)
@@ -136,18 +136,18 @@ module.exports = {
                 setTimeout(function () {
                     if(playerSum == dealerSum) {
                         embed.footer.text = 'Draw!'
-                        botmsg.edit({embed: embed})
+                        botmsg.edit({embeds: [embed]})
                         message.channel.send(`It's a draw! (You got your ${bet} :dollar: back)`)
                     }
                     else if(playerSum >= dealerSum || dealerSum >= 22) {
                         embed.footer.text = 'You win!'
                         embed.color = colors.win
-                        botmsg.edit({embed: embed})
+                        botmsg.edit({embeds: [embed]})
                         message.channel.send(`You won ${bet * 2} :dollar: !`)
                     } else {
                         embed.footer.text = 'Dealer wins!'
                         embed.color = colors.lose
-                        botmsg.edit({embed: embed})
+                        botmsg.edit({embeds: [embed]})
                         message.channel.send(`Oof you lost ${bet} :dollar: :(`)
                     }
                 }, 500)

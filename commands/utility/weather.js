@@ -76,7 +76,7 @@ module.exports = {
                 .setFooter('Data from https://openweathermap.org/current')
                 .setTimestamp(Date(data.dt))
 
-            message.channel.send(weatherEmbed)
+            message.channel.send({embeds: [weatherEmbed]})
         })
 
         function getCountryName(countryCode) {

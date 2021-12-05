@@ -157,7 +157,7 @@ module.exports = {
                     .setFooter(/*`Joined in ${user.joinDate}\nPlaytime: ${playtimeHours}h || */`ID: ${wysi(user.id)}`)
                     .setTimestamp(user.joinDate)
                 
-                message.channel.send('Nice profile bro!', {embed: userEmbed})
+                message.channel.send({content: 'Nice profile bro!', embeds: [userEmbed]})
 
                 let updateDBQuery = 
 `INSERT INTO playerdata

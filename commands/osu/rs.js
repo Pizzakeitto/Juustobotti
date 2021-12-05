@@ -232,7 +232,7 @@ module.exports = {
                         } catch (e) {
                             console.log(e)
                         } finally {
-                            message.channel.send(`Recent score for ${user.name} <t:${date.getTime()/1000}:R>`, {embed: embed})
+                            message.channel.send({content: `Recent score for ${user.name} <t:${date.getTime()/1000}:R>`, embeds: [embed]})
                         }
                     })
                     

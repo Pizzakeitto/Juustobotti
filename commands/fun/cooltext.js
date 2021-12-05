@@ -12,7 +12,7 @@ module.exports = {
             return message.channel.send("What text do I generate? lol")
         }
 
-        message.channel.startTyping()
+        message.channel.sendTyping()
 
         let text = args.join(' ').toString()
         // Temporarily ignore SSL stuff (not secure this way but idc its just text)
@@ -25,8 +25,6 @@ module.exports = {
             message.channel.send({
                 files: [`${httplocation}`]
             })
-            message.channel.stopTyping()
         })
-        message.channel.stopTyping()
     }
 }

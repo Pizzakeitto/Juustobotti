@@ -8,7 +8,7 @@ module.exports = {
         const apipath = "/v1/images/search"
         const apikey = process.env.DOGAPIKEY
 
-        message.channel.startTyping()
+        message.channel.sendTyping()
         try {
             https.get({
                 headers: { 'X-API-KEY': apikey},
@@ -17,7 +17,6 @@ module.exports = {
             }, (res) => {
                 if(res.statusCode != 200) return function () {
                     message.channel.send('Something went wrong!')
-                    message.channel.stopTyping()
                 }
                 let data = ""
                 res.on('data', (d) => {
@@ -28,7 +27,6 @@ module.exports = {
                     data = JSON.parse(data)
                     let dogurl = data[0].url
                     message.channel.send({files: [dogurl]})
-                    message.channel.stopTyping()
                 })
             })
         } catch (error) {

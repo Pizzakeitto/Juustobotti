@@ -34,7 +34,7 @@ module.exports = {
                 .setColor(`${getColor()}`)
                 .setDescription(metarCode)
             
-            message.channel.send(metarEmbed)
+            message.channel.send({embeds: [metarEmbed]})
         })
 
         function getColor() {

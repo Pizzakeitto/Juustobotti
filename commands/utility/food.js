@@ -32,14 +32,14 @@ module.exports = {
                 console.log("found todays food!")
                 todaysFood = day
             }
-            if(day.date == tomorrow) {
-                console.log("Found tomorrows food!")
-                tomorrowsFood = day
-            }
+            // if(day.date == tomorrow) {
+            //     console.log("Found tomorrows food!")
+            //     tomorrowsFood = day
+            // }
         }
 
         if (todaysFood == undefined) return message.channel.send("Couldn't find todays food for some reason!")
-        if (tomorrowsFood == undefined) return message.channel.send("Couldn't find tomorrows food!")
+        // if (tomorrowsFood == undefined) return message.channel.send("Couldn't find tomorrows food!")
 
         // console.log(todaysFood)
         // console.log(tomorrowsFood)
@@ -49,11 +49,11 @@ module.exports = {
             let option = `**${foodThing.name.replace(/[\.*]/g, "")}:** ${foodThing.menuItems.map(menuItem => `${menuItem.name.replace(/[\.*]/g, "")}`).join(", ")}`
             todaysOptions.push(option)
         })
-        let tomorrowsOptions = []
-        tomorrowsFood.mealoptions.map(foodThing => {
-            let option = `**${foodThing.name.replace(/[\.*]/g, "")}:** ${foodThing.menuItems.map(menuItem => `${menuItem.name.replace(/[\.*]/g, "")}`).join(", ")}`
-            tomorrowsOptions.push(option)
-        })
+        // let tomorrowsOptions = []
+        // tomorrowsFood.mealoptions.map(foodThing => {
+        //     let option = `**${foodThing.name.replace(/[\.*]/g, "")}:** ${foodThing.menuItems.map(menuItem => `${menuItem.name.replace(/[\.*]/g, "")}`).join(", ")}`
+        //     tomorrowsOptions.push(option)
+        // })
 
         const foodEmbed = new Discord.MessageEmbed
         foodEmbed.setTitle("Ruoka")
@@ -61,7 +61,7 @@ module.exports = {
         foodEmbed.setColor(0x007000)
 
         foodEmbed.addField("Todays food:", todaysOptions.join("\n"))
-        foodEmbed.addField("Tomorrows food:", tomorrowsOptions.join("\n")) // !!! make this be the next possible food day instead!!!
+        // foodEmbed.addField("Tomorrows food:", tomorrowsOptions.join("\n")) // !!! make this be the next possible food day instead!!!
 
         message.channel.send(foodEmbed)
     }
