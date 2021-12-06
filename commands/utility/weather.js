@@ -9,7 +9,7 @@ module.exports = {
         
         const isoCountries = require('../../isoCountries.json') // Thanks maephisto! https://gist.github.com/maephisto/9228207
 
-        if(args.length == 0) return message.channel.send('Anna joku paikka lol, vähintää kaupungin nimi.') // voi myös lisätä 
+        if(args.length == 0) return message.channel.send('Please specify what do you wanna know the weather of?') // voi myös lisätä 
 
         let apiKey = process.env.OPENWEATHERKEY
         let endpoint = 'https://api.openweathermap.org/data/2.5/weather?q='
