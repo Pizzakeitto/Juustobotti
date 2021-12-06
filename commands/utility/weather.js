@@ -36,7 +36,7 @@ module.exports = {
         if(args[0].length == 2) args.reverse()
 
         let fetchUrl = `${endpoint}${args.join()}&units=metric&appid=${apiKey}`
-        axios(fetchUrl).then(res => {
+        axios.get(fetchUrl).then(res => {
             if(res.status == '404') {
                 message.channel.send('Not found! Check for typos or somthing')
                 return
@@ -77,6 +77,9 @@ module.exports = {
                 .setTimestamp(Date(data.dt))
 
             message.channel.send({embeds: [weatherEmbed]})
+        }).catch(err => {
+            message.channel.send(`Cant do, ${err.response.data.cod} ${err.response.data.message}`)
+            console.log(err.message)
         })
 
         function getCountryName(countryCode) {
