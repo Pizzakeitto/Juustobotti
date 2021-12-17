@@ -17,12 +17,13 @@ module.exports = {
             con.query(`INSERT INTO players (discordid, osuname) VALUES ('${message.author.id}', '${args[0]}') ON DUPLICATE KEY UPDATE osuname='${args[0]}'`, (err, res, fields) => {
                 if(err) return console.error(err)
 
-                if(res.affectedRows == "1") {
+                if(res.affectedRows >= 1) {
                     message.channel.send("Yup, you're linked aight. Now do `ju!osu`, I dare you")
                     console.log(message.author.tag + " got saved to the database")
                     con.end()
                 } else {
-                    message.channel.send("Something unexpected happened, I think...")
+                    message.channel.send("Something unexpected happened, I think... You can try doing `ju!osu` anyway")
+                    console.log(res)
                     con.end()
                 }
             })
