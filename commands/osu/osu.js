@@ -115,7 +115,7 @@ module.exports = {
                 let SS = numberWithCommas(parseInt(user.counts.SS) + parseInt(user.counts.SSH))
                 let S = numberWithCommas(parseInt(user.counts.S) + parseInt(user.counts.SH))
                 let A = numberWithCommas(user.counts.A)
-                let playtimeHours = Math.floor(user.secondsPlayed/3600)
+                let playtimeHours = (user.secondsPlayed/3600).toFixed(1)
     
                 // this map is deprecated since i dont think sql can take maps directly.
                 // let userData = new Map()
@@ -154,7 +154,7 @@ module.exports = {
                     `\n**S**: ${wysi(S)}` +
                     `\n**A**: ${wysi(A)}`, true)
     
-                    .setFooter(/*`Joined in ${user.joinDate}\nPlaytime: ${playtimeHours}h || */`ID: ${wysi(user.id)}`)
+                    .setFooter(/*`Joined in ${user.joinDate}\nPlaytime: ${playtimeHours}h || */`ID: ${wysi(user.id)} • Playtime: ${playtimeHours}h`)
                     .setTimestamp(user.joinDate)
                 
                 message.channel.send({content: 'Nice profile bro!', embeds: [userEmbed]})
