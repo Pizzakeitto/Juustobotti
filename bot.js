@@ -6,6 +6,8 @@ require('dotenv').config()
 const {prefix} = require('./config.json')
 const fs = require('fs')
 
+global.cooldownArray = []
+
 const client = new Discord.Client({
     intents: ['GUILDS',
     'GUILD_EMOJIS_AND_STICKERS',
@@ -49,6 +51,21 @@ client.on('messageCreate', msg => {
     if (msg.mentions.users.has(client.user.id)) {
         msg.channel.send(`Why did you ping me??? Do ${prefix}help to see my commands bruh`)
     }
+    let annoy = false
+    if (msg.content.toLowerCase().includes('linux') && annoy){
+        if (global.cooldownArray.includes(msg.author.id)) return;
+        global.cooldownArray.push(msg.author.id)
+        setTimeout(() => {
+            global.cooldownArray = global.cooldownArray.filter(function(value, index, arr) {
+                return value != msg.author.id
+            })
+        }, 120000);
+        msg.channel.sendTyping()
+        setTimeout(() => {
+            msg.channel.send(`I'd just like to interject for a moment. What you're referring to as Linux, is in fact, GNU/Linux, or as I've recently taken to calling it, GNU plus Linux. Linux is not an operating system unto itself, but rather another free component of a fully functioning GNU system made useful by the GNU corelibs, shell utilities and vital system components comprising a full OS as defined by POSIX.`)
+        }, 5000);
+    }
+
     if (!msg.content.toLowerCase().startsWith(prefix)) return //If the message doesn't start with the prefix, do nothing
 
     if (!msg.guild) return msg.channel.send("Cant do in dms lol")
