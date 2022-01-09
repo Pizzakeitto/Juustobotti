@@ -3,7 +3,7 @@ const Discord = require('discord.js')
 module.exports = {
     name: 'food',
     description: 'get todays and tomorrows food!',
-    async execute(message = new Discord.Message, args = [""]) {
+    async execute(message = Discord.Message.prototype, args = [""]) {
         const axios = require('axios').default
 
         const url = "https://fi.jamix.cloud/apps/menuservice/rest/haku/menu/97325/7?lang=fi" // food api for signe
@@ -41,14 +41,12 @@ module.exports = {
         if (todaysFood == undefined) return message.channel.send("Couldn't find todays food for some reason!")
         // if (tomorrowsFood == undefined) return message.channel.send("Couldn't find tomorrows food!")
 
-        // console.log(todaysFood)
-        // console.log(tomorrowsFood)
-
         let todaysOptions = []
         todaysFood.mealoptions.map(foodThing => {
             let option = `**${foodThing.name.replace(/[\.*]/g, "")}:** ${foodThing.menuItems.map(menuItem => `${menuItem.name.replace(/[\.*]/g, "")}`).join(", ")}`
             todaysOptions.push(option)
         })
+
         // let tomorrowsOptions = []
         // tomorrowsFood.mealoptions.map(foodThing => {
         //     let option = `**${foodThing.name.replace(/[\.*]/g, "")}:** ${foodThing.menuItems.map(menuItem => `${menuItem.name.replace(/[\.*]/g, "")}`).join(", ")}`
@@ -63,6 +61,9 @@ module.exports = {
         foodEmbed.addField("Todays food:", todaysOptions.join("\n"))
         // foodEmbed.addField("Tomorrows food:", tomorrowsOptions.join("\n")) // !!! make this be the next possible food day instead!!!
 
-        message.channel.send(foodEmbed)
+        message.channel.send({embeds: [foodEmbed]}).catch(err => {
+            console.log(err)
+            message.channel.send("no food")
+        })
     }
 }
