@@ -12,7 +12,6 @@ module.exports = {
             completeScores: false,
             parseNumeric: false
         })
-        const ojsama = require('ojsama')
 
         const dbname = 'juustobotdata'
         const {sqlconnection} = require('../../config.json')
