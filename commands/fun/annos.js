@@ -39,8 +39,30 @@ module.exports = {
             { SE: 60  }, // Seleeni
 
             // Misc
-            {}
+            // {}
         ]
+        const ravitsemusNimet = {
+            VITA: "A-vitamiinia",
+            VITD: "D-vitamiinia",
+            VITE: "E-vitamiinia",
+            THIA: "tiamiinia",
+            RIBF: "riboflaviinia",
+            NIA: "niasiinia",
+            VITPYRID: "B6-vitamiinia",
+            FOL: "folaattia",
+            VITB12: "B12-vitamiinia",
+            VITC: "C-vitamiinia",
+
+            CA: "kalsiumia",
+            P: "fosforia",
+            K: "kaliumia",
+            MG: "magnesiumia",
+            FE: "rautaa",
+            ZN: "sinkkiä",
+            CU: "kuparia",
+            ID: "jodia",
+            SE: "seleeniä"
+        }
         
         getRandomFood().then(food => {
             food.FOODNAME = capitalize(food.FOODNAME)
@@ -53,6 +75,20 @@ module.exports = {
             components = components[0]
             delete components.FOODID
             console.log(components)
+            var randomRecomendation = ravitsemussuositukset[randomNumber(ravitsemussuositukset.length)]
+            var randomComponent = Object.keys(randomRecomendation)[0]
+
+            var dose = (Object.values(randomRecomendation)[0] / components[Object.keys(randomRecomendation)[0]] * 100).toFixed(1)
+            console.log(`dose = ${dose}`)
+            if (dose / 1000 >= 1) {
+                dose /= 1000
+                dose = dose.toFixed(1)
+                dose += "kg"
+            } else {
+                dose += "g"
+            }
+            
+            message.channel.send(`Saat päivän annoksen ${ravitsemusNimet[randomComponent]} syömällä ${dose} ${food.FOODNAME}.`)
         })
 
         /**
@@ -128,6 +164,12 @@ module.exports = {
         // Kopioitu suoraa netist, https://www.digitalocean.com/community/tutorials/js-capitalizing-strings
         function capitalize(string = "") {
             return string.trim().toLowerCase().replace(/\w\S*/g, (w) => (w.replace(/^\w/, (c) => c.toUpperCase())))
+        }
+
+        // https://stackoverflow.com/a/15106541
+        var randomProperty = function (obj) {
+            var keys = Object.keys(obj)
+            return obj[keys[ keys.length * Math.random() << 0]]
         }
 
         // console.log(`${typeof food} is food\nand foods value is ${JSON.stringify(food, null, 2)}`)
