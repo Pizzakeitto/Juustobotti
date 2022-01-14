@@ -1,13 +1,11 @@
 const Discord = require('discord.js')
 const axios = require('axios').default
-const fuckxml = require('xml2json')
-const fs = require('fs')
-const getWolfieClient = require('wolfie').default
 
 module.exports = {
 	name: 'wolfram',
 	description: 'Get some useful information from Wolfram|Alpha',
 	execute(message = Discord.Message.prototype, args = []) {
+        if(args.length == 0) return message.channel.send("What do you want me to look up?")
         const embed = new Discord.MessageEmbed
         embed.setAuthor({name: "Wolfram|Alpha"})
         // The icon for the thumbnail originally found from https://www.wolframalpha.com/about, there is the svg file for the fancy icon
