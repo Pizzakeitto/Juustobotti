@@ -3,6 +3,7 @@ const Discord = require('discord.js')
 module.exports = {
     name: 'eval',
     description: 'Evaluate code from mesag',
+    hidden: true,
     execute(message = new Discord.Message, args = []){
         if(!args){
             return message.channel.send("Nothing to eval!")
