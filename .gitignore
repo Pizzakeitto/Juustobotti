@@ -137,3 +137,6 @@ dist
 .replit
 config.json
 start.sh
+# need this to not push finelis data (even tho its open sauce)
+finelidata
+finelidata/*
