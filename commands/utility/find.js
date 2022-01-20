@@ -4,6 +4,7 @@ module.exports = {
     description: "Finds discord user by id",
     hidden: true,
     async execute(message = new Discord.Message, args = []) {
+        if (message.author.id != "246721024102498304") return message.channel.send("no")
         const user = await message.client.users.fetch(`${args[0]}`)
             .catch(err => {
                 message.channel.send(`Error: ${err.message}`)
