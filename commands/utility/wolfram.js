@@ -4,6 +4,8 @@ const axios = require('axios').default
 module.exports = {
 	name: 'wolfram',
 	description: 'Get some useful information from Wolfram|Alpha',
+    detailedDescription: 'This command uses Wolfram|Alpha to get some interesting knowledge for you.',
+    usage: 'wolfram [question or something like that]',
 	execute(message = Discord.Message.prototype, args = []) {
         if(args.length == 0) return message.channel.send("What do you want me to look up?")
         const embed = new Discord.MessageEmbed

@@ -4,6 +4,7 @@ const axios = require('axios').default
 module.exports = {
     name: 'fact',
     description: 'Gives a random fact, from Wikipedia.org, the free encyclepedia.',
+    detailedDescription: 'This command fills your brain with useful information! [Sauce](https://en.wikipedia.org/w/api.php)',
     async execute(message = Discord.Message.prototype, args = []){
         const apiurl = "https://en.wikipedia.org/w/api.php"
         

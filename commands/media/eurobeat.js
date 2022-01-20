@@ -2,7 +2,8 @@ const Discord = require('discord.js')
 
 module.exports = {
     name: 'eurobeat',
-    description: 'eurobeat',
+    description: 'eurobeat (broken!!!!!)!',
+    detailedDescription: 'plays eurobeat in the voice channel youre in, broken command atm!!!!!!!!!!!!!!!!',
     execute(message = new Discord.Message, args = [""]) {
         const voicechannel = message.member.voice.channel
         if (!voicechannel) return message.reply('You need to join a voice channel first!')

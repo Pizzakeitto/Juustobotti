@@ -2,9 +2,11 @@ const Discord = require('discord.js')
 module.exports = {
     name: 'roulette',
     description: 'Play a game of roulette!',
+    detailedDescription: 'You can feed your crippling gambling addiction by using this command.',
+    usage: 'roulette [your guess]',
     execute(message = new Discord.Message, args = [""]) {
         // if no args gtfo
-        if(args[0] == null) return message.channel.send('What you rouletting on? (its either a number or a color)')
+        if(args.length == 0) return message.channel.send('What you rouletting on? (its either a number or a color)')
 
         let bet = args[0]
         function send(msg) {
@@ -33,7 +35,7 @@ module.exports = {
             else return message.channel.send('There is already a game going! (you joined tho i think)')
             console.log(`timerid startin jälkeen on ${process.env.rouletteTimer}`)
             send(`OK You put your life on ${bet}! Good luck! (Game doesnt starts in ${timerStep/1000})`)
-        }
+        } else message.channel.send(`Not a valid choice.`)
 
         function randomNumber(){
             return Math.floor(Math.random() * 36).toString()

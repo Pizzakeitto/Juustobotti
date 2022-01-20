@@ -1,7 +1,8 @@
 module.exports = {
     name: 'osu',
     description: 'Gets user info',
-    usage: '[user]',
+    detailedDescription: 'Get info about someone on osu! If you link your account (using ju!link) you don\'t have to type your username to get your profile.',
+    usage: 'osu <user>',
     execute(message, args){
         const Discord = require('discord.js')
         const mysql = require('mysql')

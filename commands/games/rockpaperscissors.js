@@ -2,7 +2,8 @@ const Discord = require('discord.js')
 
 module.exports = {
     name: 'rps',
-    description: 'play a gmae of rock paper scissors',
+    description: 'Rock Paper Scissors',
+    detailedDescription: 'Play a game of Rock Paper Scissors against an AI that learns from the way you play! Try playing in a pattern and watch it absolutely destroy you. The AI used here is Brain.js because its one of the easiest to learn',
     execute(message = new Discord.Message, args = []){
         const brain = require('brain.js')
 

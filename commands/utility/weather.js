@@ -1,7 +1,9 @@
 const Discord = require('discord.js')
 module.exports = {
     name: 'weather',
-    description: 'Antaa säätiedot määrittämästä paikasta',
+    description: 'Get the weather of some place',
+    detailedDescription: 'You wna know the weather? Now you can without looking outside!',
+    usage: `weather [some place]`,
     execute(message = new Discord.Message, args = []){
         // Toteutetaas tää käyttäen openweathermap.org
         // https://openweathermap.org/current

@@ -2,6 +2,8 @@ const Discord = require('discord.js')
 module.exports = {
     name: 'bj',
     description: 'Play a game of blackjack!',
+    detailedDescription: 'You can feed your crippling gambling addiction by using this command. Bets do nothing atm :pensive:',
+    usage: 'bj [bet]',
     // For intellisense purposes i need the new Discord.Message n stuff :)
     execute(message = new Discord.Message, args = [""]) {
         if(!args[0]) {

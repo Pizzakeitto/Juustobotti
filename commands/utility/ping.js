@@ -2,7 +2,8 @@ const Discord = require('discord.js')
 
 module.exports = {
 	name: 'ping',
-	description: 'Ping!',
+	description: 'Pong!',
+	detailedDescription: 'Gets message goaround time and the latency of the Discord API.',
 	execute(message = new Discord.Message, args = []) {
         // let ping = Date.now() - message.createdTimestamp + " ms" // how i did it before
         // message.channel.send("Bot's ping is `" + `${Date.now() - message.createdTimestamp}` + " ms`")

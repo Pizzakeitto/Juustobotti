@@ -3,7 +3,8 @@ const Discord = require('discord.js')
 module.exports = {
     name: 'cooltext',
     description: 'Generates some cool text!',
-    usage: '',
+    detailedDescription: 'You can generate some cool looking text with this command 😎 This uses [cooltext.com](https://cooltext.com/)\'s "Burning text generator".',
+    usage: 'cooltext [any text]',
     execute(message = new Discord.Message, args = []){
         const https = require('https')
         const axios = require('axios').default // The "default" is for intellisense and stuff

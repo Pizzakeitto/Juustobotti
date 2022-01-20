@@ -1,6 +1,7 @@
 module.exports = {
     name: 'roll',
     description: 'get random number yes',
+    detailedDescription: 'YEEHAW RANDOM NUMBER GENERATOR!!!!!!!!!!',
     execute(message, args){
         function getRandomBetween(max) {
             return Math.random() * (max - 0) + 0

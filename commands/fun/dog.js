@@ -1,7 +1,8 @@
 const Discord = require('discord.js')
 module.exports = {
     name: 'dog',
-    description: 'doggo',
+    description: 'dog',
+    detailedDescription: 'Get a random dog picture for your dog needs! [Sauce](https://thedogapi.com/)',
     execute(message = new Discord.Message, args = []){
         const https = require('https')
         const apiurl = "api.thedogapi.com"

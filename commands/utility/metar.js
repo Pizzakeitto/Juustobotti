@@ -1,7 +1,7 @@
 const Discord = require('discord.js')
 module.exports = {
     name: 'metar',
-    description: 'Metar tiedot',
+    description: 'Get metar data from some airport',
     execute(message = new Discord.Message, args = []){
         const xmlparser = require('xml2json')
         const axios = require('axios').default

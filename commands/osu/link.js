@@ -1,6 +1,8 @@
 module.exports = {
     name: 'link',
     description: 'Links your discord name with your osu! name',
+    detailedDescription: 'You can save your osu!username for me to rember so you dont have to type your username for every osu related command!',
+    usage: 'link [osu!username]',
     execute(message, args){
         if(args[0] == null || undefined){
             return message.channel.send("No arguments given!")

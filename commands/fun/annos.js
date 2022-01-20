@@ -11,6 +11,7 @@ const fs = require('fs')
 module.exports = {
     name: 'annos',
     description: 'Päivän annos, tieteellisesti',
+    detailedDescription: 'Kertoo mitä pitäisi syödä ja miten paljon että saa päivän annoksen jotain ainetta. Datan lähde on [Fineli](https://fineli.fi/fineli/fi/avoin-data)',
     execute(message = Discord.Message.prototype, args = [""]) {
         // ravitsemussuositukset isona listana, 18-30v miehet
         // yksiköt vaihtelevat koska näin tekevät myös datassa???????
