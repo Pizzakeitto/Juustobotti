@@ -24,7 +24,11 @@ module.exports = {
             }
         })
         .catch((err) => {
-            embed.addField("Response: ", err.response.data)
+            if(err.response.data == "No short answer available") {
+                embed.addField("Response: ", `${err.response.data}. However, you can try to find info by clicking [here](https://www.wolframalpha.com/input/?i=${args.join("%20")})`)
+            } else {
+                embed.addField("Response: ", err.response.data)
+            }
             console.log(err.message)
         })
         .finally(() => {
