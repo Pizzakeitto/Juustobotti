@@ -31,7 +31,7 @@ module.exports = {
             // Kivennäisaineet
             { CA: 800 }, // Kalsium
             { P:  600 }, // Fosfori
-            { K:  3.5 }, // Kalium
+            { K:  3500 }, // Kalium (mg)
             { MG: 350 }, // Magnesium
             { FE: 9   }, // Rauta
             { ZN: 9   }, // Sinkki
@@ -163,8 +163,9 @@ module.exports = {
         }
 
         // Kopioitu suoraa netist, https://www.digitalocean.com/community/tutorials/js-capitalizing-strings
+        // Pieni muutos et tää osaa öökköset
         function capitalize(string = "") {
-            return string.trim().toLowerCase().replace(/\w\S*/g, (w) => (w.replace(/^\w/, (c) => c.toUpperCase())))
+            return string.trim().toLowerCase().replace(/å?ä?ö?\w\S*/g, (w) => (w.replace(/^\w/, (c) => c.toUpperCase())))
         }
 
         // https://stackoverflow.com/a/15106541
