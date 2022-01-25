@@ -2,7 +2,7 @@ const Discord = require('discord.js')
 
 module.exports = {
     name: 'food',
-    description: 'get todays and tomorrows food!',
+    description: 'get todays food!',
     async execute(message = Discord.Message.prototype, args = [""]) {
         const axios = require('axios').default
 
