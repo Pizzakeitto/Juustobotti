@@ -225,7 +225,7 @@ module.exports = {
                             let completion = eval(completionMath).toFixed(2)
                             var embed = new Discord.MessageEmbed()
                             .setColor('#FF00FF')
-                            .setAuthor(`${bmap.artist} - ${bmap.title} [${bmap.version}]`, `https://a.ppy.sh/${user.id}`, `https://osu.ppy.sh/b/${bmapid}`)
+                            .setAuthor(`${bmap.artist} - ${bmap.title} [${bmap.version}] | ${Number(bmap.difficulty.rating).toFixed(2)}⭐`, `https://a.ppy.sh/${user.id}`, `https://osu.ppy.sh/b/${bmapid}`)
                             .setThumbnail(`https://b.ppy.sh/thumb/${bmap.beatmapSetId}l.jpg`)
                             .setDescription(`▸ ${rank} ▸ ${mods} ▸ ${acc}%\n▸ ${score} ▸ ${combo}/${bmap.maxCombo} ▸ [${s300}/${s100}/${s50}/${smiss}]`)
                             .setFooter(`${ss} • ${completion}% completion`)
