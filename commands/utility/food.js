@@ -13,15 +13,16 @@ module.exports = {
         const menus = data.menuTypes[0].menus[0]
         let now = new Date()
 
-        let today = now.toISOString().split("-")
+        let today = new Date(now.toLocaleString('en-US', { timeZone: "Europe/Helsinki" }))
+        today = today.toISOString().split("-")
         today.push( today.pop().split("T").shift() )
-        today = today.join("") // returns 20211202 as of writing this code
+        today = today.join("") // returns 20220214 as of writing this code
 
-        let tomorrow = new Date(now)
+        let tomorrow = new Date(now.toLocaleString('en-US', { timeZone: "Europe/Helsinki" }))
         tomorrow.setDate(tomorrow.getDate() + 1)
         tomorrow = tomorrow.toISOString().split("-")
         tomorrow.push( tomorrow.pop().split("T").shift() )
-        tomorrow = tomorrow.join("") // returns 20211203 as of writing this code
+        tomorrow = tomorrow.join("") // returns 20220215 as of writing this code
 
         // console.log(`today is ${today} and tomorrow is ${tomorrow}`) // "today is 20211202 and tomorrow is 20211203"
 
