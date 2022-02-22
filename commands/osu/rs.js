@@ -46,10 +46,10 @@ module.exports = {
             })
         }
 
-        let getRecentBeatmap = async function (bmapid) {
+        async function getRecentBeatmap (bmapid, mods){
             let beatmap
             try {
-                let beatmaps = await osuApi.getBeatmaps({b:bmapid})
+                let beatmaps = await osuApi.getBeatmaps({b:bmapid, mods: mods})
                 if (beatmaps) {
                     beatmap = beatmaps[0]
                 }
@@ -216,10 +216,11 @@ module.exports = {
                     // console.log(`${month} ${day} ${year} ${hour} ${minute} ${second}`)
     
                     let bmap
-                    getRecentBeatmap(bmapid).then((beatmap) => {
+                    getRecentBeatmap(bmapid, recent[a].raw_mods).then((beatmap) => {
                         bmap = beatmap
                     }).finally( () => {
-                        try {
+                        console.log(bmap)
+			try {
                             let objects = Number(bmap.objects.normal) + Number(bmap.objects.slider) + Number(bmap.objects.spinner)
                             let completionMath = `(${counts} / ${objects}) * 100`
                             let completion = eval(completionMath).toFixed(2)
