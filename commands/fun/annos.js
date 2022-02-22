@@ -74,13 +74,27 @@ module.exports = {
                 return val.FOODID == foodid
             })
             components = components[0]
-            delete components.FOODID
-            console.log(components)
+            if(components.FOODID) delete components.FOODID
+            // console.log(components)
             var randomRecomendation = ravitsemussuositukset[randomNumber(ravitsemussuositukset.length)]
             var randomComponent = Object.keys(randomRecomendation)[0]
 
             var dose = (Object.values(randomRecomendation)[0] / components[Object.keys(randomRecomendation)[0]] * 100).toFixed(1)
             console.log(`dose = ${dose}`)
+            let n = 0 // used here to avoid infinite loop
+            // For some reason NaN is a string here and i have no idea why... (So is Infinity but seems to work without "".)
+            while(dose == Infinity || dose == "NaN" ) {
+                console.log("Dose was infinity/NaN, retrying...")
+                randomRecomendation = ravitsemussuositukset[randomNumber(ravitsemussuositukset.length)]
+                randomComponent = Object.keys(randomRecomendation)[0]
+                dose = (Object.values(randomRecomendation)[0] / components[Object.keys(randomRecomendation)[0]] * 100).toFixed(1)
+                console.log(`dose = ${dose}`)
+                n++
+                if(n >= 25) {
+                    console.log("epic fail") // This shouldn't happen i think?
+                    break
+                }
+            }
             if (dose / 1000 >= 1) {
                 dose /= 1000
                 dose = dose.toFixed(1)
