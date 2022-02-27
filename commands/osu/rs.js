@@ -234,10 +234,10 @@ module.exports = {
                             let completion = eval(completionMath).toFixed(2)
                             var embed = new Discord.MessageEmbed()
                             .setColor('#FF00FF')
-                            .setAuthor(`${bmap.artist} - ${bmap.title} [${bmap.version}] | ${Number(bmap.difficulty.rating).toFixed(2)}⭐`, `https://a.ppy.sh/${user.id}`, `https://osu.ppy.sh/b/${bmapid}`)
+                            .setAuthor({ name: `${bmap.artist} - ${bmap.title} [${bmap.version}] | ${Number(bmap.difficulty.rating).toFixed(2)}⭐`, url: `https://osu.ppy.sh/b/${bmapid}`, iconURL: `https://a.ppy.sh/${user.id}` })
                             .setThumbnail(`https://b.ppy.sh/thumb/${bmap.beatmapSetId}l.jpg`)
                             .setDescription(`▸ ${rank} ▸ ${mods} ▸ ${acc}%\n▸ ${numberWithCommas(score)} ▸ ${combo}/${bmap.maxCombo} ▸ [${s300}/${s100}/${s50}/${smiss}]`)
-                            .setFooter(`${ss} • ${completion}% completion`)
+                            .setFooter({text: `${ss} • ${completion}% completion`})
                         } catch (e) {
                             console.log(e)
                         } finally {
