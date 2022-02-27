@@ -7,6 +7,7 @@ const {prefix} = require('./config.json')
 const fs = require('fs')
 
 global.cooldownArray = []
+global.definitionCooldownArray = []
 
 const client = new Discord.Client({
     intents: ['GUILDS',
@@ -49,7 +50,8 @@ client.once('ready', () => {
 client.on('messageCreate', msg => {
     if (msg.author.bot) return // If the message is sent by a bot, do nothing
     if (msg.mentions.users.has(client.user.id)) {
-        msg.channel.send(`Why did you ping me??? Do ${prefix}help to see my commands bruh`)
+        // msg.channel.send(`Why did you ping me??? Do ${prefix}help to see my commands bruh`)
+	// Disabled because ppl get angry lol
     }
     let annoy = false
     if (msg.content.toLowerCase().includes('linux') && annoy){
