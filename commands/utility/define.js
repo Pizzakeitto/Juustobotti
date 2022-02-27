@@ -30,52 +30,61 @@ module.exports = {
         let testRegex = /["'\\]/g
         if (testRegex.test(stuffToDefine)) return message.channel.send("Sorry, you can't ask that! Check `ju!help define` to see what characters aren't allowed.")
         
-        // Lets ask the AI what this means
-        // Set typing status to indicate that the AI is thinking
-        message.channel.sendTyping()
-        axios.post(endpoint, {
-            "prompt": `Define "${stuffToDefine}"\n`,
-            "temperature": 0.1,
-            "max_tokens": 100,
-            "top_p": 1,
-            "frequency_penalty": 0,
-            "presence_penalty": 0
-        },
-        { headers: headers } ).then((res) => {
-            if (res.status != 200) {
-                message.channel.send("Something did the epic fail!")
-                console.log(res)
-                return
-            }
-            // We got a response, cool, lets check it for any sensitive stuff
-            const definition = res.data.choices[0].text.trim()
-            console.log(`Got definition for ${stuffToDefine}: ${definition}`)
+        // Functions to make life easier i guess
+        async function define(something) {
+            const res = await axios.post(endpoint, {
+                "prompt": `Define "${something}"\n`,
+                "temperature": 0.1,
+                "max_tokens": 100,
+                "top_p": 1,
+                "frequency_penalty": 0,
+                "presence_penalty": 0
+            },
+            { headers: headers } )
+            return res.data.choices[0].text.trim()
+        }
 
-            // Lets shove the thing through OpenAI's content filter
-            // https://beta.openai.com/docs/engines/content-filter
-            axios.post(filterEndpoint, {
-                "prompt": `<|endoftext|>${definition}\n--\nLabel:`,
+        async function contentFilter(something) {
+            const res = await axios.post(filterEndpoint, {
+                "prompt": `<|endoftext|>${something}\n--\nLabel:`,
                 "temperature": 0,
                 "max_tokens": 1,
                 "top_p": 0,
                 "logprobs": 10
-            }, { headers: headers } ).then((filterRes) => {
-                // I know this .then stack looks horrible but its 4:57 am so i dont care
+            }, { headers: headers } )
+            return res.data.choices[0].text.trim()
+        }
 
-                // 0 = safe
-                // 1 = may contain political stuff
-                // 2 = not safe DO NOT USE
-                if (filterRes.data.choices[0].text == "2") return message.channel.send("The thing youre asking to be defined cannot be defined, please send your cringe to google or something >:(\n(for legal reasons this is a bad joke)")
-                let warning;
-                if (filterRes.data.choices[0].text == "1") warning = "⚠️ THIS MAY BE POLITICAL OR OTHERWISE CONTREVERSAL! TAKE THIS WITH A GRAIN OF SALT! ⚠️"
+        // I yeet everything here because async is nice
+        main()
+        async function main() {
+            let warning
+            message.channel.sendTyping()
+            // Check the question just in case
+            // 0 = safe
+            // 1 = may contain political stuff
+            // 2 = not safe DO NOT USE
+            const preFilter = await contentFilter(stuffToDefine)
+            if (preFilter == "2") return message.channel.send("The thing youre asking to be defined cannot be defined, please send your cringe to google or something >:(\n(for legal reasons this is a bad joke)")
+            if (preFilter == "1") warning = "⚠️ THIS MAY BE POLITICAL OR OTHERWISE CONTREVERSAL! TAKE THIS WITH A GRAIN OF SALT! ⚠️"
+            
+            // If the question is safe, do the defining
+            const definition = await define(stuffToDefine)
+            console.log(`Got definition for ${stuffToDefine}: ${definition}`)
 
-                const embed = new Discord.MessageEmbed()
-                if (warning != undefined) embed.setTitle(warning)
-                embed.setAuthor({ name: `Definition of ${stuffToDefine}` })
-                embed.setDescription(`${definition}\n\nProvided by [OpenAI's](https://openai.com) Babbage engine.`)
-                embed.setColor('#00f000')
-                message.channel.send({embeds: [embed]})
-            })
-        })
+            // Second content filter pass
+            // I know repeating code bad cry about it
+            const secondFilter = await contentFilter(definition)
+            if (secondFilter == "2") return message.channel.send("The thing youre asking to be defined cannot be defined, please send your cringe to google or something >:(\n(for legal reasons this is a bad joke)")
+            if (secondFilter == "1") warning = "⚠️ THIS MAY BE POLITICAL OR OTHERWISE CONTREVERSAL! TAKE THIS WITH A GRAIN OF SALT! ⚠️"
+
+            // If everything is good, send it
+            const embed = new Discord.MessageEmbed()
+            if (warning != undefined) embed.setTitle(warning)
+            embed.setAuthor({ name: `Definition of ${stuffToDefine}` })
+            embed.setDescription(`${definition}\n\nProvided by [OpenAI's](https://openai.com) Babbage engine.`)
+            embed.setColor('#00f000')
+            message.channel.send({embeds: [embed]})
+        }
     }
 }
