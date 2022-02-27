@@ -92,7 +92,7 @@ module.exports = {
 
             audioPlayer.play(resource)
             message.react('✅')
-            if(message.guild.me.voice.channel.loop == false | message.guild.me.voice.channel.loop == undefined) message.channel.send(`Now playing: \n\n${vidUrl}`)
+            message.channel.send(`Now playing: \n\n${vidUrl}`)
             const subscription = connection.subscribe(audioPlayer)
         }
         
