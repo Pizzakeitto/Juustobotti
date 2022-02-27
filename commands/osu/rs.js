@@ -27,6 +27,14 @@ module.exports = {
             })
         }
 
+        function numberWithCommas(x) {
+            try {return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+            catch(error) {
+                console.error("Failed formatting the number, maybe user doesnt exist?")
+                return x
+            }
+        }
+
         // calculatePP(164020)
         
         let getOsuUsername = (id) => {
@@ -220,7 +228,7 @@ module.exports = {
                         bmap = beatmap
                     }).finally( () => {
                         console.log(bmap)
-			try {
+			            try {
                             let objects = Number(bmap.objects.normal) + Number(bmap.objects.slider) + Number(bmap.objects.spinner)
                             let completionMath = `(${counts} / ${objects}) * 100`
                             let completion = eval(completionMath).toFixed(2)
@@ -228,7 +236,7 @@ module.exports = {
                             .setColor('#FF00FF')
                             .setAuthor(`${bmap.artist} - ${bmap.title} [${bmap.version}] | ${Number(bmap.difficulty.rating).toFixed(2)}⭐`, `https://a.ppy.sh/${user.id}`, `https://osu.ppy.sh/b/${bmapid}`)
                             .setThumbnail(`https://b.ppy.sh/thumb/${bmap.beatmapSetId}l.jpg`)
-                            .setDescription(`▸ ${rank} ▸ ${mods} ▸ ${acc}%\n▸ ${score} ▸ ${combo}/${bmap.maxCombo} ▸ [${s300}/${s100}/${s50}/${smiss}]`)
+                            .setDescription(`▸ ${rank} ▸ ${mods} ▸ ${acc}%\n▸ ${numberWithCommas(score)} ▸ ${combo}/${bmap.maxCombo} ▸ [${s300}/${s100}/${s50}/${smiss}]`)
                             .setFooter(`${ss} • ${completion}% completion`)
                         } catch (e) {
                             console.log(e)
