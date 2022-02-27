@@ -106,8 +106,7 @@ module.exports = {
             
             if(args[0] == "en") {
                 message.channel.sendTyping()
-                // Translated by IBM Cloud https://cloud.ibm.com/catalog/services/language-translator AINAKI KUNHA NORDEA HERÄIS VITTU
-                // https://cloud.ibm.com/registration/
+                // Translation provided by OpenAI
                 axios.post('https://api.openai.com/v1/engines/text-davinci-001/completions', {
                     "prompt": `Translate this from Finnish to English\n\nSaat päivän annoksen ${ravitsemusNimet[randomComponent]} syömällä ${dose} ${food.FOODNAME}.\n\n`,
                     "temperature": 0.3,
