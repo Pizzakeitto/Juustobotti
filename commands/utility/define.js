@@ -14,7 +14,11 @@ module.exports = {
         }
 
         // Ratelimit to 10s
-        if (global.definitionCooldownArray.includes(message.author.id)) return message.react("🛑")
+        if (global.definitionCooldownArray.includes(message.author.id)) {
+            message.react("<:lidl:909735974421037076>")
+            message.react("<:woo:910168102078124052>")
+            return
+        }
         global.definitionCooldownArray.push(message.author.id)
         setTimeout(() => {
             global.definitionCooldownArray = global.definitionCooldownArray.filter(function(value, index, arr) {
@@ -65,7 +69,7 @@ module.exports = {
             // 1 = may contain political stuff
             // 2 = not safe DO NOT USE
             const preFilter = await contentFilter(stuffToDefine)
-            if (preFilter == "2") return message.channel.send("The thing youre asking to be defined cannot be defined, please send your cringe to google or something >:(\n(for legal reasons this is a bad joke)")
+            if (preFilter == "2") return message.channel.send("The thing youre asking to be defined has been detected by the AI's content filter. Try something else.")
             if (preFilter == "1") warning = "⚠️ THIS MAY BE POLITICAL OR OTHERWISE CONTREVERSAL! TAKE THIS WITH A GRAIN OF SALT! ⚠️"
             
             // If the question is safe, do the defining
@@ -75,7 +79,7 @@ module.exports = {
             // Second content filter pass
             // I know repeating code bad cry about it
             const secondFilter = await contentFilter(definition)
-            if (secondFilter == "2") return message.channel.send("The thing youre asking to be defined cannot be defined, please send your cringe to google or something >:(\n(for legal reasons this is a bad joke)")
+            if (secondFilter == "2") return message.channel.send("The thing youre asking to be defined has been detected by the AI's content filter. Try something else.")
             if (secondFilter == "1") warning = "⚠️ THIS MAY BE POLITICAL OR OTHERWISE CONTREVERSAL! TAKE THIS WITH A GRAIN OF SALT! ⚠️"
 
             // If everything is good, send it
