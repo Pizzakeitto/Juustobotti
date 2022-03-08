@@ -38,7 +38,7 @@ module.exports = {
         async function define(something) {
             const res = await axios.post(endpoint, {
                 "prompt": `Define "${something}"\n`,
-                "temperature": 0.1,
+                "temperature": 0.05,
                 "max_tokens": 100,
                 "top_p": 1,
                 "frequency_penalty": 0,
