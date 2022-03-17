@@ -104,7 +104,7 @@ module.exports = {
                 dose += "g"
             }
             
-            if(!args[0]) message.channel.send(`Saat päivän annoksen ${ravitsemusNimet[randomComponent]} syömällä ${dose} ${food.FOODNAME}.`)
+            if(!args[0]) return message.channel.send(`Saat päivän annoksen ${ravitsemusNimet[randomComponent]} syömällä ${dose} ${food.FOODNAME}.`)
 
             if(Object.getOwnPropertyNames(translate.languages).includes(args[0].toLowerCase())) {
                 message.channel.sendTyping()
