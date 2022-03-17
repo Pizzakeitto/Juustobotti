@@ -7,7 +7,7 @@
 const Discord = require('discord.js')
 const parser = require('@fast-csv/parse')
 const fs = require('fs')
-const axios = require('axios').default
+const translate = require('translate-google')
 
 module.exports = {
     name: 'annos',
@@ -104,28 +104,23 @@ module.exports = {
                 dose += "g"
             }
             
-            if(args[0] == "en") {
+            if(!args[0]) message.channel.send(`Saat päivän annoksen ${ravitsemusNimet[randomComponent]} syömällä ${dose} ${food.FOODNAME}.`)
+
+            if(Object.getOwnPropertyNames(translate.languages).includes(args[0].toLowerCase())) {
                 message.channel.sendTyping()
-                // Translation provided by OpenAI
-                axios.post('https://api.openai.com/v1/engines/text-davinci-001/completions', {
-                    "prompt": `Translate this from Finnish to English\n\nSaat päivän annoksen ${ravitsemusNimet[randomComponent]} syömällä ${dose} ${food.FOODNAME}.\n\n`,
-                    "temperature": 0.3,
-                    "max_tokens": 100,
-                    "top_p": 1,
-                    "frequency_penalty": 0,
-                    "presence_penalty": 0
-                }, 
-                {
-                    headers: {
-                        "Content-Type": "application/json", 
-                        "Authorization": `Bearer ${process.env.OPENAIKEY}`
-                }
-                }).then((res) => {
-                    message.channel.send(res.data.choices[0].text.trim())
-                    console.log(`The thing got back with ${res.status} and data:`)
-                    console.log(res.data)
+                translate(`Saat päivän annoksen ${ravitsemusNimet[randomComponent]} syömällä ${dose} ${food.FOODNAME}.`, {from: 'fi', to: args[0].toLowerCase()})
+                .then(res => {
+                    // console.log(res)
+                    message.channel.send(res)
                 })
-            } else message.channel.send(`Saat päivän annoksen ${ravitsemusNimet[randomComponent]} syömällä ${dose} ${food.FOODNAME}.`)
+                .catch(err => {
+                    message.channel.send("Something unexpected happened!")
+                    console.log(err)
+                })
+                
+            } else {
+                message.channel.send("That aint a language! Look here to find all the supported languages: <https://cloud.google.com/translate/docs/languages>")
+            }
         })
 
         /**
