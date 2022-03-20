@@ -33,34 +33,37 @@ module.exports = {
                 console.log("found todays food!")
                 todaysFood = day
             }
-            // if(day.date == tomorrow) {
-            //     console.log("Found tomorrows food!")
-            //     tomorrowsFood = day
-            // }
+            if(day.date == tomorrow) {
+                console.log("Found tomorrows food!")
+                tomorrowsFood = day
+            }
         }
 
-        if (todaysFood == undefined) return message.channel.send("Couldn't find todays food for some reason!")
-        // if (tomorrowsFood == undefined) return message.channel.send("Couldn't find tomorrows food!")
-
         let todaysOptions = []
-        todaysFood.mealoptions.map(foodThing => {
-            let option = `**${foodThing.name.replace(/[\.*]/g, "")}:** ${foodThing.menuItems.map(menuItem => `${menuItem.name.replace(/[\.*]/g, "")}`).join(", ")}`
-            todaysOptions.push(option)
-        })
+        if(todaysFood != undefined) {
+            todaysFood.mealoptions.map(foodThing => {
+                let option = `**${foodThing.name.replace(/[\.*]/g, "")}:** ${foodThing.menuItems.map(menuItem => `${menuItem.name.replace(/[\.*]/g, "")}`).join(", ")}`
+                todaysOptions.push(option)
+            })
+        }
 
-        // let tomorrowsOptions = []
-        // tomorrowsFood.mealoptions.map(foodThing => {
-        //     let option = `**${foodThing.name.replace(/[\.*]/g, "")}:** ${foodThing.menuItems.map(menuItem => `${menuItem.name.replace(/[\.*]/g, "")}`).join(", ")}`
-        //     tomorrowsOptions.push(option)
-        // })
+
+        let tomorrowsOptions = []
+        if(tomorrowsFood != undefined) {
+            tomorrowsFood.mealoptions.map(foodThing => {
+                let option = `**${foodThing.name.replace(/[\.*]/g, "")}:** ${foodThing.menuItems.map(menuItem => `${menuItem.name.replace(/[\.*]/g, "")}`).join(", ")}`
+                tomorrowsOptions.push(option)
+            })
+        }
 
         const foodEmbed = new Discord.MessageEmbed
         foodEmbed.setTitle("Ruoka")
         foodEmbed.setDescription("Signessä!!!")
         foodEmbed.setColor(0x007000)
 
-        foodEmbed.addField("Todays food:", todaysOptions.join("\n"))
-        // foodEmbed.addField("Tomorrows food:", tomorrowsOptions.join("\n")) // !!! make this be the next possible food day instead!!!
+        if(todaysFood != undefined) foodEmbed.addField("Todays food:", todaysOptions.join("\n"))
+        if(tomorrowsFood != undefined) foodEmbed.addField("Tomorrows food:", tomorrowsOptions.join("\n")) // !!! make this be the next possible food day instead!!!
+        if(todaysFood == undefined && tomorrowsFood == undefined) foodEmbed.addField("There is no food.", "Stay home.")
 
         message.channel.send({embeds: [foodEmbed]}).catch(err => {
             console.log(err)
