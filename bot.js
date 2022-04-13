@@ -9,6 +9,8 @@ const fs = require('fs')
 global.cooldownArray = []
 global.definitionCooldownArray = []
 
+const maintenancemode = true
+
 const client = new Discord.Client({
     intents: ['GUILDS',
     'GUILD_EMOJIS_AND_STICKERS',
@@ -47,7 +49,26 @@ client.once('ready', () => {
     // I dont think this needs to be run on an interval
 })
 
+// Temporary message collecting
+var keybspam = fs.readFileSync("keyboardspam.txt")
 client.on('messageCreate', msg => {
+    if(msg.channelId != 931632287622267031) return
+    keybspam += msg.content + "\n"
+})
+var prevkeybspam = keybspam
+var writeInterval = setInterval(() => {
+    if(keybspam == prevkeybspam) {
+        return
+    }
+    prevkeybspam = keybspam
+    fs.writeFile("keyboardspam.txt", keybspam, 'utf-8', (err) => {
+        if (err) return console.log("An error hapened: " + err)
+        console.log("Wrote spam to file")
+    })
+}, 1000);
+
+client.on('messageCreate', msg => {
+    if (maintenancemode && msg.author.id != 246721024102498304) return
     if (msg.author.bot) return // If the message is sent by a bot, do nothing
     if (msg.mentions.users.has(client.user.id)) {
         // msg.channel.send(`Why did you ping me??? Do ${prefix}help to see my commands bruh`)
@@ -118,7 +139,10 @@ process.on('SIGINT', function() {
 })
 
 function updateCustomStatus() {
-    client.user.setActivity('the chat :) Type ju!help for more', {type: 'COMPETING'})
+    if (maintenancemode) {
+        client.user.setStatus("dnd")
+        client.user.setActivity('my creator suck at coding! (Down for maintenance)', {type: 'WATCHING'})
+    } else client.user.setActivity('the chat :) Type ju!help for more', {type: 'COMPETING'})
 }
 
 client.login(process.env.BOTTOKEN) //Login lol
