@@ -7,7 +7,7 @@ module.exports = {
     execute(message = Discord.Message.prototype, args = [""]){
         const { v2, auth } = require('osu-api-extended')
         const { wysi, getosuUsername } = require('../../utils/osuUtils')
-        const { numberWithSpaces } = require('../../utils/numUtils')
+        const { numberWithCommas } = require('../../utils/numUtils')
         const { OSUCLIENTID, OSUCLIENTSECRET } = process.env
 
         let shortmode = false
@@ -36,21 +36,21 @@ module.exports = {
             const name = profile.username
             const id = profile.id
             const playtime = (profile.statistics.play_time / 3600).toFixed(1) // From seconds to hours
-            const rank = wysi(numberWithSpaces(profile.statistics.global_rank))
+            const rank = wysi(numberWithCommas(profile.statistics.global_rank))
             const pp = wysi(profile.statistics.pp)
             const level = `${profile.statistics.level.current} (${profile.statistics.level.progress}%)`
             const acc = wysi(profile.statistics.hit_accuracy.toFixed(2))
-            const playcount = wysi(numberWithSpaces(profile.statistics.play_count))
+            const playcount = wysi(numberWithCommas(profile.statistics.play_count))
             
-            const rankedScore = wysi(numberWithSpaces(profile.statistics.ranked_score))
-            const totalScore = wysi(numberWithSpaces(profile.statistics.total_score))
+            const rankedScore = wysi(numberWithCommas(profile.statistics.ranked_score))
+            const totalScore = wysi(numberWithCommas(profile.statistics.total_score))
             const SS = wysi(profile.statistics.grade_counts.ss + profile.statistics.grade_counts.ssh)
             const S = wysi(profile.statistics.grade_counts.s + profile.statistics.grade_counts.sh)
             const A = wysi(profile.statistics.grade_counts.a)
 
             const embed = new Discord.MessageEmbed
             // These things are the same for both embed types
-            embed.setColor('#FF00FF')
+            embed.setColor('#FF66AA') // osu
             embed.setAuthor({name: `Profile for ${name}`, iconURL: `https://pizzakeitto.xyz/flags/flags-iso/shiny/32/${profile.country_code}.png` /* thank https://github.com/ebenh/flags */, url: `https://osu.ppy.sh/users/${id}`})
             embed.setThumbnail(`http://s.ppy.sh/a/${id}`)
             if (shortmode) {
@@ -58,9 +58,8 @@ module.exports = {
                 embed.setDescription(
                     `▸ **Rank:** ${rank}\n` +
                     `▸ **PP:** ${pp}\n` +
-                    `▸ **Accuracy:** ${acc}\n` +
+                    `▸ **Accuracy:** ${acc}%\n` +
                     `▸ **Playcount:** ${playcount}\n` 
-                    
                 )
                 .setFooter({text: `Playtime: ${wysi(playtime)}h`})
                 .setTimestamp(profile.join_date)
@@ -69,7 +68,7 @@ module.exports = {
                 `**Rank**: ${rank}` +
                 `\n**PP**: ${pp}` +
                 `\n**Level**: ${level}` +
-                `\n**Accuracy**: ${acc}` +
+                `\n**Accuracy**: ${acc}%` +
                 `\n**Playcount**: ${playcount}`, true)
 
                 .addField("- Score -", 
