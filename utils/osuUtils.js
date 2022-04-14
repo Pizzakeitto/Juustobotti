@@ -3,7 +3,7 @@ exports.getosuUsername = (a) => getosuUsername(a)
 
 function wysi(toparse = ''){
     try {
-        return toparse.toString().replace(/(727)|(72,7)|(7,27)|(7\.27)|(72\.7)/g, str => {
+        return toparse.toString().replace(/(727)|(72,7)|(7,27)|(7\.27)|(72\.7)|(72 7)|(7 27)/g, str => {
             switch(str){
                 case '727':
                     return '**__727__**'
@@ -15,6 +15,10 @@ function wysi(toparse = ''){
                     return '**__7.27__**'
                 case '72.7':
                     return '**__72.7__**'
+                case '72 7':
+                    return '**__72 7__**'
+                case '7 27':
+                    return '**__7 27__**'
             }
         })
     } catch (err) {
