@@ -6,7 +6,7 @@ module.exports = {
     usage: 'osu [-s] <user>',
     execute(message = Discord.Message.prototype, args = [""]){
         const { v2, auth } = require('osu-api-extended')
-        const { wysi, getosuUsername } = require('../../utils/osuUtils')
+        const { wysi, getosuUser } = require('../../utils/osuUtils')
         const { numberWithCommas } = require('../../utils/numUtils')
         const { OSUCLIENTID, OSUCLIENTSECRET } = process.env
 
@@ -20,7 +20,7 @@ module.exports = {
         // First lets check if there is any user specified, so we can check the database just in case we need
         if (args.length == 0) {
             // check db
-            getosuUsername(message.author.id).then(username => osuProfil(username))
+            getosuUser(message.author.id).then(username => osuProfil(username))
         } else osuProfil(args.join(' '))
 
         async function osuProfil(username = "") {
