@@ -15,6 +15,7 @@
     "jimp": "^0.16.1",
     "libsodium-wrappers": "^0.7.9",
     "mariadb": "^3.0.0",
+    "node-danser": "^1.0.0",
     "node-osu": "^2.2.1",
     "osu-api-extended": "^2.1.4",
     "translate-google": "^1.5.0",
