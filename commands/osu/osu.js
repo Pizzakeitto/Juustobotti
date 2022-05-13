@@ -21,6 +21,12 @@ module.exports = {
         if (args.length == 0) {
             // check db
             getosuUser(message.author.id).then(username => osuProfil(username))
+            .catch(err => {
+                if(err == "Not in database!") return message.channel.send("Sorry I dont know who you are. Do `ju!link <your osu name>` to link your Discord with your osu account.")
+                // else
+                message.channel.send('Something unexpected happened!')
+                console.log(err)
+            })
         } else osuProfil(args.join(' '))
 
         async function osuProfil(username = "") {
