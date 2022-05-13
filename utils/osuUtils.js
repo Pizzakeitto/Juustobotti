@@ -51,6 +51,8 @@ async function getosuUser(id, returnId = false) {
     const response = await con.query("SELECT osuname, osuid FROM players WHERE discordid = " + id)
     con.end()
 
+    if(!response[0]) throw "Not in database!"
+
     if (returnId) {
         return {
             name: response[0].osuname,
