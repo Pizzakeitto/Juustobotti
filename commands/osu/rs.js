@@ -35,7 +35,7 @@ module.exports = {
             //     console.error(err)
             //     return
             // })
-            if (recent.length == 0) return message.channel.send(`No recent scores found!`)
+            if (recent.length == 0) return message.channel.send(`No scores found within the last 24 hours!`)
             const mostRecent = recent[0]
             
             const bmapid =      mostRecent.beatmap.id
