@@ -10,6 +10,8 @@ module.exports = {
         const response = await axios(url)
         const data = response.data[0]
 
+        if(!data) return message.channel.send("No food in ravintola signe:tm:!")
+
         const menus = data.menuTypes[0].menus[0]
         let now = new Date()
 
