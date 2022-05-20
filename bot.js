@@ -8,8 +8,9 @@ const fs = require('fs')
 
 global.cooldownArray = []
 global.definitionCooldownArray = []
+global.timeoutCooldowns = {}
 
-const maintenancemode = true
+const maintenancemode = false
 
 const client = new Discord.Client({
     intents: ['GUILDS',
@@ -70,6 +71,8 @@ var writeInterval = setInterval(() => {
 client.on('messageCreate', msg => {
     if (maintenancemode && msg.author.id != 246721024102498304) return
     if (msg.author.bot) return // If the message is sent by a bot, do nothing
+    // If no perms to send message do nothing (a way to avoid crashing the bot lol)
+    if (!msg.guild.me.permissionsIn(msg.channel).has("SEND_MESSAGES")) return
     if (msg.mentions.users.has(client.user.id)) {
         // msg.channel.send(`Why did you ping me??? Do ${prefix}help to see my commands bruh`)
 	// Disabled because ppl get angry lol
@@ -91,7 +94,6 @@ client.on('messageCreate', msg => {
 
     if (!msg.content.toLowerCase().startsWith(prefix)) return //If the message doesn't start with the prefix, do nothing
 
-    if (!msg.guild) return msg.channel.send("Cant do in dms lol")
     const args = msg.content.slice(prefix.length).trim().split(/ +/) //splits the arguments into an array, every space is the split point thingy
     const commandName = args.shift().toLowerCase() //gets what the commands name is and makes it lowercase so it aint case sensitive
 
@@ -102,8 +104,11 @@ client.on('messageCreate', msg => {
     try{
         command.execute(msg, args)
     } catch (error) {
-        console.error(error)
+        console.log(error)
         msg.reply("There was an error while executing this command! (the error has been logged)")
+        .catch(errorsenderror => {
+            console.log(errorsenderror)
+        })
     }
 })
 
@@ -142,7 +147,7 @@ function updateCustomStatus() {
     if (maintenancemode) {
         client.user.setStatus("dnd")
         client.user.setActivity('my creator suck at coding! (Down for maintenance)', {type: 'WATCHING'})
-    } else client.user.setActivity('the chat :) Type ju!help for more', {type: 'COMPETING'})
+    } else client.user.setActivity('beans grow. Type ju!help to get me commands. I own a bean field btw', {type: 'WATCHING'})
 }
 
 client.login(process.env.BOTTOKEN) //Login lol
