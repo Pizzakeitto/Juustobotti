@@ -22,7 +22,7 @@ module.exports = {
             message.channel.sendTyping()
             console.log("getting id")
             await auth.login(OSUCLIENTID, OSUCLIENTSECRET)
-            const user = await v2.user.get(args.join(' '), "osu")
+            const user = await v2.user.details(args.join(' '), "osu")
             recentScore(user.id)
         }
 
@@ -30,35 +30,19 @@ module.exports = {
             message.channel.sendTyping()
             const { access_token } = await auth.login(OSUCLIENTID, OSUCLIENTSECRET) // Need to get the token outta here so can do custom calls
             console.log("ait checking for " + osuID)
-            const recent = await v2.scores.users.recent(osuID, {mode: "osu", limit: 1, include_fails: 1})
-            // .catch(err => {
-            //     console.error(err)
-            //     return
-            // })
+            const recent = await v2.user.scores.category(osuID, "recent", {include_fails: 1, limit: 1, mode: "osu"})
             if (recent.length == 0) return message.channel.send(`No scores found within the last 24 hours!`)
             const mostRecent = recent[0]
-            
+
             const bmapid =      mostRecent.beatmap.id
             const bmapsetid =   mostRecent.beatmapset.id
             const artist =      mostRecent.beatmapset.artist
             const title =       mostRecent.beatmapset.title
             const version =     mostRecent.beatmap.version
-            let rating = ""
-            if (mostRecent.mods.length == 0) rating = `${mostRecent.beatmap.difficulty_rating.toFixed(2)} ⭐`
-            else {
-                let attributes = await require('axios').default.post(`https://osu.ppy.sh/api/v2/beatmaps/${bmapid}/attributes`, {
-                    "mods": mostRecent.mods
-                }, {
-                    headers: {
-                        "Content-Type": "application/json",
-                        "accept": "application/json",
-                        "Authorization": `Bearer ${access_token}`
-                    }
-                })
-                rating = attributes.data.attributes.star_rating.toFixed(2) + " ⭐"
-            }
-            // Going to use this attributes thing for max_combo too as soon as it starts working,,
-            // https://github.com/ppy/osu-web/issues/8755
+
+            const {attributes} = await v2.beatmap.attributes(bmapid, { mods: mostRecent.mods })
+            const rating =      attributes.star_rating.toFixed(2) + " ⭐"
+            const maxcombo =    attributes.max_combo
 
             const mods =        mostRecent.mods.length == 0 ? "Nomod" : mostRecent.mods.join('')
             const score =       numberWithCommas(mostRecent.score)
@@ -66,13 +50,6 @@ module.exports = {
             const combo =       mostRecent.max_combo // max combo the player was able to achieve
             const acc =         (mostRecent.accuracy * 100).toFixed(2)
             const pp =          mostRecent.pp
-
-            // https://github.com/ppy/osu-api/issues/104
-            // Iguess ill have to get the beatmaps max combo myself,,,
-            // This sucks because it will take longer to respond..
-            // Could replace with https://osu.ppy.sh/docs/index.html#get-beatmap-attributes
-            const additionalstuff = await v2.beatmap.get(bmapid)
-            const maxcombo =    additionalstuff.max_combo
 
             const s300 =        mostRecent.statistics.count_300
             const s100 =        mostRecent.statistics.count_100

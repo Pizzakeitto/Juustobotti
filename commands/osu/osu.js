@@ -32,7 +32,7 @@ module.exports = {
         async function osuProfil(username = "") {
             await auth.login(OSUCLIENTID, OSUCLIENTSECRET)
 
-            const profile = await v2.user.get(username, "osu", "username")
+            const profile = await v2.user.details(username, "osu", "username")
             if (Object.getOwnPropertyNames(profile).includes("error")) {
                 console.log("Error: couldnt find user")
                 message.reply({content: "Couldn't find this user! (or something broke)", allowedMentions: {repliedUser: false}})
