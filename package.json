@@ -17,7 +17,8 @@
     "mariadb": "^3.0.0",
     "node-danser": "^1.0.0",
     "node-osu": "^2.2.1",
-    "osu-api-extended": "^2.1.4",
+    "osu-api-extended": "^2.5.6",
+    "osu-parsers": "^2.1.2",
     "translate-google": "^1.5.0",
     "xml2json": "^0.12.0",
     "ytdl-core": "^4.9.2"
