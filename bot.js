@@ -24,7 +24,8 @@ const client = new Discord.Client({
     'GUILD_MESSAGE_TYPING',
     'DIRECT_MESSAGES',
     'DIRECT_MESSAGE_REACTIONS',
-    'DIRECT_MESSAGE_TYPING']
+    'DIRECT_MESSAGE_TYPING'],
+    partials: ["MESSAGE", "CHANNEL", "REACTION"] // Why are these a thing? (required for dms)
 })
 
 //Read commands from the commands directory
@@ -43,36 +44,15 @@ client.once('ready', () => {
     client.user.setStatus("online")
     console.log("Yah im alive aight")
     updateCustomStatus()
-    /* let updateEveryMinutes = 5, theInterval = updateEveryMinutes * 60 * 1000
-    setInterval(function() {
-        updateCustomStatus()
-    }, theInterval)*/
-    // I dont think this needs to be run on an interval
 })
-
-// Temporary message collecting
-var keybspam = fs.readFileSync("keyboardspam.txt")
-client.on('messageCreate', msg => {
-    if(msg.channelId != 931632287622267031) return
-    keybspam += msg.content + "\n"
-})
-var prevkeybspam = keybspam
-var writeInterval = setInterval(() => {
-    if(keybspam == prevkeybspam) {
-        return
-    }
-    prevkeybspam = keybspam
-    fs.writeFile("keyboardspam.txt", keybspam, 'utf-8', (err) => {
-        if (err) return console.log("An error hapened: " + err)
-        console.log("Wrote spam to file")
-    })
-}, 1000);
 
 client.on('messageCreate', msg => {
     if (maintenancemode && msg.author.id != 246721024102498304) return
     if (msg.author.bot) return // If the message is sent by a bot, do nothing
     // If no perms to send message do nothing (a way to avoid crashing the bot lol)
-    if (!msg.guild.me.permissionsIn(msg.channel).has("SEND_MESSAGES")) return
+    if (msg.guild) {
+        if (!msg.guild.me.permissionsIn(msg.channel).has("SEND_MESSAGES")) return
+    }
     if (msg.mentions.users.has(client.user.id)) {
         // msg.channel.send(`Why did you ping me??? Do ${prefix}help to see my commands bruh`)
 	// Disabled because ppl get angry lol
@@ -113,7 +93,7 @@ client.on('messageCreate', msg => {
 })
 
 client.on("guildCreate", async guild => {
-    let msg = new Discord.Message
+    let msg = Discord.Message.prototype // For that sweet vscode intellisense..
     msg = `I joined a guild named ${guild.name} with id being ${guild.id}.\nThere are ${guild.memberCount} members right now. Should I leave?`
 
     let pizzakeitto = await client.users.fetch('246721024102498304')
@@ -121,7 +101,10 @@ client.on("guildCreate", async guild => {
     await msg.react('✅')
     await msg.react('❎')
 
-    msg.awaitReactions(r => ['✅', '❎'].includes(r.emoji.name), {max: 1}).then(collected => { 
+    const filter = (reaction, user) => user.id == '246721024102498304' && ['✅', '❎'].includes(reaction.emoji.name)
+    msg.awaitReactions({filter, max: 1}).then(collected => { 
+        console.log("Got reaction")
+        console.log(collected)
         let r = collected.first()
 
         if(r.emoji.name == '✅') {
