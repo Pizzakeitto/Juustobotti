@@ -14,6 +14,12 @@ module.exports = {
         // Similar start to osu.js ...
         if (args.length == 0) {
             getosuUser(message.author.id, true).then(user => recentScore(user.id))
+            .catch(err => {
+                if(err == "Not in database!") return message.channel.send("Sorry idk who you are, please specify some user (like ju!rs cookiezi) or do ju!link first!:!.!")
+                // Else
+                message.channel.send('Something unexpected happened!')
+                console.log(err)
+            })
         } else if (isNaN(args.join(' '))) getosuId(args.join(' '))
         else recentScore(args.join(' '))
 
