@@ -7,8 +7,8 @@ module.exports = {
 	detailedDescription: 'A way to learn more about my cool commands! Do not type the [] <> you might see on some commands.',
 	usage: 'help <command name>',
 	execute(message = Discord.Message.prototype, args = []) {
-        const {commands} = message.client
-		const pfp = "https://cdn.discordapp.com/avatars/733444772869701665/2d0ebe27d13cf726f779a3deaa2ff605.webp?size=64"
+        const {commands, commandAliases} = message.client
+		const pfp = message.client.user.avatarURL({size: 64})
 
 		if (args.length == 0) {
 			// if no arguments give all the commands
@@ -24,14 +24,15 @@ module.exports = {
 			embed.setDescription(formattedCommands)
 			embed.setColor('#00F000')
 			message.channel.send({embeds: [embed]})
-		} else if (commands.has(args[0])) {
+		} else if (commands.has(args[0]) || commandAliases.has(args[0])) {
 			// If argument is some command (for example "ju!help ping") thats not hideden show more info
-			const command = commands.get(args[0])
+			const command = commands.get(args[0]) || commandAliases.get(args[0])
 			if (command.hidden) return message.channel.send("👀")
 			const embed = new Discord.MessageEmbed
 			embed.setAuthor({name: `How to ${command.name}`, iconURL: pfp})
 			embed.description = command.detailedDescription
 			if (command.usage) embed.addField("Usage: ", `${prefix}${command.usage}`)
+			if (command.aliases) embed.addField("Aliases: ", `${command.aliases.join(", ")}`)
 			embed.setColor("#00A000")
 			message.channel.send({embeds: [embed]})
 		} else {
