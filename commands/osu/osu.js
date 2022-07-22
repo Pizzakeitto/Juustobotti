@@ -1,6 +1,7 @@
 const Discord = require('discord.js')
 module.exports = {
     name: 'osu',
+    aliases: ['profile'],
     description: 'Gets user info',
     detailedDescription: 'Get info about someone on osu! Use `-s` to get a shorter version of your profile. If you link your account (using ju!link) you don\'t have to type your username to get your profile.',
     usage: 'osu [-s] <user>',

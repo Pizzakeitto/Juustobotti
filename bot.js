@@ -30,6 +30,7 @@ const client = new Discord.Client({
 
 //Read commands from the commands directory
 client.commands = new Discord.Collection()
+client.commandAliases = new Discord.Collection()
 const commandFolders = fs.readdirSync('./commands')
 
 for(const folder of commandFolders) {
@@ -37,6 +38,9 @@ for(const folder of commandFolders) {
     for(const file of commandFiles){
         const command = require(`./commands/${folder}/${file}`)
         client.commands.set(command.name, command)
+        if (command.aliases) {
+            command.aliases.forEach(alias => client.commands.set(alias, command))
+        }
     }
 }
 
@@ -77,9 +81,10 @@ client.on('messageCreate', msg => {
     const args = msg.content.slice(prefix.length).trim().split(/ +/) //splits the arguments into an array, every space is the split point thingy
     const commandName = args.shift().toLowerCase() //gets what the commands name is and makes it lowercase so it aint case sensitive
 
-    if (!client.commands.has(commandName)) return msg.channel.send("I don't know that command! Check the available commands with ju!help")
-
-    const command = client.commands.get(commandName) //gets the actual command object
+    let command
+    if (client.commands.has(commandName)) command = client.commands.get(commandName)
+    else if (client.commandAliases.has(commandName)) command = client.commandAliases.get(commandName)
+    else return msg.channel.send("I don't know that command! Check the available commands with ju!help")
 
     try{
         command.execute(msg, args)
