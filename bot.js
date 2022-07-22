@@ -81,10 +81,10 @@ client.on('messageCreate', msg => {
     const args = msg.content.slice(prefix.length).trim().split(/ +/) //splits the arguments into an array, every space is the split point thingy
     const commandName = args.shift().toLowerCase() //gets what the commands name is and makes it lowercase so it aint case sensitive
 
-    let command
-    if (client.commands.has(commandName)) command = client.commands.get(commandName)
-    else if (client.commandAliases.has(commandName)) command = client.commandAliases.get(commandName)
-    else return msg.channel.send("I don't know that command! Check the available commands with ju!help")
+    // If theres no command found with the name, .get will return 'undefined', so the || thingy makes the other thing run idk hwo to explain this
+    // JAvascript magic
+    const command = client.commands.get(commandName) || client.commandAliases.get(commandName)
+    if (!command) return msg.channel.send("I don't know that command! Check the available commands with ju!help")
 
     try{
         command.execute(msg, args)
