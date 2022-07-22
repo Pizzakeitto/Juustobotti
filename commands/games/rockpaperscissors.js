@@ -102,6 +102,8 @@ module.exports = {
             if (isNaN(input)) return message.channel.send("Some bizzare error occurred!") // If not a number something broke!
 
             botChoise = Math.round(rpsAI.run(inputs)) // predict what the user will pick
+            if (botChoise > 3) botChoise = 3
+            if (botChoise < 1) botChoise = 1
             // console.log(`Predicted ${rpsAI.run(inputs)} with these inputs: ${inputs.join(', ')}`)
 
             botChoise = chooseWinningNumber(botChoise) // choose how to win
@@ -142,7 +144,8 @@ module.exports = {
             stats.set("playerChoise", playerChoise)
             stats.set("botChoise", botChoise)
             stats.set("inputs", randomInputs)
-            await reaction.users.remove(message.author) // remove users reaction to indicate the bot is ready for the next round
+            // await reaction.users.remove(message.author) // remove users reaction to indicate the bot is ready for the next round
+            // Removed this because no permissions thing
             play(gameMsg, gameEmbed, stats)
         }
         
