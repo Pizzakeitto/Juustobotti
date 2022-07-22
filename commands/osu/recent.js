@@ -5,7 +5,7 @@ module.exports = {
     aliases: ['rs'],
     description: 'Gets recent scores',
     detailedDescription: 'Get the most recent play from someone. If you link your account (using ju!link) you don\'t have to type your username to get your profile.',
-    usage: 'rs <user>',
+    usage: 'recent <user>',
     execute(message = Discord.Message.prototype, args = [""]){
         const { v2, auth, tools, mods } = require('osu-api-extended')
         const { getosuUser, wysi, rankToEmoji } = require('../../utils/osuUtils')
