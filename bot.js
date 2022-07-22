@@ -39,7 +39,7 @@ for(const folder of commandFolders) {
         const command = require(`./commands/${folder}/${file}`)
         client.commands.set(command.name, command)
         if (command.aliases) {
-            command.aliases.forEach(alias => client.commands.set(alias, command))
+            command.aliases.forEach(alias => client.commandAliases.set(alias, command))
         }
     }
 }
