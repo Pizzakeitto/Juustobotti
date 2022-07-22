@@ -51,6 +51,7 @@ module.exports = {
                 let embeds = []
                 mostPlayed.forEach(beatmap => {
                     const embed = new Discord.MessageEmbed()
+                    embed.setColor('#FF66AA')
                     embed.setDescription(`${offset + 1}. **${beatmap.count}** plays on ${beatmap.beatmapset.artist} - ${beatmap.beatmapset.title} [${beatmap.beatmap.version}]` + 
                                     `\nMapped by ${beatmap.beatmapset.creator} | [Link](https://osu.ppy.sh/b/${beatmap.beatmap_id})`)
                     embed.setAuthor({iconURL: beatmap.beatmapset.covers.list, name: `${beatmap.beatmapset.title} [${beatmap.beatmap.version}]`})
