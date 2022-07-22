@@ -6,9 +6,9 @@ module.exports = {
     detailedDescription: 'You can find out the most played maps for someone. If you link your account (using ju!link) you don\'t have to type your username to get your profile.',
     usage: 'mp <user>',
     execute(message = Discord.Message.prototype, args = []){
-        const mysql = require('mysql')
         const osu = require('node-osu')
         const axios = require('axios').default
+        const { getosuUser } = require('../../utils/osuUtils.js')
         
         const osuApi = new osu.Api(process.env.OSUTOKEN, {
             notFoundAsError: true,
@@ -25,7 +25,10 @@ module.exports = {
 
             // If no arguments, check in with the database
             if (args.length == 0) {
-                osuUserName = await getOsuUsername(message.author.id)
+                osuUserName = await getosuUser(message.author.id).catch(err => {
+                    console.log(err)
+                    message.channel.send("Sometihg brok!")
+                })
             } else osuUserName = args[0]
 
             const user = await osuApi.getUser({u: osuUserName})
@@ -67,38 +70,6 @@ module.exports = {
                 console.error("osu api didnt find an user? tried looking for " + osuUserName)
             }
             
-        }
-
-        function getOsuUsername(id) {
-            return new Promise(function (resolve, reject) {
-                let username = undefined
-                query(`SELECT osuname FROM players WHERE discordid = ${id}`, function (err, res, fields) {
-                    try {
-                        if (err) throw err
-                        username = res[0].osuname
-                    } catch (e) {
-                        console.error(e)
-                    } finally {
-                        resolve(username) // returns undefined if not found
-                    }
-                })
-            })
-        }
-
-        // query function for mysql
-        function query(sql, callback) {
-            let con = mysql.createConnection(sqlconnection)
-            
-            try {
-                con.connect(function (err) {
-                    if (err) console.log(err)
-                    con.query(sql, callback)
-                    con.end()
-                })
-            } catch (error) {
-                console.log(error)
-                con.end
-            }
         }
     }
 }
