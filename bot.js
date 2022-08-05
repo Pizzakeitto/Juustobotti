@@ -9,6 +9,7 @@ const fs = require('fs')
 global.cooldownArray = []
 global.definitionCooldownArray = []
 global.timeoutCooldowns = {}
+global.botStartTime = Date.now()
 
 const maintenancemode = false
 
