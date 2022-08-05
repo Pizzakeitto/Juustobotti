@@ -76,6 +76,7 @@ client.on('messageCreate', msg => {
         }, 5000);
     }
 
+    if (msg.content.toLowerCase().startsWith("ju?")) return msg.channel.send("ju?")
     if (!msg.content.toLowerCase().startsWith(prefix)) return //If the message doesn't start with the prefix, do nothing
 
     const args = msg.content.slice(prefix.length).trim().split(/ +/) //splits the arguments into an array, every space is the split point thingy
