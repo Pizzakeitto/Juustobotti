@@ -13,20 +13,25 @@ global.botStartTime = Date.now()
 
 const maintenancemode = false
 
+// Great, intents got even worse
+// Dear discord.js, can you not be breaking my code constantly, ty!
+// - Pizzakeitto, Written when discordjs v14 was released
+
+const intents = []
+intents.push(
+    Discord.GatewayIntentBits.Guilds,
+    Discord.GatewayIntentBits.DirectMessages,
+    Discord.GatewayIntentBits.GuildMessages,
+    Discord.GatewayIntentBits.MessageContent,
+
+)
+console.log(intents)
+const partials = []
+partials.push(Discord.Partials.Message, Discord.Partials.Channel, Discord.Partials.Reaction)
+
 const client = new Discord.Client({
-    intents: ['GUILDS',
-    'GUILD_EMOJIS_AND_STICKERS',
-    'GUILD_INTEGRATIONS',
-    'GUILD_WEBHOOKS',
-    'GUILD_INVITES',
-    'GUILD_VOICE_STATES',
-    'GUILD_MESSAGES',
-    'GUILD_MESSAGE_REACTIONS',
-    'GUILD_MESSAGE_TYPING',
-    'DIRECT_MESSAGES',
-    'DIRECT_MESSAGE_REACTIONS',
-    'DIRECT_MESSAGE_TYPING'],
-    partials: ["MESSAGE", "CHANNEL", "REACTION"] // Why are these a thing? (required for dms)
+    intents: intents,
+    partials: partials// Why are these a thing? (required for dms)
 })
 
 //Read commands from the commands directory
@@ -52,17 +57,18 @@ client.once('ready', () => {
 })
 
 client.on('messageCreate', msg => {
+    console.log("message")
     if (maintenancemode && msg.author.id != 246721024102498304) return
     if (msg.author.bot) return // If the message is sent by a bot, do nothing
     // If no perms to send message do nothing (a way to avoid crashing the bot lol)
     if (msg.guild) {
-        if (!msg.guild.me.permissionsIn(msg.channel).has("SEND_MESSAGES")) return
+        if (!msg.guild.members.me.permissionsIn(msg.channel).has('SendMessages')) return console.log("no perms?")
     }
     if (msg.mentions.users.has(client.user.id)) {
         // msg.channel.send(`Why did you ping me??? Do ${prefix}help to see my commands bruh`)
 	// Disabled because ppl get angry lol
     }
-    let annoy = true
+    let annoy = false
     if (msg.content.toLowerCase().includes('linux') && annoy){
         if (global.cooldownArray.includes(msg.author.id)) return;
         global.cooldownArray.push(msg.author.id)
@@ -140,8 +146,8 @@ process.on('SIGINT', function() {
 function updateCustomStatus() {
     if (maintenancemode) {
         client.user.setStatus("dnd")
-        client.user.setActivity('my creator suck at coding! (Down for maintenance)', {type: 'WATCHING'})
-    } else client.user.setActivity('beans grow. Type ju!help to get me commands. I own a bean field btw', {type: 'WATCHING'})
+        client.user.setActivity('my creator suck at coding! (Down for maintenance)', {type: Discord.ActivityType.Watching})
+    } else client.user.setActivity('the bean market. Type ju!help to get me commands. I own a bean field btw', {type: Discord.ActivityType.Competing})
 }
 
 client.login(process.env.BOTTOKEN) //Login lol
