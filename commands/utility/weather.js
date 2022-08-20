@@ -96,7 +96,7 @@ module.exports = {
                 { name: `At <t:${forecast3.dt}:t>`, value: `${forecast3.weather[0].main}, ${forecast3.weather[0].description}\n${forecast3.main.temp}°C`, inline: true },
             ]
 
-            let weatherEmbed = new Discord.MessageEmbed()
+            let weatherEmbed = new Discord.EmbedBuilder()
                 .setAuthor(`Weather in ${city}, ${country}`, `https://pizzakeitto.xyz/flags/flags-iso/shiny/32/${weatherData.sys.country}.png`, `https://openweathermap.org/city/${id}`)
                 .setDescription(`It is ${weather} yes yes (${weatherDesc})`)
                 .setColor('#00f9f9')

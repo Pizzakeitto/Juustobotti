@@ -134,7 +134,7 @@ module.exports = {
                 // userData.set("s50", s50)
                 // userData.set("playtimeHours", playtimeHours)
     
-                userEmbed = new Discord.MessageEmbed()
+                userEmbed = new Discord.EmbedBuilder()
                     .setColor('#FF00FF')
                     .setAuthor(`Profile for ${user.name}`, `https://pizzakeitto.xyz/flags/flags-iso/shiny/32/${user.country}.png` /* thank https://github.com/ebenh/flags, because `https://www.countryflags.io/${user.country}/shiny/32.png` NOOOOOOO COUNTRYFLAGS.IO IS DOWN!!!! */, `https://osu.ppy.sh/users/${user.id}`)
                     .setThumbnail(`http://s.ppy.sh/a/${user.id}`)

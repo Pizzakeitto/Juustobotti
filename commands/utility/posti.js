@@ -70,13 +70,13 @@ module.exports = {
         modifiedAt = modifiedAt.toLocaleString("Helsinki")
 
         // Joo nyt voi ees harkita embedin rakentamist
-        const embed = new Discord.MessageEmbed
+        const embed = new Discord.EmbedBuilder
 
         embed.setColor("#FF8000")
         embed.setAuthor({name: "Postipaketti seuranta"})
         embed.setDescription(`${joo.status.description[0].value}\nViimeisin päivitys: ${modifiedAt}`)
-        embed.addField("Lähetystunnus", pakettinro, true)
-        embed.addField("Sijainti", `${lastevent.city ? lastevent.city : "emmä tiiä"}`, true)
+        embed.addFields({name: "Lähetystunnus", value: pakettinro, inline: true})
+        embed.addFields({name: "Sijainti", value: `${lastevent.city ? lastevent.city : "emmä tiiä"}`, inline: true})
         message.channel.send({embeds: [embed]})
     },
 }

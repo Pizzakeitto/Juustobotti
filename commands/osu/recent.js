@@ -79,7 +79,7 @@ module.exports = {
             }
             
             // pretty much yoinked the old embed
-            let embed = new Discord.MessageEmbed()
+            let embed = new Discord.EmbedBuilder()
             .setColor('#FF00FF')
             .setAuthor({ name: `${artist} - ${title} [${version}] | ${rating}`, url: `https://osu.ppy.sh/b/${bmapid}`, iconURL: `https://a.ppy.sh/${osuID}` })
             .setThumbnail(`https://b.ppy.sh/thumb/${bmapsetid}l.jpg`)

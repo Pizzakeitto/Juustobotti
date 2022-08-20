@@ -83,7 +83,7 @@ module.exports = {
             if (secondFilter == "1") warning = "⚠️ THIS MAY BE POLITICAL OR OTHERWISE CONTREVERSAL! TAKE THIS WITH A GRAIN OF SALT! ⚠️"
 
             // If everything is good, send it
-            const embed = new Discord.MessageEmbed()
+            const embed = new Discord.EmbedBuilder()
             if (warning != undefined) embed.setTitle(warning)
             embed.setAuthor({ name: `Definition of ${stuffToDefine}` })
             embed.setDescription(`${definition}\n\nProvided by [OpenAI's](https://openai.com) Babbage engine.`)

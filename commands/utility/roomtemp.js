@@ -25,7 +25,7 @@ module.exports = {
                 const temperature = Number(datapieces[2]).toFixed(1)
                 const heatindex = Number(datapieces[3]).toFixed(1)
 
-                const embed = new Discord.MessageEmbed
+                const embed = new Discord.EmbedBuilder
                 embed.setTitle("The burning hell that is Pizzakeitto's room")
                 embed.setDescription(`Humidity: ${humidity}%\nTemperature: ${temperature}°c\nHeat Index: ${heatindex}°c`)
                 message.channel.send({embeds: [embed]})

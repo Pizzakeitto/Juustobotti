@@ -53,15 +53,15 @@ module.exports = {
         // scissors : 915329041958043648
 
         // make the embed
-        let gameEmbed = new Discord.MessageEmbed()
+        let gameEmbed = new Discord.EmbedBuilder()
         gameEmbed.setColor(0x00f000) // green ish
         gameEmbed.setTitle("Rock Paper Scissors!!!!!")
         gameEmbed.setDescription(`Round ${round} of rock paper scissors with ${message.author.username}! \nThe game will timeout after 2 minutes of inactivity.`)
-        gameEmbed.addField("Your wins:", playerPoints.toString(), true)
-        gameEmbed.addField("Bot's wins:", botPoints.toString(), true)
-        gameEmbed.addField("**place**","**holder**", false) // blank to set another line
-        gameEmbed.addField("You chose...", numToThing(playerChoise), true)
-        gameEmbed.addField("Bot chose...", numToThing(botChoise), true)
+        gameEmbed.addFields({name: "Your wins:",    value: playerPoints.toString(),     inline: true})
+        gameEmbed.addFields({name: "Bot's wins:",   value: botPoints.toString(),        inline: true})
+        gameEmbed.addFields({name: "**place**",     value: "**holder**",                inline: false})
+        gameEmbed.addFields({name: "You chose...",  value: numToThing(playerChoise),    inline: true})
+        gameEmbed.addFields({name: "Bot chose...",  value: numToThing(botChoise),       inline: true})
         gameEmbed.setFooter("Game about to start... Pick your poison!")
 
         message.channel.send({embeds: [gameEmbed]}).then(async (gameMsg) => {
@@ -75,7 +75,7 @@ module.exports = {
             play(gameMsg, gameEmbed, stats)
         })
 
-        async function play(gameMsg = new Discord.Message, gameEmbed = new Discord.MessageEmbed, stats = new Map) {
+        async function play(gameMsg = new Discord.Message, gameEmbed = new Discord.EmbedBuilder, stats = new Map) {
             // extract things from stats to make things easier
             let playerPoints = stats.get("playerPoints")
             let botPoints = stats.get("botPoints")
@@ -123,11 +123,12 @@ module.exports = {
             // edit the embed to display results
             gameEmbed.setDescription(`Round ${round} of rock paper scissors with ${message.author.username}! \nThe game will timeout after 2 minutes of inactivity.`)
             gameEmbed.fields = [] // lazy
-            gameEmbed.addField("Your wins:", playerPoints.toString(), true)
-            gameEmbed.addField("Bot's wins:", botPoints.toString(), true)
-            gameEmbed.addField("**place**","**holder**", false) // blank to set another line
-            gameEmbed.addField("You chose...", numToThing(playerChoise), true)
-            gameEmbed.addField("Bot chose...", numToThing(botChoise), true)
+
+            gameEmbed.addFields({name: "Your wins:",    value: playerPoints.toString(),     inline: true})
+            gameEmbed.addFields({name: "Bot's wins:",   value: botPoints.toString(),        inline: true})
+            gameEmbed.addFields({name: "**place**",     value: "**holder**",                inline: false})
+            gameEmbed.addFields({name: "You chose...",  value: numToThing(playerChoise),    inline: true})
+            gameEmbed.addFields({name: "Bot chose...",  value: numToThing(botChoise),       inline: true})
             gameEmbed.setFooter(tie ? "It's a tie! Keep playing?" : botwin ? "Bot won! Keep playing?" : "You won! Keep playing?")
             gameMsg.edit({embeds: [gameEmbed]})
 

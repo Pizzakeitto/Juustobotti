@@ -39,7 +39,7 @@ module.exports = {
     
         const extractedText = extractRequest.data.query.pages[Object.keys(extractRequest.data.query.pages)[0]].extract
         
-        const embed = new Discord.MessageEmbed({
+        const embed = new Discord.EmbedBuilder({
             title: 'Facts!',
             color: '#00f000',
             description: `Did you know, that ${extractedText}`,

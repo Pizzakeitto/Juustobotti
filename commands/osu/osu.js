@@ -55,7 +55,7 @@ module.exports = {
             const S = wysi(profile.statistics.grade_counts.s + profile.statistics.grade_counts.sh)
             const A = wysi(profile.statistics.grade_counts.a)
 
-            const embed = new Discord.MessageEmbed
+            const embed = new Discord.EmbedBuilder
             // These things are the same for both embed types
             embed.setColor('#FF66AA') // osu
             embed.setAuthor({name: `Profile for ${name}`, iconURL: `https://pizzakeitto.xyz/flags/flags-iso/shiny/32/${profile.country_code}.png` /* thank https://github.com/ebenh/flags */, url: `https://osu.ppy.sh/users/${id}`})
@@ -71,21 +71,27 @@ module.exports = {
                 .setFooter({text: `Playtime: ${wysi(playtime)}h`})
                 .setTimestamp(profile.join_date)
             } else {
-                embed.addField("- Performance -", 
-                `**Rank**: ${rank}` +
-                `\n**PP**: ${pp}` +
-                `\n**Level**: ${level}` +
-                `\n**Accuracy**: ${acc}%` +
-                `\n**Playcount**: ${playcount}`, true)
+                embed.addFields({
+                name: "- Performance -",
+                value:  `**Rank**: ${rank}` +
+                        `\n**PP**: ${pp}` +
+                        `\n**Level**: ${level}` +
+                        `\n**Accuracy**: ${acc}%` +
+                        `\n**Playcount**: ${playcount}`, 
+                inline: true
+                },
 
-                .addField("- Score -", 
-                `**Ranked score**: ${rankedScore}` +
-                `\n**Total score**: ${totalScore}` +
-                `\n**SS**: ${SS}` +
-                `\n**S**: ${S}` +
-                `\n**A**: ${A}`, true)
+                {
+                name:   "- Score -",
+                value:  `**Ranked score**: ${rankedScore}` +
+                        `\n**Total score**: ${totalScore}` +
+                        `\n**SS**: ${SS}` +
+                        `\n**S**: ${S}` +
+                        `\n**A**: ${A}`,
+                inline: true
+                })
                 .setFooter({text: `ID: ${wysi(id)} • Playtime: ${wysi(playtime)}h`})
-                .setTimestamp(profile.join_date)
+                .setTimestamp(Date.parse(profile.join_date))
             }
 
             message.channel.send({content: 'Nice profile bro!', embeds: [embed]})

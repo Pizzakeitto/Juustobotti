@@ -232,7 +232,7 @@ module.exports = {
                             let objects = Number(bmap.objects.normal) + Number(bmap.objects.slider) + Number(bmap.objects.spinner)
                             let completionMath = `(${counts} / ${objects}) * 100`
                             let completion = eval(completionMath).toFixed(2)
-                            var embed = new Discord.MessageEmbed()
+                            var embed = new Discord.EmbedBuilder()
                             .setColor('#FF00FF')
                             .setAuthor({ name: `${bmap.artist} - ${bmap.title} [${bmap.version}] | ${Number(bmap.difficulty.rating).toFixed(2)}⭐`, url: `https://osu.ppy.sh/b/${bmapid}`, iconURL: `https://a.ppy.sh/${user.id}` })
                             .setThumbnail(`https://b.ppy.sh/thumb/${bmap.beatmapSetId}l.jpg`)

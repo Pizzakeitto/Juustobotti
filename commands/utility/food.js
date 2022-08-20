@@ -58,14 +58,14 @@ module.exports = {
             })
         }
 
-        const foodEmbed = new Discord.MessageEmbed
+        const foodEmbed = new Discord.EmbedBuilder
         foodEmbed.setTitle("Ruoka")
         foodEmbed.setDescription("Signessä!!!")
         foodEmbed.setColor(0x007000)
 
-        if(todaysFood != undefined) foodEmbed.addField("Todays food:", todaysOptions.join("\n"))
-        if(tomorrowsFood != undefined) foodEmbed.addField("Tomorrows food:", tomorrowsOptions.join("\n")) // !!! make this be the next possible food day instead!!!
-        if(todaysFood == undefined && tomorrowsFood == undefined) foodEmbed.addField("There is no food.", "Stay home.")
+        if(todaysFood != undefined) foodEmbed.addFields({name: "Todays food:", value: todaysOptions.join("\n")})
+        if(tomorrowsFood != undefined) foodEmbed.addFields({name: "Tomorrows food:", value: tomorrowsOptions.join("\n")}) // !!! make this be the next possible food day instead!!!
+        if(todaysFood == undefined && tomorrowsFood == undefined) foodEmbed.addFields({name: "There is no food.", value: "Stay home."})
 
         message.channel.send({embeds: [foodEmbed]}).catch(err => {
             console.log(err)
