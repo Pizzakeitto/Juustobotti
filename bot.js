@@ -62,7 +62,7 @@ client.on('messageCreate', msg => {
         // msg.channel.send(`Why did you ping me??? Do ${prefix}help to see my commands bruh`)
 	// Disabled because ppl get angry lol
     }
-    let annoy = false
+    let annoy = true
     if (msg.content.toLowerCase().includes('linux') && annoy){
         if (global.cooldownArray.includes(msg.author.id)) return;
         global.cooldownArray.push(msg.author.id)
@@ -75,6 +75,10 @@ client.on('messageCreate', msg => {
         setTimeout(() => {
             msg.channel.send(`I'd just like to interject for a moment. What you're referring to as Linux, is in fact, GNU/Linux, or as I've recently taken to calling it, GNU plus Linux. Linux is not an operating system unto itself, but rather another free component of a fully functioning GNU system made useful by the GNU corelibs, shell utilities and vital system components comprising a full OS as defined by POSIX.`)
         }, 5000);
+    }
+
+    if (msg.content.toLowerCase().includes('owo') || msg.content.toLowerCase().includes('uwu') ) {
+        msg.reply("ok")
     }
 
     if (msg.content.toLowerCase().startsWith("ju?")) return msg.channel.send("ju?")
