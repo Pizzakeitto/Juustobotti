@@ -13,8 +13,8 @@ module.exports = {
         
         mariadb.createConnection(sqlconfig).then(async connection => {
             await auth.login(process.env.OSUCLIENTID, process.env.OSUCLIENTSECRET)
-            const osuUser = await v2.user.get(args[0], "osu")
-            
+            const osuUser = await v2.user.details(args[0], "osu")
+
             const response = await connection.query(`INSERT INTO players (discordid, osuname, osuid) VALUES ('${message.author.id}', '${args[0]}', '${osuUser.id}') ON DUPLICATE KEY UPDATE osuname='${args[0]}', osuid='${osuUser.id}'`)
             .catch(err => {
                 console.log(err)
