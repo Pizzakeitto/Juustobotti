@@ -12,8 +12,8 @@ module.exports = {
         let botPoints = 0
         let round = 0
  
-        let playerChoise = -1
-        let botChoise = -1
+        let playerChoice = -1
+        let botChoice = -1
 
         // the ai
         const rpsAI = new brain.recurrent.LSTMTimeStep({
@@ -32,9 +32,9 @@ module.exports = {
         // Train the AI using these initial values
         rpsAI.train([randomInputs], {log:false, errorThresh: 0.02, iterations: 500})
         // console.log(`The options for this ai: ${JSON.stringify(rpsAI.options, null, 2)}`)
-        // botChoise = Math.round(rpsAI.run(inputs))
-        // botChoise < 0 ? botChoise++ : botChoise
-        // botChoise > 3 ? botChoise-- : botChoise
+        // botChoice = Math.round(rpsAI.run(inputs))
+        // botChoice < 0 ? botChoice++ : botChoice
+        // botChoice > 3 ? botChoice-- : botChoice
 
         // put everything in a map for ease
         // After coding this command i realized that i dont really know how to use maps properly :D:D:DDD
@@ -43,8 +43,8 @@ module.exports = {
         stats.set("playerPoints", playerPoints)
         stats.set("botPoints", botPoints)
         stats.set("round", round)
-        stats.set("playerChoise", playerChoise)
-        stats.set("botChoise", botChoise)
+        stats.set("playerChoice", playerChoice)
+        stats.set("botChoice", botChoice)
         stats.set("inputs", randomInputs)
 
         // The emojis ids btw:
@@ -60,8 +60,8 @@ module.exports = {
         gameEmbed.addFields({name: "Your wins:",    value: playerPoints.toString(),     inline: true})
         gameEmbed.addFields({name: "Bot's wins:",   value: botPoints.toString(),        inline: true})
         gameEmbed.addFields({name: "**place**",     value: "**holder**",                inline: false})
-        gameEmbed.addFields({name: "You chose...",  value: numToThing(playerChoise),    inline: true})
-        gameEmbed.addFields({name: "Bot chose...",  value: numToThing(botChoise),       inline: true})
+        gameEmbed.addFields({name: "You chose...",  value: numToThing(playerChoice),    inline: true})
+        gameEmbed.addFields({name: "Bot chose...",  value: numToThing(botChoice),       inline: true})
         gameEmbed.setFooter({text: "Game about to start... Pick your poison!"})
 
         message.channel.send({embeds: [gameEmbed]}).then(async (gameMsg) => {
@@ -80,8 +80,8 @@ module.exports = {
             let playerPoints = stats.get("playerPoints")
             let botPoints = stats.get("botPoints")
             let round = stats.get("round")
-            let playerChoise = stats.get("playerChoise")
-            let botChoise = stats.get("botChoise",)
+            let playerChoice = stats.get("playerChoice")
+            let botChoice = stats.get("botChoice",)
             let inputs = stats.get("inputs")
 
             round++
@@ -101,22 +101,22 @@ module.exports = {
             let input = thingToNum(reaction.emoji.name) // reaction.emoji.name is gon be either "rock", "paper" or "scissors"
             if (isNaN(input)) return message.channel.send("Some bizzare error occurred!") // If not a number something broke!
 
-            botChoise = Math.round(rpsAI.run(inputs)) // predict what the user will pick
-            if (botChoise > 3) botChoise = 3
-            if (botChoise < 1) botChoise = 1
+            botChoice = Math.round(rpsAI.run(inputs)) // predict what the user will pick
+            if (botChoice > 3) botChoice = 3
+            if (botChoice < 1) botChoice = 1
             // console.log(`Predicted ${rpsAI.run(inputs)} with these inputs: ${inputs.join(', ')}`)
 
-            botChoise = chooseWinningNumber(botChoise) // choose how to win
+            botChoice = chooseWinningNumber(botChoice) // choose how to win
 
-            playerChoise = thingToNum(reaction.emoji.name) // example: convert "rock" to 1
+            playerChoice = thingToNum(reaction.emoji.name) // example: convert "rock" to 1
 
             // choose the winner
             let botwin = false
             let tie = false
-            if (input == 1 && botChoise == 2) botwin = true
-            if (input == 2 && botChoise == 3) botwin = true
-            if (input == 3 && botChoise == 1) botwin = true
-            if (input == botChoise) tie = true
+            if (input == 1 && botChoice == 2) botwin = true
+            if (input == 2 && botChoice == 3) botwin = true
+            if (input == 3 && botChoice == 1) botwin = true
+            if (input == botChoice) tie = true
 
             tie ? null : botwin ? botPoints++ : playerPoints++
             
@@ -126,8 +126,8 @@ module.exports = {
                 {name: "Your wins:",    value: playerPoints.toString(),     inline: true},
                 {name: "Bot's wins:",   value: botPoints.toString(),        inline: true},
                 {name: "**place**",     value: "**holder**",                inline: false},
-                {name: "You chose...",  value: numToThing(playerChoise),    inline: true},
-                {name: "Bot chose...",  value: numToThing(botChoise),       inline: true}
+                {name: "You chose...",  value: numToThing(playerChoice),    inline: true},
+                {name: "Bot chose...",  value: numToThing(botChoice),       inline: true}
             )
             gameEmbed.setFooter({text: tie ? "It's a tie! Keep playing?" : botwin ? "Bot won! Keep playing?" : "You won! Keep playing?"})
             gameEmbed.setColor(tie ? 0x7575ff : botwin ? 0xa00000 : 0x00a000)
@@ -143,8 +143,8 @@ module.exports = {
             stats.set("playerPoints", playerPoints)
             stats.set("botPoints", botPoints)
             stats.set("round", round)
-            stats.set("playerChoise", playerChoise)
-            stats.set("botChoise", botChoise)
+            stats.set("playerChoice", playerChoice)
+            stats.set("botChoice", botChoice)
             stats.set("inputs", randomInputs)
             if(gameMsg.guild.members.me.permissionsIn(gameMsg.channel).has('ManageMessages')) await reaction.users.remove(message.author) // remove users reaction to indicate the bot is ready for the next round
             // Removed this because no permissions thing
