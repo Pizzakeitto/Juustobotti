@@ -97,13 +97,16 @@ module.exports = {
             ]
 
             let weatherEmbed = new Discord.EmbedBuilder()
-                .setAuthor(`Weather in ${city}, ${country}`, `https://pizzakeitto.xyz/flags/flags-iso/shiny/32/${weatherData.sys.country}.png`, `https://openweathermap.org/city/${id}`)
+                .setAuthor({
+                    name: `Weather in ${city}, ${country}`, 
+                    iconURL: `https://pizzakeitto.xyz/flags/flags-iso/shiny/32/${weatherData.sys.country}.png`, 
+                    url: `https://openweathermap.org/city/${id}`
+                })
                 .setDescription(`It is ${weather} yes yes (${weatherDesc})`)
                 .setColor('#00f9f9')
                 .setThumbnail(`${iconendpoint}${weatherData.weather[0].icon}@2x.png`)
                 .addFields(fields)
                 .setFooter({text: 'Data from https://openweathermap.org/current'})
-                .setTimestamp(Date(weatherData.dt))
 
             message.channel.send({embeds: [weatherEmbed]})
             
