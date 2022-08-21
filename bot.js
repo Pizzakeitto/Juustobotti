@@ -23,6 +23,8 @@ intents.push(
     Discord.GatewayIntentBits.DirectMessages,
     Discord.GatewayIntentBits.GuildMessages,
     Discord.GatewayIntentBits.MessageContent,
+    Discord.GatewayIntentBits.GuildMessageReactions,
+    Discord.GatewayIntentBits.DirectMessageReactions
 
 )
 console.log(intents)

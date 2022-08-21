@@ -62,7 +62,7 @@ module.exports = {
         gameEmbed.addFields({name: "**place**",     value: "**holder**",                inline: false})
         gameEmbed.addFields({name: "You chose...",  value: numToThing(playerChoise),    inline: true})
         gameEmbed.addFields({name: "Bot chose...",  value: numToThing(botChoise),       inline: true})
-        gameEmbed.setFooter("Game about to start... Pick your poison!")
+        gameEmbed.setFooter({text: "Game about to start... Pick your poison!"})
 
         message.channel.send({embeds: [gameEmbed]}).then(async (gameMsg) => {
             let rockEmoji      =    message.client.emojis.cache.get('915328258126528582')
@@ -75,7 +75,7 @@ module.exports = {
             play(gameMsg, gameEmbed, stats)
         })
 
-        async function play(gameMsg = new Discord.Message, gameEmbed = new Discord.EmbedBuilder, stats = new Map) {
+        async function play(gameMsg = Discord.Message.prototype, gameEmbed = new Discord.EmbedBuilder, stats = new Map) {
             // extract things from stats to make things easier
             let playerPoints = stats.get("playerPoints")
             let botPoints = stats.get("botPoints")
@@ -91,8 +91,8 @@ module.exports = {
             if(reactions.equals(new Discord.Collection)) {
                 // If no reactions were found from the user, stop the game
                 // This happens only when the waiting has ran out
-                gameEmbed.setColor(0xa00000)
-                gameEmbed.setFooter("The game ended, GG!")
+                gameEmbed.setColor(0x808080)
+                gameEmbed.setFooter({text: "The game ended, GG!"})
                 gameMsg.edit({embeds: [gameEmbed]})
                 return
             }
@@ -122,14 +122,15 @@ module.exports = {
             
             // edit the embed to display results
             gameEmbed.setDescription(`Round ${round} of rock paper scissors with ${message.author.username}! \nThe game will timeout after 2 minutes of inactivity.`)
-            gameEmbed.fields = [] // lazy
-
-            gameEmbed.addFields({name: "Your wins:",    value: playerPoints.toString(),     inline: true})
-            gameEmbed.addFields({name: "Bot's wins:",   value: botPoints.toString(),        inline: true})
-            gameEmbed.addFields({name: "**place**",     value: "**holder**",                inline: false})
-            gameEmbed.addFields({name: "You chose...",  value: numToThing(playerChoise),    inline: true})
-            gameEmbed.addFields({name: "Bot chose...",  value: numToThing(botChoise),       inline: true})
-            gameEmbed.setFooter(tie ? "It's a tie! Keep playing?" : botwin ? "Bot won! Keep playing?" : "You won! Keep playing?")
+            gameEmbed.setFields(
+                {name: "Your wins:",    value: playerPoints.toString(),     inline: true},
+                {name: "Bot's wins:",   value: botPoints.toString(),        inline: true},
+                {name: "**place**",     value: "**holder**",                inline: false},
+                {name: "You chose...",  value: numToThing(playerChoise),    inline: true},
+                {name: "Bot chose...",  value: numToThing(botChoise),       inline: true}
+            )
+            gameEmbed.setFooter({text: tie ? "It's a tie! Keep playing?" : botwin ? "Bot won! Keep playing?" : "You won! Keep playing?"})
+            gameEmbed.setColor(tie ? 0x7575ff : botwin ? 0xa00000 : 0x00a000)
             gameMsg.edit({embeds: [gameEmbed]})
 
             // now we can add the input to the list of inputs, and train the AI to make the next guess
@@ -145,7 +146,7 @@ module.exports = {
             stats.set("playerChoise", playerChoise)
             stats.set("botChoise", botChoise)
             stats.set("inputs", randomInputs)
-            // await reaction.users.remove(message.author) // remove users reaction to indicate the bot is ready for the next round
+            if(gameMsg.guild.members.me.permissionsIn(gameMsg.channel).has('ManageMessages')) await reaction.users.remove(message.author) // remove users reaction to indicate the bot is ready for the next round
             // Removed this because no permissions thing
             play(gameMsg, gameEmbed, stats)
         }

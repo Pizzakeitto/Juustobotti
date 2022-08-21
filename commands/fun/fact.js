@@ -39,12 +39,12 @@ module.exports = {
     
         const extractedText = extractRequest.data.query.pages[Object.keys(extractRequest.data.query.pages)[0]].extract
         
-        const embed = new Discord.EmbedBuilder({
+        const embed = {
             title: 'Facts!',
-            color: '#00f000',
+            color: 0x00F000,
             description: `Did you know, that ${extractedText}`,
             footer: {text: 'Powered by the Wikipedia api! https://www.mediawiki.org/wiki/API:Main_page'},
-        })
+        }
 
         message.channel.send({embeds: [embed]}).catch(err => {
             message.channel.send('Something unexpected happened while fetching facts for you!\n(Ping Pizzakeitto if you see this)')

@@ -19,7 +19,7 @@ module.exports = {
                 message.channel.send(`Your reaction time was ${new Date - reactionTime - juusto - latency - latency}ms. Incredible!`)
             })
 			setTimeout(() => {
-                if (message.guild.me.permissions.has("ADD_REACTIONS")) msg.react('🟩').catch(() => null)
+                if (message.guild.members.me.permissions.has("AddReactions")) msg.react('🟩').catch(() => null)
                 else msg.channel.send('🟩')
             }, reactionTime);
 		})
