@@ -39,6 +39,6 @@ TODO:
 - [ ] This readme
 - [ ] Rewrite osu related commands to use api v2
   - [x] ju!osu
-  - [ ] ju!rs
-  - [ ] ju!link
+  - [x] ju!rs
+  - [x] ju!link
   - [ ] ju!mostplayed
