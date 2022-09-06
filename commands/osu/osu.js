@@ -69,7 +69,7 @@ module.exports = {
                     `▸ **Playcount:** ${playcount}\n` 
                 )
                 .setFooter({text: `Playtime: ${wysi(playtime)}h`})
-                .setTimestamp(profile.join_date)
+                .setTimestamp(Date.parse(profile.join_date))
             } else {
                 embed.addFields({
                 name: "- Performance -",
