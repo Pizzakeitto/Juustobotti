@@ -17,7 +17,15 @@ module.exports = {
         embed.addFields({name: "Query:", value: args.join(" ")})
         embed.setFooter({text: "Provided by https://wolframalpha.com"})
     
-        axios(`http://api.wolframalpha.com/v2/result?i=${args.join(" ")}&appid=${process.env.WOLFRAMID}&units=metric&output=json&ip=1.1.1.1`)
+        axios(`http://api.wolframalpha.com/v2/result`,
+        { params: {
+            "i": args.join(" "),
+            "appid": process.env.WOLFRAMID,
+            "units": "metric",
+            "output": "json",
+            "ip": "1.1.1.1"
+        }}
+        )
         .then(response => {
             if(response.status == 200) {
                 embed.addFields({name: "Response: ", value: response.data.toString()})
