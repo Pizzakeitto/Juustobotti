@@ -59,7 +59,6 @@ client.once('ready', () => {
 })
 
 client.on('messageCreate', msg => {
-    console.log("message")
     if (maintenancemode && msg.author.id != 246721024102498304) return
     if (msg.author.bot) return // If the message is sent by a bot, do nothing
     // If no perms to send message do nothing (a way to avoid crashing the bot lol)
@@ -86,7 +85,7 @@ client.on('messageCreate', msg => {
     }
 
     if (msg.content.toLowerCase().includes('owo') || msg.content.toLowerCase().includes('uwu') ) {
-        msg.reply("ok")
+        msg.channel.send("ok")
     }
 
     if (msg.content.toLowerCase().startsWith("ju?")) return msg.channel.send("ju?")
@@ -143,6 +142,11 @@ process.on('exit', function() {
 process.on('SIGINT', function() {
     client.destroy()
     process.abort()
+})
+
+// For nodemon bc it sends this kinda signal
+process.on('SIGUSR2', function() {
+    client.destroy()
 })
 
 function updateCustomStatus() {
