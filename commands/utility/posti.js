@@ -59,7 +59,7 @@ module.exports = {
             err = 1
         })
         if (err) return
-        
+        if (pakettiData.data.shipmentView[0] == null) return message.channel.send("En löytäny sun pakettias lol")
         const joo = pakettiData.data.shipmentView[0].parcel
         fs.writeFileSync("posti.json", JSON.stringify(joo, null, 4))
         const lastevent = joo.events[joo.events.length -1]
