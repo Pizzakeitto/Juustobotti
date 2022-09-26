@@ -30,7 +30,7 @@ module.exports = {
             let nimi = apireturnkasa[apireturnkasa.indexOf('"saf_name"') + 1].replace(/"/g, '')
 
             let metarEmbed = new Discord.EmbedBuilder()
-                .setAuthor(`METAR arvo kentälle ${nimi}`)
+                .setAuthor({name: `METAR arvo kentälle ${nimi}`})
                 .setColor(`${getColor()}`)
                 .setDescription(metarCode)
             
