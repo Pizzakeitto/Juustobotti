@@ -28,7 +28,7 @@ module.exports = {
 
         // Limit characters to idk 64 to avoid very deep guestions
         const stuffToDefine = args.join(' ')
-        if (stuffToDefine.length >= 64) return message.channel.send('Sorry bro, limited to 64 characters!')
+        if (stuffToDefine.length >= 180) return message.channel.send('Sorry bro, limited to 180 characters!')
 
         // Make sure nobody's tryna play with the AI 👀
         let testRegex = /["'\\]/g
