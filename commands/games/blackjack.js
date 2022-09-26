@@ -6,12 +6,14 @@ module.exports = {
     detailedDescription: 'You can feed your crippling gambling addiction by using this command. Bets do nothing atm :pensive:',
     usage: 'blackjack [bet]',
     // For intellisense purposes i need the new Discord.Message n stuff :)
-    execute(message = new Discord.Message, args = [""]) {
+    execute(message = Discord.Message.prototype, args = [""]) {
         if(!args[0]) {
             return message.channel.send("You didnt tell your bet!")
         }
         let bet = args[0]
         if(isNaN(bet)) return message.channel.send("Your bet has to be a number!")
+        if(bet < 0) return message.channel.send("Sorry bro, no free money for you")
+        if(bet >= Infinity) return message.channel.send("Sorry bro, i dont think you can have infinite money")
 
 
         let playerCards = []
@@ -95,6 +97,7 @@ module.exports = {
                         embed.color = colors.lose
                         embed.footer.text = 'You busted!'
                         botmsg.edit({embeds: [embed]})
+                        gameover()
                     } else {
                         botmsg.edit({embeds: [embed]})
                         playerPlay(message, botmsg)
@@ -116,11 +119,15 @@ module.exports = {
                 dealerSum += 10
             }
 
-            if (dealerCards.includes(1) && dealerCards.includes(10)) {
+            if (dealerCards.length == 2 && dealerCards.includes(1) && dealerCards.includes(10)) {
                 embed.footer.text = 'GAME OVER'
                 embed.color = colors.lose
+                embed.fields[1].value = `**Cards:** ${dealerCards.join(", ")}` +
+                `\n**Total:** ${dealerSum}`
+
                 botmsg.edit({embeds: [embed]})
                 message.channel.send(`The dealer got a blackjack and you lost ${bet} :dollar: !`)
+                gameover()
                 return
             }
 
@@ -141,6 +148,7 @@ module.exports = {
                         embed.footer.text = 'Draw!'
                         botmsg.edit({embeds: [embed]})
                         message.channel.send(`It's a draw! (You got your ${bet} :dollar: back)`)
+                        gameover()
                     }
                     else if(playerSum >= dealerSum || dealerSum >= 22) {
                         embed.footer.text = 'You win!'
@@ -152,6 +160,7 @@ module.exports = {
                         embed.color = colors.lose
                         botmsg.edit({embeds: [embed]})
                         message.channel.send(`Oof you lost ${bet} :dollar: :(`)
+                        gameover()
                     }
                 }, 500)
             }
@@ -159,6 +168,29 @@ module.exports = {
         function pickCard() {
             const availCards = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10]
             return availCards[Math.floor(Math.random() * availCards.length)]
+        }
+
+        // annoying people is fun :)
+        async function gameover() {
+            let listOfAnnoyances = [
+                "lol git gud first",
+                "how bout you get good before calling the game rigged",
+                "dude, get good",
+                "skill issue",
+                "not my problem you cant play",
+                "BWHAHAHAHAHHAHAHAHAHAHAAAHAHHAHAH XXXDXXDDXDXDDDDDDXDDDDXXDXDDDDDDDDXDXDXDDXDXDXDDDDXXDXXDXDDDXDDXDXDD RIGGED????!?!?!?!?!??!?!???!?!!??!?? DXDXDXFDXXDDXDXDXDXDXDXDXDXDXDXDXXDXDXDXDDXXDXXXXDDXDXDXXDDDXXDXDXDD git gud",
+                "brah go to gambling school or somthing smh",
+                "ping pizzakeitto if you dont know what youre doing and stop blaming me (unless you losing was my fault lol)",
+                "noob"
+            ]
+            let alreadySent = []
+            const filter = m => m.author.id == message.author.id && m.content.includes("rigg")
+            message.channel.createMessageCollector({max: 5, time: 60000, filter}).on("collect", (msg) => {
+                const index = Math.floor(Math.random() * listOfAnnoyances.length)
+                const annoyanceOfTheDay = listOfAnnoyances[index]
+                msg.channel.send(annoyanceOfTheDay)
+                listOfAnnoyances.splice(index, 1) // remove from the list so no duplicates get sent
+            })
         }
     }
 }
