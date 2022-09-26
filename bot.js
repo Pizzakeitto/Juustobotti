@@ -45,6 +45,8 @@ for(const folder of commandFolders) {
     const commandFiles = fs.readdirSync(`./commands/${folder}`).filter(file => file.endsWith('.js'))
     for(const file of commandFiles){
         const command = require(`./commands/${folder}/${file}`)
+        // Give each command its own category based on the folder name
+        command.category = folder
         client.commands.set(command.name, command)
         if (command.aliases) {
             command.aliases.forEach(alias => client.commandAliases.set(alias, command))
