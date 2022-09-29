@@ -5,6 +5,7 @@ const Discord = require('discord.js')
 require('dotenv').config()
 const {prefix} = require('./config.json')
 const fs = require('fs')
+const mongoose = require('mongoose')
 
 global.cooldownArray = []
 global.definitionCooldownArray = []
@@ -27,7 +28,6 @@ intents.push(
     Discord.GatewayIntentBits.DirectMessageReactions
 
 )
-console.log(intents)
 const partials = []
 partials.push(Discord.Partials.Message, Discord.Partials.Channel, Discord.Partials.Reaction)
 
@@ -54,9 +54,14 @@ for(const folder of commandFolders) {
     }
 }
 
-client.once('ready', () => {
+client.once('ready', async () => {
     client.user.setStatus("online")
     console.log("Yah im alive aight")
+    await mongoose.connect("mongodb://localhost:27017/juustobot")
+    .catch(err => {
+        console.log("Failed to connect to mongodb!")
+    })
+    console.log("Connected to mongodb!")
     updateCustomStatus()
 })
 
@@ -96,12 +101,13 @@ client.on('messageCreate', msg => {
     const args = msg.content.slice(prefix.length).trim().split(/ +/) //splits the arguments into an array, every space is the split point thingy
     const commandName = args.shift().toLowerCase() //gets what the commands name is and makes it lowercase so it aint case sensitive
 
-    // If theres no command found with the name, .get will return 'undefined', so the || thingy makes the other thing run idk hwo to explain this
+    // If theres no command found with the name, .get will return 'undefined',
+    // so the || thingy makes the other thing run idk hwo to explain this
     // JAvascript magic
     const command = client.commands.get(commandName) || client.commandAliases.get(commandName)
     if (!command) return msg.channel.send("I don't know that command! Check the available commands with ju!help")
 
-    try{
+    try {
         command.execute(msg, args)
     } catch (error) {
         console.log(error)
@@ -139,16 +145,19 @@ client.on("guildCreate", async guild => {
 
 process.on('exit', function() {
     client.destroy()
+    mongoose.disconnect()
 })
 
 process.on('SIGINT', function() {
     client.destroy()
+    mongoose.disconnect()
     process.abort()
 })
 
 // For nodemon bc it sends this kinda signal
 process.on('SIGUSR2', function() {
     client.destroy()
+    mongoose.disconnect()
 })
 
 function updateCustomStatus() {
