@@ -1,7 +1,7 @@
 const Discord = require('discord.js')
 const axios = require('axios').default
 const fetch = require('node-fetch').default
-const { postimitävittua } = require("../../config.json") // Something thats required????????????
+const { postimitävittua } = require("../config.json") // Something thats required????????????
 const fs = require('fs')
 
 module.exports = {
