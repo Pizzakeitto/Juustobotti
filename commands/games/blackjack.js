@@ -1,4 +1,6 @@
 const Discord = require('discord.js')
+const { getUser } = require('../../utils/mongoUtils')
+const { currency } = require('../../config.json')
 module.exports = {
     name: 'blackjack',
     aliases: ['bj'],
@@ -6,7 +8,7 @@ module.exports = {
     detailedDescription: 'You can feed your crippling gambling addiction by using this command. Bets do nothing atm :pensive:',
     usage: 'blackjack [bet]',
     // For intellisense purposes i need the new Discord.Message n stuff :)
-    execute(message = Discord.Message.prototype, args = [""]) {
+    async execute(message = Discord.Message.prototype, args = [""]) {
         if(!args[0]) {
             return message.channel.send("You didnt tell your bet!")
         }
@@ -15,6 +17,13 @@ module.exports = {
         if(bet < 0) return message.channel.send("Sorry bro, no free money for you")
         if(bet >= Infinity) return message.channel.send("Sorry bro, i dont think you can have infinite money")
 
+        const user = await getUser(message.author.id)
+        if(user.wallet < bet) return message.channel.send(`Sorry bro, you cant afford gambling (You have ${user.wallet}${currency} in your pockets rn)`)
+        
+        // IF we are here the dood has enoug hmoney
+        // We remove the money so yes
+        user.wallet -= bet
+        await user.save()
 
         let playerCards = []
         let dealerCards = []
@@ -43,7 +52,7 @@ module.exports = {
         let embed = {
             color: colors.playing,
             title: 'BLACKJACK',
-            description: `You have bet ${bet} :dollar:`,
+            description: `You have bet ${bet}${currency}`,
             fields: [
                 {
                     name: `${message.author.username}`,
@@ -67,7 +76,9 @@ module.exports = {
             embed.color = colors.win
             embed.footer.text = `You got blackjack!`
             message.channel.send({embeds: [embed]})
-            message.channel.send(`You got blackjack, instant win! ${bet * 3} :dollar: for you, you lucky person`)
+            message.channel.send(`You got blackjack, instant win! ${bet * 5}${currency} for you, you lucky person`)
+            user.wallet += bet * 3
+            await user.save()
             return
         }
         message.channel.send({embeds: [embed]}).then(botmsg => {
@@ -115,7 +126,7 @@ module.exports = {
         function dealerPlay(message = new Discord.Message, botmsg = new Discord.Message) {
             dealerCards.push(pickCard())
             dealerSum = dealerCards.reduce((a, b) => a + b, 0)
-            if (dealerCards.includes(1) && dealerSum + 10 < 21) {
+            if (dealerCards.includes(1) && dealerSum + 10 <= 21) {
                 dealerSum += 10
             }
 
@@ -126,7 +137,7 @@ module.exports = {
                 `\n**Total:** ${dealerSum}`
 
                 botmsg.edit({embeds: [embed]})
-                message.channel.send(`The dealer got a blackjack and you lost ${bet} :dollar: !`)
+                message.channel.send(`The dealer got a blackjack and you lost ${bet}${currency}!`)
                 gameover()
                 return
             }
@@ -140,28 +151,32 @@ module.exports = {
             if(dealerSum < 17) {
                 setTimeout(function () {
                     dealerPlay(message, botmsg)
-                }, 1000)
+                }, 500)
             }
             else {
                 setTimeout(function () {
                     if(playerSum == dealerSum) {
                         embed.footer.text = 'Draw!'
                         botmsg.edit({embeds: [embed]})
-                        message.channel.send(`It's a draw! (You got your ${bet} :dollar: back)`)
+                        message.channel.send(`It's a draw! (You got your ${bet}${currency} back)`)
+                        user.wallet += bet
                         gameover()
                     }
                     else if(playerSum >= dealerSum || dealerSum >= 22) {
                         embed.footer.text = 'You win!'
                         embed.color = colors.win
                         botmsg.edit({embeds: [embed]})
-                        message.channel.send(`You won ${bet * 2} :dollar: !`)
+                        message.channel.send(`You won ${bet * 2}${currency} !`)
+                        user.wallet += bet * 2
                     } else {
                         embed.footer.text = 'Dealer wins!'
                         embed.color = colors.lose
                         botmsg.edit({embeds: [embed]})
-                        message.channel.send(`Oof you lost ${bet} :dollar: :(`)
+                        message.channel.send(`Oof you lost ${bet}${currency} :(`)
                         gameover()
                     }
+                    console.log(`saved doods money, has ${user.wallet} now`)
+                    user.save()
                 }, 500)
             }
         }
