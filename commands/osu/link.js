@@ -10,15 +10,38 @@ module.exports = {
         const mariadb = require('mariadb')
         const { sqlconfig } = require('../../config.json')
         const { v2, auth } = require('osu-api-extended')
+
+        const osuUsername = args.join(" ")
         
         mariadb.createConnection(sqlconfig).then(async connection => {
             await auth.login(process.env.OSUCLIENTID, process.env.OSUCLIENTSECRET)
-            const osuUser = await v2.user.details(args[0], "osu")
+            const osuUser = await v2.user.details(osuUsername, "osu", "username")
+            if(Object.getOwnPropertyNames(osuUser).includes("error")) return message.channel.send("couldnt find this dude in osu sorry! (are you banned?)")
 
-            const response = await connection.query(`INSERT INTO players (discordid, osuname, osuid) VALUES ('${message.author.id}', '${args[0]}', '${osuUser.id}') ON DUPLICATE KEY UPDATE osuname='${args[0]}', osuid='${osuUser.id}'`)
+            const response = await connection.query(`
+                INSERT INTO players (
+                    discordid, 
+                    osuname, 
+                    osuid
+                ) VALUES (
+                    ?, 
+                    ?, 
+                    ?
+                ) ON DUPLICATE KEY UPDATE
+                    osuname=?,
+                    osuid=?`, 
+                [
+                    message.author.id, 
+                    osuUsername, 
+                    osuUser.id, 
+                    osuUsername, 
+                    osuUser.id
+                ]
+            )
             .catch(err => {
                 console.log(err)
             })
+            if(!response) return message.reply("no response from the db?? ping Pizzakeitto") // shouldnt happen, but just in case
             if(response.affectedRows >= 1) {
                 message.channel.send("Yup, you're linked aight. Now you can do `ju!osu` and `ju!rs` without having to type your username!")
                 console.log(message.author.tag + " got saved to the database")
