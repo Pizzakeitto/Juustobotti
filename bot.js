@@ -3,14 +3,19 @@
 
 const Discord = require('discord.js')
 require('dotenv').config()
-const {prefix} = require('./config.json')
+var {prefix} = require('./config.json')
 const fs = require('fs')
 const mongoose = require('mongoose')
+const { ServerConfig } = require('./utils/mongoUtils')
+const { chat } = require('./chat')
+
 
 global.cooldownArray = []
 global.definitionCooldownArray = []
 global.timeoutCooldowns = {}
 global.botStartTime = Date.now()
+global.usersInChat = []
+global.responding = []
 
 const maintenancemode = false
 
@@ -65,18 +70,58 @@ client.once('ready', async () => {
     updateCustomStatus()
 })
 
-client.on('messageCreate', msg => {
+client.on('messageCreate', async msg => {
+    // not ideal but too lazy to get an actual fix going
+    let prefix = require('./config.json').prefix
+
     if (maintenancemode && msg.author.id != 246721024102498304) return
     if (msg.author.bot) return // If the message is sent by a bot, do nothing
     // If no perms to send message do nothing (a way to avoid crashing the bot lol)
     if (msg.guild) {
         if (!msg.guild.members.me.permissionsIn(msg.channel).has('SendMessages')) return console.log("no perms?")
     }
-    if (msg.mentions.users.has(client.user.id)) {
-        // msg.channel.send(`Why did you ping me??? Do ${prefix}help to see my commands bruh`)
-	// Disabled because ppl get angry lol
+
+    // Chat
+    // not in a server so most likely dms
+    if (!msg.guild) {
+        let chatUserExists = usersInChat.some(u => u.id == msg.author.id && u.channel == msg.channelId)
+        if (msg.content.toLowerCase().startsWith("moro justo")) {
+            if (!chatUserExists){
+                usersInChat.push({id: msg.author.id, channel: msg.channelId})
+                chatUserExists = true
+            }
+        }
+        if (global.responding.includes(msg.author.id)) return msg.reply("SHUT THE FUCK UP IM THINKING!/AFUJOIY/U)P(/P()AFY/(P)/Y(P)(O(&YEQHUID")
+        if (chatUserExists) chat(msg)
     }
-    let annoy = false
+    // they are not in a thread and want to start chat
+    else if (msg.content.toLowerCase().startsWith("moro justo") && !msg.channel.isThread()) return async function() {
+        /** @type {Discord.ThreadChannel} */
+        const threadChannel = await msg.channel.threads.cache.find(x => x.name == `Chat with ${msg.author.username}`) || await msg.channel.threads.create({name: `Chat with ${msg.author.username}`})
+        await threadChannel.send(`<@${msg.author.id}>`)
+        let chatUserExists = usersInChat.some(u => u.id == msg.author.id && u.channel == threadChannel.id)
+        msg.channel = threadChannel
+        msg.channelId = threadChannel.id
+        if (!chatUserExists){
+            usersInChat.push({id: msg.author.id, channel: msg.channelId})
+            chatUserExists = true
+        }
+        if (global.responding.includes(msg.author.id)) return msg.reply("SHUT THE FUCK UP IM THINKING!/AFUJOIY/U)P(/P()AFY/(P)/Y(P)(O(&YEQHUID")
+        chat(msg)
+    }()
+    // they are already in a chat
+    else if (msg.channel.isThread() && usersInChat.some(u => u.id == msg.author.id && u.channel == msg.channelId)) {
+        if (global.responding.includes(msg.author.id)) return msg.reply("SHUT THE FUCK UP IM THINKING!/AFUJOIY/U)P(/P()AFY/(P)/Y(P)(O(&YEQHUID")
+        chat(msg)
+    }
+    // they are not in a chat but in a chat thread and want to start again
+    else if (msg.channel.isThread() && !usersInChat.some(u => u.id == msg.author.id && u.channel == msg.channelId) && msg.content.toLowerCase().startsWith("moro justo")) {
+        usersInChat.push({id: msg.author.id, channel: msg.channelId})
+        if (global.responding.includes(msg.author.id)) return msg.reply("SHUT THE FUCK UP IM THINKING!/AFUJOIY/U)P(/P()AFY/(P)/Y(P)(O(&YEQHUID")
+        chat(msg)
+    }
+
+    let annoy = true
     if (msg.content.toLowerCase().includes('linux') && annoy){
         if (global.cooldownArray.includes(msg.author.id)) return;
         global.cooldownArray.push(msg.author.id)
@@ -96,6 +141,12 @@ client.on('messageCreate', msg => {
     }
 
     if (msg.content.toLowerCase().startsWith("ju?")) return msg.channel.send("ju?")
+    // Check if server has its own prefix
+    let serverConfig = await ServerConfig.findOne({_id: msg.guildId}) || new ServerConfig({
+        _id: msg.guildId,
+        prefix: prefix
+    })
+    if (serverConfig.prefix) prefix = serverConfig.prefix
     if (!msg.content.toLowerCase().startsWith(prefix)) return //If the message doesn't start with the prefix, do nothing
 
     const args = msg.content.slice(prefix.length).trim().split(/ +/) //splits the arguments into an array, every space is the split point thingy
@@ -105,8 +156,10 @@ client.on('messageCreate', msg => {
     // so the || thingy makes the other thing run idk hwo to explain this
     // JAvascript magic
     const command = client.commands.get(commandName) || client.commandAliases.get(commandName)
-    if (!command) return msg.channel.send("I don't know that command! Check the available commands with ju!help")
+    if (!command) return msg.channel.send(`I don't know that command! Check the available commands with ${prefix}help`)
 
+    // Before running command set *global* prefix to the thing
+    global.prefix = prefix
     try {
         command.execute(msg, args)
     } catch (error) {
