@@ -63,7 +63,7 @@ module.exports = {
             if (shortmode) {
                 // insert shortened embed here.
                 embed.setDescription(
-                    `▸ **Rank:** ${rank}\n` +
+                    `▸ **Rank:** ${rank} (#${profile.country_code} ${wysi(numberWithCommas(profile.statistics.country_rank))})\n` +
                     `▸ **PP:** ${pp}\n` +
                     `▸ **Accuracy:** ${acc}%\n` +
                     `▸ **Playcount:** ${playcount}\n` 
@@ -73,7 +73,7 @@ module.exports = {
             } else {
                 embed.addFields({
                 name: "- Performance -",
-                value:  `**Rank**: ${rank}` +
+                value:  `**Rank**: ${rank} (#${profile.country_code} ${wysi(numberWithCommas(profile.statistics.country_rank))})` +
                         `\n**PP**: ${pp}` +
                         `\n**Level**: ${level}` +
                         `\n**Accuracy**: ${acc}%` +
