@@ -15,8 +15,7 @@ module.exports = {
 
         // Ratelimit to 10s
         if (global.definitionCooldownArray.includes(message.author.id)) {
-            message.react("<:lidl:909735974421037076>")
-            message.react("<:woo:910168102078124052>")
+            message.react("🦥")
             return
         }
         global.definitionCooldownArray.push(message.author.id)
@@ -24,7 +23,7 @@ module.exports = {
             global.definitionCooldownArray = global.definitionCooldownArray.filter(function(value, index, arr) {
                 return value != message.author.id
             })
-        }, 10000);
+        }, 5000);
 
         // Limit characters to idk 64 to avoid very deep guestions
         const stuffToDefine = args.join(' ')
