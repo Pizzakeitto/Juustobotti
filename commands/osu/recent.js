@@ -2,7 +2,7 @@ const Discord = require('discord.js')
 
 module.exports = {
     name: 'recent',
-    aliases: ['rs'],
+    aliases: ['rs', 'r'],
     description: 'Gets recent scores',
     detailedDescription: 'Get the most recent play from someone. If you link your account (using ju!link) you don\'t have to type your username to get your profile.',
     usage: 'recent <user>',
@@ -48,8 +48,13 @@ module.exports = {
             const version =     mostRecent.beatmap.version
 
             const {attributes} = await v2.beatmap.attributes(bmapid, { mods: mostRecent.mods })
-            const rating =      attributes.star_rating.toFixed(2) + " ⭐"
-            const maxcombo =    attributes.max_combo
+            if (attributes) {
+                var rating =      attributes.star_rating.toFixed(2) + " ⭐"
+                var maxcombo =    attributes.max_combo
+            } else {
+                var rating = "idk ⭐"
+                var maxcombo = "idk"
+            }
 
             const mods =        mostRecent.mods.length == 0 ? "Nomod" : mostRecent.mods.join('')
             const score =       numberWithCommas(mostRecent.score)
