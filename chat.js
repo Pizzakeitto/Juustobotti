@@ -12,7 +12,7 @@ const headers = {
 // Different conversations we have going on
 // Each users conversation is separated by id
 const chats = new Object
-
+const lastTimeUsed = []
 
 async function chat(msg = Message.prototype) {
     global.responding.push(msg.author.id)
@@ -25,13 +25,19 @@ async function chat(msg = Message.prototype) {
         msg.channel.send("ok moro")
     }()
 
+    // Check when last message was sent, if its over 2 hours ago then forgor everything 💀
+    if (lastTimeUsed[msg.author.id] && global.usersInChat.includes({id: msg.author.id, channel: msg.channelId}) && Date.now() - lastTimeUsed[msg.author.id] >= 1000*60*60 * 2) {
+        delete chats[msg.author.id]
+        msg.channel.send("sorry you didnt use \"adios\" to stop the previous onversation so i have forgortten everything you previously said sorry bye")
+    }
+
     // if they wanna chat then we chat
     msg.channel.sendTyping()
     // check which users chat history we wanna use
     // if they just started then create new thread
     if (!chats.hasOwnProperty(msg.author.id)) {
         chats[msg.author.id] = [
-            {"role": "system", "content": `The current date is "${Date()}". Your name is Juustobotti and you speak finnish primarily. Tell the user that they can leave by typing "adios".`},
+            {"role": "system", "content": `The current date is "${Date()}". Your name is Juustobotti and you speak finnish primarily. The user can leave by typing "adios".`},
             {"role": "user", "content": msg.content}
         ]
     }
