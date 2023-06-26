@@ -43,11 +43,11 @@ module.exports = {
             })
             if(!response) return message.reply("no response from the db?? ping Pizzakeitto") // shouldnt happen, but just in case
             if(response.affectedRows >= 1) {
-                message.channel.send("Yup, you're linked aight. Now you can do `ju!osu` and `ju!rs` without having to type your username!")
+                message.channel.send(`Yup, you're linked aight. Now you can do \`${prefix}osu\` and \`${prefix}rs\` without having to type your username!`)
                 console.log(message.author.tag + " got saved to the database")
                 connection.end()
             } else {
-                message.channel.send("Something unexpected happened, I think... You can try doing `ju!osu` anyway")
+                message.channel.send(`Something unexpected happened, I think... You can try doing \`${prefix}osu\` anyway`)
                 console.log(response)
                 connection.end()
             }
