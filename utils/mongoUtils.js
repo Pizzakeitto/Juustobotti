@@ -7,8 +7,14 @@ const { Schema } = require('mongoose')
 const userSchema = new Schema({
     _id:        Number,
     wallet:     Number,
+    bank:       Number,
     inventory:  Array(String),
-
+    stats:      {
+        gamesWon:   Number,
+        gamesLost: Number,
+        profit: Number,
+        losses: Number
+    }
 })
 
 const bankSchema = new Schema({
@@ -18,31 +24,32 @@ const bankSchema = new Schema({
     ],
 })
 
+const serverConfigSchema = new Schema({
+    _id:        Number, //Server id
+    prefix:     String
+})
+
+const ServerConfig = mongoose.model("ServerConfig", serverConfigSchema)
+
 const User = mongoose.model("User", userSchema)
-const Bank = mongoose.model("Bank", bankSchema)
 
 exports.User = User
-exports.addMoney = addMoney
 exports.getUser  = getUser
-
-async function addMoney(id, amount) {
-    const user = await User.findOne({_id: id}) || new User({
-        _id: id,
-        wallet: 100
-    })
-    user.wallet += amount
-    user.save()
-}
+exports.ServerConfig = ServerConfig
 
 async function getUser(id) {
     const user = await User.findOne({_id: id}) || new User({
         _id: id,
-        wallet: 100
+        wallet: 0,
+        bank: 100,
+        inventory: [],
+        stats: {
+            gamesWon: 0,
+            gamesLost: 0,
+            profit: 0,
+            losses: 0
+        }
     })
-    // Get the current bank, if it doesnt exist for some reason create a new one
-    // This should only happen once (so never)
-    const bank = await Bank.findOne({_id: 0}) || new Bank({
-        
-    })
+
     return user
 }
