@@ -49,7 +49,6 @@ module.exports = {
             })
         }
 
-
         let tomorrowsOptions = []
         if(tomorrowsFood != undefined) {
             tomorrowsFood.mealoptions.map(foodThing => {
@@ -63,13 +62,27 @@ module.exports = {
         foodEmbed.setDescription("Signessä!!!")
         foodEmbed.setColor(0x007000)
 
-        if(todaysFood != undefined) foodEmbed.addFields({name: "Todays food:", value: todaysOptions.join("\n")})
-        if(tomorrowsFood != undefined) foodEmbed.addFields({name: "Tomorrows food:", value: tomorrowsOptions.join("\n")}) // !!! make this be the next possible food day instead!!!
+        if(todaysFood != undefined) foodEmbed.addFields({name: `Todays food (${whattheday(todaysFood.weekday)}):`, value: todaysOptions.join("\n")})
+        if(tomorrowsFood != undefined) foodEmbed.addFields({name: `Tomorrows food (${whattheday(tomorrowsFood.weekday)}):`, value: tomorrowsOptions.join("\n")}) // !!! make this be the next possible food day instead!!!
         if(todaysFood == undefined && tomorrowsFood == undefined) foodEmbed.addFields({name: "There is no food.", value: "Stay home."})
 
         message.channel.send({embeds: [foodEmbed]}).catch(err => {
             console.log(err)
             message.channel.send("no food")
         })
+
+
+        function whattheday(i) {
+            switch (i) {
+                case 1: return "Monday"
+                case 2: return "Tuesday"
+                case 3: return "Wednesday"
+                case 4: return "Thursday"
+                case 5: return "Friday"
+                case 6: return "Saturday"
+                case 7: return "Sunday"
+                default: return i
+            }
+        }
     }
 }
