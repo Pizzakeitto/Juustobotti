@@ -12,6 +12,7 @@ module.exports = {
 	description: 'Read the temperature in pizzas room!',
 	aliases: ['pizza'],
 	execute(message = Discord.Message.prototype, args = []) {
+        if (process.env.HOMEIP == undefined || "") throw "Erorr at roomtemp.js: This command wont work for you sorry :("
         const connection = net.createConnection({host: process.env.HOMEIP, port: 4727, timeout: 2500}, () => {
             console.log("connected")
         })
@@ -26,8 +27,14 @@ module.exports = {
                 const heatindex = Number(datapieces[3]).toFixed(1)
 
                 const embed = new Discord.EmbedBuilder
-                embed.setTitle("The burning hell that is Pizzakeitto's room")
+                
+                embed.setTitle(
+                    temperature < 14 ? "The freezing world outside Pizzakeitto's room (it will never be this cold in Pizzakeitto's room)" :
+                    temperature < 18 ? "The frozen hell that is Pizzakeitto's room" :
+                    "The burning hell that is Pizzakeitto's room"
+                    )
                 embed.setDescription(`Humidity: ${humidity}%\nTemperature: ${temperature}°c\nHeat Index: ${heatindex}°c`)
+                console.log(temperature)
                 message.channel.send({embeds: [embed]})
             }
         })
