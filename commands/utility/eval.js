@@ -4,7 +4,7 @@ module.exports = {
     name: 'eval',
     description: 'Evaluate code from mesag',
     hidden: true,
-    execute(message = new Discord.Message, args = []){
+    execute(message = Discord.Message.prototype, args = []){
         if(!args){
             return message.channel.send("Nothing to eval!")
         }
@@ -12,7 +12,6 @@ module.exports = {
         if (message.author.id != "246721024102498304") {
             return message.channel.send("Youre not Pizzakeitto (Sorry i prefer leaving this command for me only) ?!?!")
         }
-        const {prefix} = require('../../config.json')
         let newargs = message.content.slice(prefix.length + 4).trim()
 
         try {
