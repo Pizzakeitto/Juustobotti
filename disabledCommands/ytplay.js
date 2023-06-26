@@ -1,3 +1,8 @@
+// NOTE: DISABLED BECAUSE DEALING WITH AUDIO SUCKS ON DISCORD.JS AND I DONT WANT TO TOUCH THIS ANYMORE
+// Feel free to rewrite and make pr :)
+
+
+
 const Discord = require('discord.js')
 const ytdl = require('ytdl-core')
 const axios = require('axios').default
@@ -10,6 +15,7 @@ module.exports = {
         if (args.length == 0) return message.reply('Gimie a link OR something to search for!')
 
         const voicechannel = message.member.voice.channel
+        console.log(voicechannel)
         if (!voicechannel) return message.reply('You need to join a voice channel first!')
 
         // const ytcog = require('ytcog')
@@ -36,7 +42,7 @@ module.exports = {
 
         const connection = voice.joinVoiceChannel({
             channelId: voicechannel.id,
-            guildId: voicechannel.guild.id,
+            guildId: voicechannel.guildId,
             adapterCreator: voicechannel.guild.voiceAdapterCreator
         })
 
