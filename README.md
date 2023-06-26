@@ -2,35 +2,7 @@
 
 It is a Discord bot that is heavily focused on the osu! API and has some other "useful" features aswell. It is one of my long term projects that will never be finished. Some values might be hardcoded so keep that in mind.
 
-Check out [the docs](doc/README.md) if you want to set this up yourself. Feel free to make pull requests!
-
-Dependencies:
-* dotenv
-* mysql
-* discord.js
-* node-osu (will be replaced with osu-api-extended soon ish)
-* A lot more
-* god im lazy
-* check package.json :)
-
-You'll need your own MySQL database. I'm working on a script to automate making the database. If you're feeling brave, you can try it right now by doing `node setup.js` (after doing `npm install`)
-
-If you want to try this out yourself for some reason, create your own .env file with these defined (Yeah theres alot lol):
-```
-BOTTOKEN=
-OSUTOKEN=
-OPENWEATHERKEY=
-DOGAPIKEY=
-YTAPIKEY=
-WOLFRAMID=
-OPENAIKEY=
-OSUCLIENTID=
-OSUCLIENTSECRET=
-```
-DM me if you need help with what keys you need.
-After that do `npm install` and `node bot.js` and the bot *should in theory* become online
-
-Btw this readme is very much wip so yeah ask me for more info if youre really interested
+Check out [the docs](doc/README.md) if you want to set this up yourself. Feel free to DM me if you need help with something. Also feel free to make pull requests!
 
 TODO: 
 
