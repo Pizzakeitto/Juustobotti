@@ -12,10 +12,11 @@ module.exports = {
         if(!args[0]) {
             return message.channel.send("You didnt tell your bet!")
         }
-        let bet = args[0]
-        if(isNaN(bet)) return message.channel.send("Your bet has to be a number!")
+        if(isNaN(args[0])) return message.channel.send("Your bet has to be a number!")
+        let bet = Number(Number(args[0]).toFixed(2))
         if(bet < 0) return message.channel.send("Sorry bro, no free money for you")
         if(bet >= Infinity) return message.channel.send("Sorry bro, i dont think you can have infinite money")
+
 
         const user = await getUser(message.author.id)
         if(user.wallet < bet) return message.channel.send(`Sorry bro, you cant afford gambling (You have ${user.wallet}${currency} in your pockets rn)`)
@@ -77,7 +78,7 @@ module.exports = {
             embed.footer.text = `You got blackjack!`
             message.channel.send({embeds: [embed]})
             message.channel.send(`You got blackjack, instant win! ${bet * 5}${currency} for you, you lucky person`)
-            user.wallet += bet * 3
+            user.wallet += bet * 5
             await user.save()
             return
         }
@@ -201,6 +202,7 @@ module.exports = {
             let alreadySent = []
             const filter = m => m.author.id == message.author.id && m.content.includes("rigg")
             message.channel.createMessageCollector({max: 5, time: 60000, filter}).on("collect", (msg) => {
+                console.log(`nice, ${msg}`)
                 const index = Math.floor(Math.random() * listOfAnnoyances.length)
                 const annoyanceOfTheDay = listOfAnnoyances[index]
                 msg.channel.send(annoyanceOfTheDay)
