@@ -16,7 +16,9 @@ module.exports = {
         const axios = require('axios').default
 
         const today = (await axios.get("https://api.safka.online/v2/menu/today")).data
-        const tomorrow = (await axios.get(`https://api.safka.online/v2/menu/${today.dayId+1}`)).data
+
+        const tomorrowId = today.dayId < 6 ? today.dayId+1 : 0
+        const tomorrow = (await axios.get(`https://api.safka.online/v2/menu/${tomorrowId}`)).data
 
         const foodEmbed = new Discord.EmbedBuilder()
             .setTitle("Ruoka")
