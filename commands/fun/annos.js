@@ -7,12 +7,14 @@
 const Discord = require('discord.js')
 const parser = require('@fast-csv/parse')
 const fs = require('fs')
-const translate = require('translate-google')
+
+// TODO: Change translating to something else than google, this package sucks
+// const translate = require('translate-google')
 
 module.exports = {
     name: 'annos',
     description: 'Päivän annos, tieteellisesti',
-    detailedDescription: 'Kertoo mitä pitäisi syödä ja miten paljon että saa päivän annoksen jotain ainetta. Datan lähde on [Fineli](https://fineli.fi/fineli/fi/avoin-data)\n\nIf you want to use other languages, add some language code to the command (for example: `ju!annos en` to get it in english). You can find the list of supported languages [Here](https://cloud.google.com/translate/docs/languages)',
+    detailedDescription: 'Kertoo mitä pitäisi syödä ja miten paljon että saa päivän annoksen jotain ainetta. Datan lähde on [Fineli](https://fineli.fi/fineli/fi/avoin-data)',
     execute(message = Discord.Message.prototype, args = [""]) {
         // ravitsemussuositukset isona listana, 18-30v miehet
         // yksiköt vaihtelevat koska näin tekevät myös datassa???????
@@ -104,23 +106,7 @@ module.exports = {
                 dose += "g"
             }
             
-            if(!args[0]) return message.channel.send(`Saat päivän annoksen ${ravitsemusNimet[randomComponent]} syömällä ${dose} ${food.FOODNAME}.`)
-
-            if(Object.getOwnPropertyNames(translate.languages).includes(args[0].toLowerCase())) {
-                message.channel.sendTyping()
-                translate(`Saat päivän annoksen ${ravitsemusNimet[randomComponent]} syömällä ${dose} ${food.FOODNAME}.`, {from: 'fi', to: args[0].toLowerCase()})
-                .then(res => {
-                    // console.log(res)
-                    message.channel.send(res)
-                })
-                .catch(err => {
-                    message.channel.send("Something unexpected happened!")
-                    console.log(err)
-                })
-                
-            } else {
-                message.channel.send("That aint a language! Look here to find all the supported languages: <https://cloud.google.com/translate/docs/languages>")
-            }
+            return message.channel.send(`Saat päivän annoksen ${ravitsemusNimet[randomComponent]} syömällä ${dose} ${food.FOODNAME}.`)
         })
 
         /**
