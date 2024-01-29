@@ -7,10 +7,16 @@ module.exports = {
         const axios = require('axios').default
 
         const url = "https://fi.jamix.cloud/apps/menuservice/rest/haku/menu/97325/7?lang=fi" // food api for signe
-        const response = await axios(url)
-        const data = response.data[0]
 
-        if(!data) return message.channel.send("No food in ravintola signe:tm:!")
+        let data = await axios.get(url)
+            .then(response => response.data[0]) // Directly return 'data' from the axios response
+            .catch(err => {
+                message.channel.send("Couldn't reach the food (Jamix is down <:hollow:1028705732180328550>)");
+                console.log(err)
+                return undefined;
+            });
+        
+        if(!data) return
 
         const menus = data.menuTypes[0].menus[0]
         let now = new Date()

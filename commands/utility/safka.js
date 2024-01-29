@@ -15,7 +15,15 @@ module.exports = {
     async execute(message = Discord.Message.prototype, args = [""]) {
         const axios = require('axios').default
 
-        const today = (await axios.get("https://api.safka.online/v2/menu/today")).data
+        let today = await axios.get("https://api.safka.online/v2/menu/today")
+            .then(response => response.data) // Directly return 'data' from the axios response
+            .catch(err => {
+                message.channel.send("Couldn't reach the food (Safka is down <:hollow:1028705732180328550>)");
+                console.log(err)
+                return undefined;
+            });
+      
+        if (today == undefined) return;
 
         const tomorrowId = today.dayId < 6 ? today.dayId+1 : 0
         const tomorrow = (await axios.get(`https://api.safka.online/v2/menu/${tomorrowId}`)).data
