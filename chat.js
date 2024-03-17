@@ -37,7 +37,7 @@ async function chat(msg = Message.prototype) {
     // if they just started then create new thread
     if (!chats.hasOwnProperty(msg.author.id)) {
         chats[msg.author.id] = [
-            {"role": "system", "content": `The current date is "${Date()}". Your name is Juustobotti and you speak finnish primarily. The user can leave by typing "adios".`},
+            {"role": "system", "content": `The current date is "${Date()}". Your name is Juustobotti and you speak finnish primarily. The user can leave by typing "adios". No yapping.`},
             {"role": "user", "content": msg.content}
         ]
     }
@@ -53,7 +53,7 @@ async function chat(msg = Message.prototype) {
     if (encode(long).length > 4096) makeFit(chats[msg.author.id])
     let error = 0
     const response = await axios.post(endpoint, {
-        "model": "gpt-3.5-turbo",
+        "model": "gpt-4-1106-preview",
         "messages": chats[msg.author.id]
     }, {headers})
     .catch(err => {
