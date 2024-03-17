@@ -79,7 +79,7 @@ module.exports = {
             const feelsLike = weatherData.main.feels_like
             const humidity = weatherData.main.humidity
             const windSpeed = weatherData.wind.speed
-            const windArrow = degToArrow(weatherData.wind.deg)
+            const windArrow = degToDirection(weatherData.wind.deg)
 
             const forecast1 = forecast.list[0] // at most +3 hours
             const forecast2 = forecast.list[1] // at most +6 hours
@@ -88,8 +88,8 @@ module.exports = {
 
             // ° asteen merkki
             let fields = [
-                { name: 'Temperature', value:  `${temperature}°C`, inline: true },
-                { name: 'Wind', value: `${windSpeed} m/s \\${windArrow}`, inline: true },
+                { name: 'Temperature', value:  `${temperature}°C\nFeels like ${feelsLike}°C`, inline: true },
+                { name: 'Wind', value: `${windSpeed} m/s ${windArrow}`, inline: true },
                 { name: 'Humidity', value: `${humidity}%`, inline: true },
                 { name: `At <t:${forecast1.dt}:t>`, value: `${forecast1.weather[0].main}, ${forecast1.weather[0].description}\n${forecast1.main.temp}°C`, inline: true },
                 { name: `At <t:${forecast2.dt}:t>`, value: `${forecast2.weather[0].main}, ${forecast2.weather[0].description}\n${forecast2.main.temp}°C`, inline: true },
@@ -148,6 +148,20 @@ module.exports = {
                 '⬆'
             ]
             return emojis[Math.round(deg/45)]
+        }
+
+        function degToDirection(deg = 0) {
+            const directions = [
+                'N',
+                'NE',
+                'E',
+                'SE',
+                'S',
+                'SW',
+                'W',
+                'NW'
+            ]
+            return directions[Math.round(deg/45)]
         }
 
         async function getForecast(apiKey, lat, lon) {
