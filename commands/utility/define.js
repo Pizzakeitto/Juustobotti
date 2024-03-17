@@ -6,7 +6,7 @@ module.exports = {
     detailedDescription: "Have you ever wanted to know what something means? Now you can find out! (This uses [OpenAI's](https://openai.com) API)\n\nJust do `ju!define [a word]` to find out stuff! Your question cannot include these characters: \" ' ` \\",
     execute(message = Discord.Message.prototype, args = [""]) {
         const axios = require('axios').default
-        const endpoint = "https://api.openai.com/v1/engines/text-babbage-001/completions" // Using babbage because it fast :)
+        const endpoint = "https://api.openai.com/v1/chat/completions"
         const filterEndpoint = "https://api.openai.com/v1/engines/content-filter-alpha/completions" // OpenAI content filter
         const headers = {
             "Content-Type": "application/json",
@@ -36,15 +36,26 @@ module.exports = {
         // Functions to make life easier i guess
         async function define(something) {
             const res = await axios.post(endpoint, {
-                "prompt": `Define "${something}"\n`,
-                "temperature": 0.05,
-                "max_tokens": 100,
+                "model": "gpt-3.5-turbo",
+                "messages": [
+                    {
+                      "role": "system",
+                      "content": "You are an assistant who knows every word and is willing to help users define words. Keep answers short but useful."
+                    },
+                    {
+                      "role": "user",
+                      "content": `Define "${something}"`
+                    }
+                  
+                ],
+                "temperature": 1,
+                "max_tokens": 256,
                 "top_p": 1,
                 "frequency_penalty": 0,
                 "presence_penalty": 0
             },
             { headers: headers } )
-            return res.data.choices[0].text.trim()
+            return res.data.choices[0].message.content.trim()
         }
 
         async function contentFilter(something) {
@@ -85,7 +96,7 @@ module.exports = {
             const embed = new Discord.EmbedBuilder()
             if (warning != undefined) embed.setTitle(warning)
             embed.setAuthor({ name: `Definition of ${stuffToDefine}` })
-            embed.setDescription(`${definition}\n\nProvided by [OpenAI's](https://openai.com) Babbage engine.`)
+            embed.setDescription(`${definition}\n\nProvided by [OpenAI's](https://openai.com) gpt-3.5-turbo engine.`)
             embed.setColor('#00f000')
             message.channel.send({embeds: [embed]})
         }
