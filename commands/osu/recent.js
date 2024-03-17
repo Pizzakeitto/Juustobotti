@@ -85,7 +85,7 @@ module.exports = {
             
             // pretty much yoinked the old embed
             let embed = new Discord.EmbedBuilder()
-            .setColor('#FF00FF')
+            .setColor('#FF66AA')
             .setAuthor({ name: `${artist} - ${title} [${version}] | ${rating}`, url: `https://osu.ppy.sh/b/${bmapid}`, iconURL: `https://a.ppy.sh/${osuID}` })
             .setThumbnail(`https://b.ppy.sh/thumb/${bmapsetid}l.jpg`)
             .setDescription(`▸ ${rank} ▸ ${mods} ▸ ${wysi(acc)}% ${pp != null ? `, ${pp.toFixed(0)}pp` : ''}\n▸ ${wysi(score)} ▸ ${wysi(combo)}/${wysi(maxcombo)} ▸ [${wysifiedCounts}]`)
