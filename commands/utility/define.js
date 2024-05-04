@@ -7,13 +7,13 @@ module.exports = {
     execute(message = Discord.Message.prototype, args = [""]) {
         const axios = require('axios').default
         const endpoint = "https://api.openai.com/v1/chat/completions"
-        const filterEndpoint = "https://api.openai.com/v1/engines/content-filter-alpha/completions" // OpenAI content filter
+        const moderationEndpoint = "https://api.openai.com/v1/moderations" // OpenAI content filter
         const headers = {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${process.env.OPENAIKEY}`
         }
 
-        // Ratelimit to 10s
+        // Ratelimit to 5s
         if (global.definitionCooldownArray.includes(message.author.id)) {
             message.react("🦥")
             return
@@ -25,7 +25,7 @@ module.exports = {
             })
         }, 5000);
 
-        // Limit characters to idk 64 to avoid very deep guestions
+        // Limit characters to idk 180 to avoid very deep questions
         const stuffToDefine = args.join(' ')
         if (stuffToDefine.length >= 180) return message.channel.send('Sorry bro, limited to 180 characters!')
 
@@ -40,7 +40,7 @@ module.exports = {
                 "messages": [
                     {
                       "role": "system",
-                      "content": "You are an assistant who knows every word and is willing to help users define words. Keep answers short but useful."
+                      "content": "You are an assistant who is willing to help users define words. Keep answers short but useful."
                     },
                     {
                       "role": "user",
@@ -58,15 +58,16 @@ module.exports = {
             return res.data.choices[0].message.content.trim()
         }
 
+        /**
+         * 
+         * @param {String} something 
+         * @returns {boolean}
+         */
         async function contentFilter(something) {
-            const res = await axios.post(filterEndpoint, {
-                "prompt": `<|endoftext|>${something}\n--\nLabel:`,
-                "temperature": 0,
-                "max_tokens": 1,
-                "top_p": 0,
-                "logprobs": 10
+            const res = await axios.post(moderationEndpoint, {
+                "input": something
             }, { headers: headers } )
-            return res.data.choices[0].text.trim()
+            return res.data.results[0].flagged
         }
 
         // I yeet everything here because async is nice
@@ -75,12 +76,8 @@ module.exports = {
             let warning
             message.channel.sendTyping()
             // Check the question just in case
-            // 0 = safe
-            // 1 = may contain political stuff
-            // 2 = not safe DO NOT USE
             const preFilter = await contentFilter(stuffToDefine)
-            if (preFilter == "2") return message.reply("The thing youre asking to be defined has been detected by the AI's content filter. Try something else.")
-            if (preFilter == "1") warning = "⚠️ THIS MAY BE POLITICAL OR OTHERWISE CONTREVERSAL! TAKE THIS WITH A GRAIN OF SALT! ⚠️"
+            if (preFilter) return message.reply("The thing youre asking to be defined has been flagged. Try something else.")
             
             // If the question is safe, do the defining
             const definition = await define(stuffToDefine)
@@ -89,8 +86,7 @@ module.exports = {
             // Second content filter pass
             // I know repeating code bad cry about it
             const secondFilter = await contentFilter(definition)
-            if (secondFilter == "2") return message.reply("The AI's response has been flagged, so no definition for you. Try something else.")
-            if (secondFilter == "1") warning = "⚠️ THIS MAY BE POLITICAL OR OTHERWISE CONTREVERSAL! TAKE THIS WITH A GRAIN OF SALT! ⚠️"
+            if (secondFilter) return message.reply("The AI's response has been flagged, so no definition for you, sorry. Try something else.")
 
             // If everything is good, send it
             const embed = new Discord.EmbedBuilder()
