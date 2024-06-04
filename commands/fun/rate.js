@@ -21,8 +21,10 @@ module.exports = {
             "I'd rather pour milk down the drain than to have anything do with $. %/10"
         ]
 
-        const rating = Math.floor(Math.random() * 11) // 11 to include 10
-        let randomMsg = msgs[Math.floor(Math.random() * msgs.length)]
+        const hash = MurmurHash3(message.content.toLowerCase())
+
+        const rating = Math.floor(SimpleFastCounter32(hash) * 11) // 11 to include 10
+        let randomMsg = msgs[Math.floor(SimpleFastCounter32(hash) * msgs.length)]
 
         randomMsg = randomMsg.replace("%", rating)
         if(randomMsg.includes("$")) {
@@ -32,3 +34,34 @@ module.exports = {
         }
     }
 }
+
+// Borrowed from https://www.delftstack.com/howto/javascript/javascript-random-seed-to-generate-random/
+// Thanks <3
+function MurmurHash3(string) {
+    let i = 0;
+    for (i, hash = 1779033703 ^ string.length; i < string.length; i++) {
+      let bitwise_xor_from_character = hash ^ string.charCodeAt(i);
+      hash = Math.imul(bitwise_xor_from_character, 3432918353);
+      hash = hash << 13 | hash >>> 19;
+    }
+
+    hash = Math.imul(hash ^ (hash >>> 16), 2246822507);
+    hash = Math.imul(hash ^ (hash >>> 13), 3266489909);
+    return (hash ^= hash >>> 16) >>> 0;
+  }
+  
+  function SimpleFastCounter32(seed_1, seed_2, seed_3, seed_4) {
+    seed_1 >>>= 0;
+    seed_2 >>>= 0;
+    seed_3 >>>= 0;
+    seed_4 >>>= 0;
+    let cast32 = (seed_1 + seed_2) | 0;
+    seed_1 = seed_2 ^ seed_2 >>> 9;
+    seed_2 = seed_3 + (seed_3 << 3) | 0;
+    seed_3 = (seed_3 << 21 | seed_3 >>> 11);
+    seed_4 = seed_4 + 1 | 0;
+    cast32 = cast32 + seed_4 | 0;
+    seed_3 = seed_3 + cast32 | 0;
+    return (cast32 >>> 0) / 4294967296;
+  }
+  
