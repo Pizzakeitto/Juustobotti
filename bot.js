@@ -7,8 +7,7 @@ var {prefix} = require('./config.json')
 const fs = require('fs')
 const mongoose = require('mongoose')
 const { ServerConfig } = require('./utils/mongoUtils')
-const { chat } = require('./chat')
-
+const axios = require('axios').default
 
 global.cooldownArray = []
 global.definitionCooldownArray = []
@@ -31,7 +30,6 @@ intents.push(
     Discord.GatewayIntentBits.MessageContent,
     Discord.GatewayIntentBits.GuildMessageReactions,
     Discord.GatewayIntentBits.DirectMessageReactions
-
 )
 const partials = []
 partials.push(Discord.Partials.Message, Discord.Partials.Channel, Discord.Partials.Reaction)
@@ -82,62 +80,11 @@ client.on('messageCreate', async msg => {
     }
 
     // Chat
-    // not in a server so most likely dms
-    if (!msg.guild) {
-        let chatUserExists = usersInChat.some(u => u.id == msg.author.id && u.channel == msg.channelId)
-        if (msg.content.toLowerCase().startsWith("moro justo")) {
-            if (!chatUserExists){
-                usersInChat.push({id: msg.author.id, channel: msg.channelId})
-                chatUserExists = true
-            }
-        }
-        if (global.responding.includes(msg.author.id)) return msg.reply("SHUT THE FUCK UP IM THINKING!/AFUJOIY/U)P(/P()AFY/(P)/Y(P)(O(&YEQHUID")
-        if (chatUserExists) chat(msg)
-    }
-    // they are not in a thread and want to start chat
-    else if (msg.content.toLowerCase().startsWith("moro justo") && !msg.channel.isThread()) return async function() {
-        /** @type {Discord.ThreadChannel} */
-        const threadChannel = await msg.channel.threads.cache.find(x => x.name == `Chat with ${msg.author.username}`) || await msg.channel.threads.create({name: `Chat with ${msg.author.username}`})
-        await threadChannel.send(`<@${msg.author.id}>`)
-        let chatUserExists = usersInChat.some(u => u.id == msg.author.id && u.channel == threadChannel.id)
-        msg.channel = threadChannel
-        msg.channelId = threadChannel.id
-        if (!chatUserExists){
-            usersInChat.push({id: msg.author.id, channel: msg.channelId})
-            chatUserExists = true
-        }
-        if (global.responding.includes(msg.author.id)) return msg.reply("SHUT THE FUCK UP IM THINKING!/AFUJOIY/U)P(/P()AFY/(P)/Y(P)(O(&YEQHUID")
-        chat(msg)
-    }()
-    // they are already in a chat
-    else if (msg.channel.isThread() && usersInChat.some(u => u.id == msg.author.id && u.channel == msg.channelId)) {
-        if (global.responding.includes(msg.author.id)) return msg.reply("SHUT THE FUCK UP IM THINKING!/AFUJOIY/U)P(/P()AFY/(P)/Y(P)(O(&YEQHUID")
-        chat(msg)
-    }
-    // they are not in a chat but in a chat thread and want to start again
-    else if (msg.channel.isThread() && !usersInChat.some(u => u.id == msg.author.id && u.channel == msg.channelId) && msg.content.toLowerCase().startsWith("moro justo")) {
-        usersInChat.push({id: msg.author.id, channel: msg.channelId})
-        if (global.responding.includes(msg.author.id)) return msg.reply("SHUT THE FUCK UP IM THINKING!/AFUJOIY/U)P(/P()AFY/(P)/Y(P)(O(&YEQHUID")
-        chat(msg)
-    }
+    // removed cus fck ai
 
-    let annoy = true
-    if (msg.content.toLowerCase().includes('linux') && annoy){
-        if (global.cooldownArray.includes(msg.author.id)) return;
-        global.cooldownArray.push(msg.author.id)
-        setTimeout(() => {
-            global.cooldownArray = global.cooldownArray.filter(function(value, index, arr) {
-                return value != msg.author.id
-            })
-        }, 120000);
-        msg.channel.sendTyping()
-        setTimeout(() => {
-            msg.channel.send(`I'd just like to interject for a moment. What you're referring to as Linux, is in fact, GNU/Linux, or as I've recently taken to calling it, GNU plus Linux. Linux is not an operating system unto itself, but rather another free component of a fully functioning GNU system made useful by the GNU corelibs, shell utilities and vital system components comprising a full OS as defined by POSIX.`)
-        }, 5000);
-    }
 
-    if (msg.content.toLowerCase().includes('owo') || msg.content.toLowerCase().includes('uwu') ) {
-        msg.channel.send("ok")
+    if ((/(?<!\p{L})king(?!\p{L})/gu).test(msg.content.toLowerCase())){
+        msg.channel.send('gg')
     }
 
     if (msg.content.toLowerCase().startsWith("ju?")) return msg.channel.send("ju?")
@@ -196,6 +143,11 @@ client.on("guildCreate", async guild => {
     
 })
 
+// Uptime Kuma
+setInterval(() => {
+   axios.get(process.env.UPTIMEKUMA) 
+}, 60000)
+
 process.on('exit', function() {
     client.destroy()
     mongoose.disconnect()
@@ -216,8 +168,8 @@ process.on('SIGUSR2', function() {
 function updateCustomStatus() {
     if (maintenancemode) {
         client.user.setStatus("dnd")
-        client.user.setActivity('my creator suck at coding! (Down for maintenance)', {type: Discord.ActivityType.Watching})
-    } else client.user.setActivity('the bean market. Type ju!help to get me commands. I own a bean field btw', {type: Discord.ActivityType.Competing})
+        client.user.setActivity('balls. im not currently available', {type: Discord.ActivityType.Watching})
+    } else client.user.setActivity('Fortnite', {type: Discord.ActivityType.Playing})
 }
 
 client.login(process.env.BOTTOKEN) //Login lol
